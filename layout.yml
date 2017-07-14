@@ -1,0 +1,75 @@
+# Define you layouts here. You can use those variables:
+# %numpl% = Online players.
+# %maxpl% = Max players.
+# %motd% = Message of the day (Motd).
+# %name% = Name of the server.
+# %displayname% = Displayname of the server.
+# %version% = Game version of the server.
+# %isonline% = Whether the server is online or offline.
+# %address% = IP address of the server.
+# %port% = Port of the server.
+# %ping% = Ping delay in milliseconds.
+# 
+# In offline messages you can use those variables:
+# %name% = Name of the server.
+# %address% = IP address of the server.
+# %port% = Port of the server.
+# 
+# In cooldown messages you can use those variables:
+# %cooldown% = Cooldown in seconds.
+# ----------------------------------------------------------
+
+layouts:
+  default:
+    teleport: true
+    layout:
+    - '%displayname%'
+    - '---'
+    - '&c%numpl%&7/&c%maxpl%'
+    - '%isonline%'
+    online: '&a¤ Online ¤'
+    offline: '&cOffline'
+    offline-int: --
+    offline-motd: '&cOffline'
+    # Message when a player tries to connect to offline server.
+    offline-message: '&cThe server is offline!'
+    cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
+  info:
+    teleport: false
+    layout:
+    - '%displayname%'
+    - '&c%numpl%&a/&c%maxpl%'
+    - '&6&fInfosign'
+    - '%ping%ms'
+    online: 'Online'
+    offline: 'Offline'
+    offline-int: '-'
+    offline-motd: '&cOffline'
+    # Message when a player tries to connect to offline server.
+    offline-message: '&cServer is offline!'
+    cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
+  game:
+    teleport: true
+    layout:
+    - '&n&fPvP-Match'
+    - '%motd%'
+    - '&1%numpl%&a/&1%maxpl%'
+    - '%isonline%'
+    online: '&a+++'
+    offline: '&c---'
+    offline-int: '-'
+    offline-motd: '&cOffline'
+    # Message when a player tries to connect to offline server.
+    offline-message: '&a[Games] &c%name% is offline!'
+    cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
+    
+variables:
+  mapname:
+    type: SPLIT
+    arguments: '-,2'
+  status:
+    type: SUBSTRING
+    arguments: '5,15'
+  motdfix:
+    type: REPLACE
+    arguments: 'Death,Deathmatch'

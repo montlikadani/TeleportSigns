@@ -1,0 +1,45 @@
+name: TeleportSigns
+version: 1.3.6
+main: hu.montlikadani.TeleportSigns.TeleportSigns
+author: montlikadani
+description: Teleport to the server.
+# DO NOT EDIT ANYTHING ABOVE THIS LINE!
+
+commands:
+  teleportsigns:
+    description: The main command for TeleportSigns.
+    usage: /<command>
+    aliases: [ts]
+
+permissions:
+  # DO NOT EDIT EXISTING PLUGIN NAMES!
+  # THIS WILL BREAK THE PLUGIN!
+  # You can use only the 'default' function.
+  # Use: default: true - Everyone can use it.
+  # Default: false - Can only be used if enabled.
+  # Default: op - Only op ranks can use it.
+  teleportsigns.reload:
+    description: Allows a player to the reload all configs.
+    default: op
+  teleportsigns.help:
+    description: Allows a player to the help command.
+  teleportsigns.plugininfo:
+    description: Allows to player to the plugin info.
+  teleportsigns.plugindisable:
+    description: Allows to player to the plugin disable command.
+    default: op
+  teleportsigns.checkip:
+    description: Allows player to check IP command.
+    default: op
+  teleportsigns.use:
+    description: Allows player to use the sign.
+    default: true
+  teleportsigns.destroy:
+    description: Allows player to destroy sign.
+    default: op
+  teleportsigns.create:
+    description: Allows player to create a sign.
+    default: op
+  teleportsigns.use.nocooldown:
+    description: Allows to the sign create cooldown.
+    default: false
