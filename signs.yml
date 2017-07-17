@@ -1,2 +1,4 @@
 # Location database for TeleportSigns.
+# !!! IMPORTANT !!!
+# Do not change this in config, because if you make an error, you may be mistaken.
 signs: []
