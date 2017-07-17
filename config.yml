@@ -14,7 +14,7 @@
 # - Use color coding '&' character, on this page:                   #
 # http://minecraft.gamepedia.com/Formatting_codes                   #
 # - In case of an error, write here:                                #
-# https://dev.bukkit.org/projects/teleport-signs/issues             #
+# https://github.com/montlikadani/TeleportSigns/issues              #
 #-----------------------------OOO-----------------------------------#
 
 # If these number mark (#) are in the way, you can safely remove it.
@@ -60,19 +60,23 @@ unknown-command-enable: true
 unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
 
 #=========================================#
-#              Sign Settings              #
+#                Settings                 #
 #=========================================#
 options:
+
   # Log in to the console with plugin messages.
   logconsole: true
+  
   # Sign usage time. (Permission: teleportsigns.use.nocooldown)
   use-cooldown: 5
+  
   # Sign updates in ticks. 20 ticks = 1 second.
   sign-updates: 200
-  # Server not found or not running. (In seconds!)
+  
   ping-interval: 30
-  # Ping interval end. Default: -1.
-  ping-timeout: -1
+  # Important! If you do not want the pinging to end ping-timeout to be smaller than one and take the ping interval by one more.
+  ping-timeout: 29
+  
   # Connection time. (How much time to wait for a player to join and another to wait for him to join the server.)
   # To avoid waiting for the connection time, enter -1 in two places.
   # First: If you are using Bungeecord, go to config.yml and look for connection_throttle - write it to -1. The next place in the bukkit.yml file and there as well.
@@ -80,10 +84,13 @@ options:
 
 servers:
   pvp:
-    # Your IP address. (Start\cmd\ipconfig\IPv4-address (router IP))
-    # Or if you have your own hired server, you will replace 127.0.0.1 with that IP.
+    # Your IP address.
+    # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
     address: '127.0.0.1:25566'
     displayname: '&6[&cPvP&6]'
   survival:
+    # Your IP address.
+    # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
     address: '127.0.0.1:25567'
     displayname: '&e[&aSurvival&e]'
+   
