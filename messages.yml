@@ -3,7 +3,7 @@
 #=========================================#
 # Default language: 'EN' - English.
 # That is the apostrophe ('') inside them you can feel free to edit.
-prefix: '&6&l[&2Teleport&eSigns&6&l] &b&l>'
+prefix: '&6&l[&2&lTeleport&e&lSigns&6&l]&7&l »'
 
 # Use %prefix%, %newline% placeholder.
 reload-config: '%prefix%&a The plugin successfully reloaded!'
@@ -35,4 +35,4 @@ no-console-check-IP: '%prefix%&c You must be a player to use this command!'
 
 # Check your IP address.
 # Use %ipaddress% placeholder.
-check-IP-message: '%prefix%&7 Your&9 IP&7 address:&a %ipaddress%'
+check-IP-message: '%prefix%&7 Your&9 IP&7 address:&a %ipaddress%%newline%&7This should be in the config.yml file for servers.'
