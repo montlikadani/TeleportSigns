@@ -1,7 +1,7 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: 1.3.6                            #
+# config.yml file. Plugin version: 1.3.7                            #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configurations]                                          #
@@ -27,6 +27,9 @@
 # To reload, write to true and refresh the server /reload.
 enabled: true
 
+# bStats Metrics.
+metrics: true
+
 # Auto plugin refresh.
 auto-refresh-enable: true
 # In minutes!
@@ -38,7 +41,7 @@ log-to-file: true
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
 plugin-enable-message: true
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.3.6&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.3.7&a!'
 plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
@@ -93,4 +96,3 @@ servers:
     # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
     address: '127.0.0.1:25567'
     displayname: '&e[&aSurvival&e]'
-   
