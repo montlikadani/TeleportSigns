@@ -7,11 +7,18 @@ prefix: '&6&l[&2&lTeleport&e&lSigns&6&l]&7&l »'
 
 # Use %prefix%, %newline% placeholder.
 reload-config: '%prefix%&a The plugin successfully reloaded!'
-no-permission: '&cYou don''t have permission for that!'
-sign-created: '%prefix%&a The sign successfully created!'
-no-create-sign: '&cYou have no permission to create a sign!'
+
+# Use %subcmd% placeholder.
+unknown-sub-command: '%prefix%&c Unknown sub-command&7 %subcmd%&c.'
+
+# Use %perm% placeholder.
+no-permission: '&cYou don''t have permission for that!&7 (%perm%)'
+
+# Use %coords% placeholder.
+sign-created: '%prefix%&a The sign successfully created!%newline%&aServer:&7 %server%%newline%&aLayout:&7 %layout%'
+no-create-sign: '&cYou have no permission to create a sign!&7 (%perm%)'
 sign-destroyed: '%prefix%&c The sign successfully destroyed!'
-no-sign-destroy: '&cYou have no permission to break the sign!'
+no-sign-destroy: '&cYou have no permission to break the sign!&7 (%perm%)'
 
 # Use %layout% placeholder.
 unknown-layout: '%prefix%&c Layout "%layout%" not exist!'
@@ -22,12 +29,12 @@ unknown-server: '%prefix%&c Server "%server%" not exist!'
 # This feature lists all the chat panel help.
 # Use %command% placeholder.
 chat-messages:
-- '&c&m---------&b> &6[&2Teleport&eSigns &aHelp&6]&b <&c&m----------'
+- '&c&m---------&b> &6[&2Teleport&eSigns&2 Help&6]&b <&c&m----------'
 - '&8/&a%command%&4 -&6 Main plugin info.'
 - '&8/&a%command% disable&4 -&6 Plugin disable.'
 - '&8/&a%command% help&4 -&6 Help commands.'
 - '&8/&a%command% checkip&4 -&6 Check your IP address.'
-- '&8/&a%command% reload&4 -&6 Reload the config files. (Abbreviated: /ts rl)'
+- '&8/&a%command% reload (or rl)&4 -&6 Reload the config files.'
 - '&c&m-----------------------------------------------------'
 #You can add more paragraphs.
 warning-disablecommand: '&4&lWarning!&c If you disable the plugin, you can only enable it when you refresh the server and enable "enabled: true" in the config.yml file.'
