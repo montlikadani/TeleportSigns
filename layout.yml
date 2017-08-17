@@ -27,7 +27,7 @@ layouts:
     - '---'
     - '&c%numpl%&7/&c%maxpl%'
     - '%isonline%'
-    online: '&a¤ Online ¤'
+    online: '&aÂ¤ Online Â¤'
     offline: '&cOffline'
     offline-int: --
     offline-motd: '&cOffline'
@@ -46,7 +46,7 @@ layouts:
     offline-int: '-'
     offline-motd: '&cOffline'
     # Message when a player tries to connect to offline server.
-    offline-message: '&cServer is offline!'
+    offline-message: '&cThe server is offline!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
   game:
     teleport: true
@@ -60,7 +60,7 @@ layouts:
     offline-int: '-'
     offline-motd: '&cOffline'
     # Message when a player tries to connect to offline server.
-    offline-message: '&a[Games] &c%name% is offline!'
+    offline-message: '&a[Games]&7 %name%&c is offline!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
     
 variables:
