@@ -1,7 +1,7 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: 1.3.9                            #
+# config.yml file. Plugin version: 1.4                              #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configurations]                                          #
@@ -23,7 +23,6 @@
 #                Settings                 #
 #=========================================#
 options:
-
   # Log in to the console with plugin messages.
   logconsole: true
   
@@ -81,6 +80,9 @@ enabled: true
 # bStats Metrics.
 metrics: true
 
+# Check for updates.
+check-update: true
+
 # Auto plugin refresh.
 auto-refresh-enable: false
 # In minutes!
@@ -92,7 +94,7 @@ log-to-file: true
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
 plugin-enable-message: true
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.3.9&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.4&a!'
 plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
