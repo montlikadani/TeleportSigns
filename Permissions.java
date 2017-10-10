@@ -13,5 +13,7 @@ public class Permissions {
 	public Permission perm6 = new Permission("teleportsigns.destroy");
 	public Permission perm7 = new Permission("teleportsigns.create");
 	public Permission perm8 = new Permission("teleportsigns.use.nocooldown");
+	public Permission perm9 = new Permission("teleportsigns.cmd.tabcomplete");
+	public Permission perm10 = new Permission("teleportsigns.use");
 
 }
