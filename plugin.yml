@@ -1,23 +1,44 @@
 name: TeleportSigns
-version: 1.3.9
 main: hu.montlikadani.TeleportSigns.TeleportSigns
+version: 1.4
 author: montlikadani
-description: Teleport to the server.
+description: Teleport to the server with the sign!
 # DO NOT EDIT ANYTHING ABOVE THIS LINE!
 
 commands:
-    teleportsigns:
-        description: The main command for TeleportSigns.
-        usage: /<command>
-        aliases: [ts]
+  teleportsigns:
+    description: The main command for TeleportSigns.
+    usage: /<command>
+    aliases: [ts]
 
 permissions:
-  # DO NOT EDIT EXISTING PLUGIN NAMES!
-  # THIS WILL BREAK THE PLUGIN!
-  # You can use only the 'default' function.
-  # Use: default: true - Everyone can use it.
-  # Default: false - Can only be used if enabled.
-  # Default: op - Only op ranks can use it.
-    teleportsigns.use:
-        description: Allows player to use the sign.
-        default: true
+  teleportsigns.use:
+    description: Allows player to use the sign.
+    default: true
+  teleportsigns.use.nocooldown:
+    description: Allows the player not to wait for the sign to use.
+    default: false
+  teleportsigns.create:
+    description: Allows the player to create a sign.
+    default: false
+  teleportsigns.destroy:
+    description: Allows the player to break the sign.
+    default: false
+  teleportsigns.cmd.nocooldown:
+    description: Command wait time permission.
+    default: false
+  teleportsigns.help:
+    description: Help commands for TeleportSigns.
+    default: false
+  teleportsigns.reload:
+    description: Reload the config files.
+    default: op
+  teleportsigns.plugindisable:
+    description: Disable the plugin.
+    default: op
+  teleportsigns.checkip:
+    description: Check your IP address permission.
+    default: op
+  teleportsigns.cmd.tabcomplete:
+    description: You can use [TAB] in commands.
+    default: false
