@@ -1,0 +1,110 @@
+# v1.4
+     WARNING! There are still 1.8 versions supported by the plugin. Over 1.9.x, the signs will no longer work, and the offline message will be indicated.
+
+        Bug fixes.
+        Updated config files.
+        Fixed file not creating on server start - when it started the plugin did not create any files.
+        Added update checker - notify when an update is available. (In console)
+        Fixed background sign did not change the block.
+        Fixed BungeeCord register. - Did not register BungeeCord and therefore did not start the plugin.
+        Modified multiple permissions.
+        Fixed block not changed - did not change the block on an animated sign.
+        Fixed send messages - sent the messages twice to the user.
+        Fixed unregistering events & BungeeCord.
+        Fixed sign break drop - even dropped the ground when it was false.
+        Other bug fixes.
+# v1.3.9
+    Bug fixes.
+    Updated config files.
+    Fixed bug: The IP did not exist - The IP was not recognized by the system.
+    Added background sign. - It changes the block behind the sign. (Decides on motd.)
+    Fixed permissions. - The sign permissions did not work and could be used by default.
+    Fixed logconsole. - The console did not specify the plugin and any possible errors.
+
+Tested Minecraft version: 1.8.x 
+# v1.3.8
+    Bug fixes.
+    Updated config files.
+    Fixed bug - Did not enter plugin messages into the console. (logconsole)
+    Added sign break drop boolean. (true/false) - When a player drops the teleportsigns sign drop or not.
+    Added enter message. - When a player joins a sign, he writes the message.
+    Fixed ping timeout problem. - Could not find the specified path.
+    Fixed issue: https://github.com/montlikadani/TeleportSigns/issues/1 - It has not updated the signs and the configuration.
+
+Tested Minecraft version: 1.8.x 
+# v1.3.7
+        Bug fixes.
+        Updated config files.
+        Fixed bug: Server ping.
+        Added bStats. (Enable/disable)
+        Fixed: When he break the sign block and, if he throws it back then he gets a message.
+
+    Tested Minecraft version: 1.8.x
+        Other bug fixes.
+# v1.3.6
+        Updated config files.
+        Fixed /ts checkip command. - It also shows IP and port.
+        Removed debug messages.
+        Fixed ping interval and ping timeout.
+        Added [teleportsigns] - Instead of [tsigns], the starting word is on the sign, but it still remains.
+        Fixed location problems.
+        Fixed ping server.
+        Fixed auto refresh plugin.
+        Fixed plugin messages.
+
+    Tested Minecraft version: 1.8.x
+    1.9.x version is no longer working on the plugin. 
+# v1.3.5
+        Bug fixes.
+        Updated config.yml file.
+        Messages moved to messages.yml file.
+        Added new placeholder in config:
+        %newline% - Adds a new line.
+
+        Added auto refresh time in minute.
+        Fixed bug /ts reload command.
+        Fixed bug ping-timeout in config.
+        Other bug fixes.
+# v1.3.4
+        Bug fixes.
+        Updated config.yml file.
+        Command abbreviations. (Example: /ts rl - /teleportsigns reload) + You typing a command will write it. (Example: /teleportsigns - Then write this out.)
+        Added new functions:
+        enabled - Plugin enable or disable.
+        plugin enable/disable messages.
+        main-info-tscommand-on-default - You can use the default group /ts command for the main plugin information.
+        command wait time - Command waiting (user) time + message.
+        unknown command - Unknown command. (If you type a letter.) + message.
+        plugin prefix, reload config, no permission, sign created, no create sign, sign destroyed, no sign destroy, unknown layout, unknown server, warning disablecommand, no console check IP, check IP message, chat help panel - messages.
+
+        New placeholders (layout.yml):
+        %numpl% = Online players.
+        %maxpl% = Max players.
+        %motd% = Message of the day (Motd).
+        %name% = Name of the server.
+        %displayname% = Displayname of the server.
+        %version% = Game version of the server.
+        %isonline% = Whether the server is online or offline.
+        %address% = IP address of the server.
+        %port% = Port of the server.
+        %ping% = Ping delay in milliseconds.
+        %cooldown% = Cooldown in seconds.
+
+    Config.yml placeholders:
+        %prefix% = Plugin prefix.
+        %seconds% = Waiting time.
+        %command% = What you type is a command that you type. (Example: /teleportsigns - It will write, not this: /ts)
+        %ipaddress% - Check my IP address.
+        %layout% - not exist layout. (message)
+        %server% - not exist server. (message)
+
+        Added new commands:
+        /ts disable - Disable the plugin.
+        /ts checkip - Check my IP address.
+
+        Added new main plugin info:
+
+    [​IMG]
+        Other bug fixes.
+# v1.3.3
+  Updated config.yml file.
