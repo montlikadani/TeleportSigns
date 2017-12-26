@@ -11,6 +11,8 @@
         Removed auto refresh. - It was unnecessary.
         Removed some spaces & code.
         Removed command wait time.
+Changed:
+    Changed main-info-tscommand-on-default boolean to default-can-see-plugin-information.
 # v1.4
      WARNING! There are still 1.8 versions supported by the plugin. Over 1.9.x, the signs will no longer work, and the offline message will be indicated.
 
