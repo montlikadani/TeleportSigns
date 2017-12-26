@@ -1,14 +1,14 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: 1.4                              #
+# config.yml file. Plugin version: 1.5                              #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configurations]                                          #
-# https://dev.bukkit.org/projects/teleport-signs/pages/configyml    #
+# github.com/montlikadani/TeleportSigns/blob/master/config.yml      #
 #                                                                   #
 # [Placeholders]                                                    #
-# https://dev.bukkit.org/projects/teleport-signs/pages/placeholders #
+# https://github.com/montlikadani/TeleportSigns/wiki/Placeholders   #
 #                                                                   #
 # [Tips]                                                            #
 # - Use color coding '&' character, on this page:                   #
@@ -83,30 +83,19 @@ metrics: true
 # Check for updates.
 check-update: true
 
-# Auto plugin refresh.
-auto-refresh-enable: false
-# In minutes!
-auto-refresh-time: 10
-
 # Logging to file plugin messages.
 log-to-file: true
 
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
 plugin-enable-message: true
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.4&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.5&a!'
 plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
 # The default is allowed to see the plugin information.
-main-info-tscommand-on-default: false
-
-# Command waiting period. If you set it to 0 you will not have to wait.
-# Measured in seconds. 1 seconds - 20 ticks.
-# (This feature is known that there is no excessive lagg.)
-# Use %seconds% placeholder. (This placeholder is valid only here.)
-command-wait-time: 3
-command-wait: '%prefix%&c Please wait&7 %seconds%&c seconds to use again!'
+# Permission: teleportsigns.plugininfo
+default-can-see-plugin-information: false
 
 # Unknown-command - If more than one word/letter you write to it.
 # Example: /ts reload something...
