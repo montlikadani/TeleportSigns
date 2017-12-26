@@ -1,6 +1,6 @@
 name: TeleportSigns
 main: hu.montlikadani.TeleportSigns.TeleportSigns
-version: 1.4
+version: 1.5
 author: montlikadani
 description: Teleport to the server with the sign!
 # DO NOT EDIT ANYTHING ABOVE THIS LINE!
@@ -23,9 +23,6 @@ permissions:
     default: false
   teleportsigns.destroy:
     description: Allows the player to break the sign.
-    default: false
-  teleportsigns.cmd.nocooldown:
-    description: Command wait time permission.
     default: false
   teleportsigns.help:
     description: Help commands for TeleportSigns.
