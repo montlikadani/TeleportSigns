@@ -1,3 +1,16 @@
+# v1.5
+     Fixes:
+        Fixed twice wrote his name. - The plugin has typed its name twice into the console.
+        Fixed all tasks stopped. - It has stopped all tasks that run on the server only.
+        Fixed plugin commands not registering.
+        Fixed animation unregistering. - There was an error in console that did not stop the animation from the sign.
+        Fixed background animation bug.
+    High fixes:
+        High fix Bukkit ping 1.9.x did not work, so the servers did not work.
+    Removed:
+        Removed auto refresh. - It was unnecessary.
+        Removed some spaces & code.
+        Removed command wait time.
 # v1.4
      WARNING! There are still 1.8 versions supported by the plugin. Over 1.9.x, the signs will no longer work, and the offline message will be indicated.
 
