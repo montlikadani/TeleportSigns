@@ -1,3 +1,8 @@
+# v1.6
+     Fixes:
+        Fixed connect-timeout function did not do anything. - Now, in the bukkit.yml, rewrite the connection-throttle for which it is configured.
+        Fixed configurations not loaded.
+        Fixed the player place a sign, broke out send a message, but the player again placed the sign and broke the message again.
 # v1.5
      Fixes:
         Fixed twice wrote his name. - The plugin has typed its name twice into the console.
