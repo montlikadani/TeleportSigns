@@ -1,7 +1,7 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: 1.5                              #
+# config.yml file. Plugin version: 1.6                              #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configurations]                                          #
@@ -25,32 +25,33 @@
 options:
   # Log in to the console with plugin messages.
   logconsole: true
-  
+
   # Sign usage time. (Permission: teleportsigns.use.nocooldown)
   use-cooldown: 5
-  
+
   # Sign updates in ticks. 20 ticks = 1 second.
   sign-updates: 200
-  
+
   # How much time do you start the server pinging? (In ticks)
   ping-interval: 30
   # Important! If you do not want the pinging to end ping-timeout to be smaller than one and take the ping interval by one more.
   # How much time does the server pinging down? (In ticks)
   ping-timeout: 29
-  
+
   # Connection time. (How much time to wait for a player to join and another to wait for him to join the server.)
   # To avoid waiting for the connection time, enter -1 in two places.
-  # First: If you are using BungeeCord, go to config.yml and look for connection_throttle - write it to -1. The next place in the bukkit.yml file and there as well.
+  # The plugin rewrites the connection-throttle in bukkit.yml to the number that is in it.
+  # The plugin can not be rewritten in BungeeCord.
   connect-timeout: 4000
-  
+
   # When you break the sign, drop a sign.
   sign-break-drop: false
-  
+
   # Server connection message.
   enter-msg-enable: true
   # Use %server% placeholder.
   enter-message: '&6You entered the server&7 %server%!'
-  
+
   # Defines a background of the sign, possible types: glass, wool, clay (color depends on motd start color).
   background-enable: false
   background: glass
@@ -58,23 +59,20 @@ options:
 # The servers that players join.
 servers:
   pvp:
-    # Your IP address.
+    # Server IP address.
     # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
     address: '127.0.0.1:25566'
     displayname: '&6[&cPvP&6]'
   survival:
-    # Your IP address.
+    # Server IP address.
     # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
     address: '127.0.0.1:25567'
     displayname: '&e[&aSurvival&e]'
-
 
 #=========================================#
 #             Plugin Settings             #
 #=========================================#
 # The TeleportSigns plugin is disabled (false) or enabled (true).
-# As this function is set to false, the plugin will shut itself down and no commands (which the plugin will detect) will be detected.
-# To reload, write to true and refresh the server /reload.
 enabled: true
 
 # bStats Metrics.
@@ -89,7 +87,7 @@ log-to-file: true
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
 plugin-enable-message: true
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.5&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.6&a!'
 plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
