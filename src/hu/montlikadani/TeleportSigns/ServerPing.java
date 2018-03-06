@@ -72,7 +72,7 @@ public class ServerPing {
     }
 
     @SuppressWarnings({ "resource", "unused" })
-	public StatusResponse fetchData() throws IOException {
+    public StatusResponse fetchData() throws IOException {
     	Socket socket = new Socket();
         OutputStream outputStream;
         DataOutputStream dataOutputStream;
@@ -103,8 +103,8 @@ public class ServerPing {
         dataOutputStream.writeByte(0x01);
         dataOutputStream.writeByte(0x00);
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-		int size = readVarInt(dataInputStream);
-        int id = readVarInt(dataInputStream);
+	int size = readVarInt(dataInputStream);
+	int id = readVarInt(dataInputStream);
 
         if (id == -1) {
             throw new IOException("Premature end of stream.");
