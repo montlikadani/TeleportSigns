@@ -15,7 +15,7 @@ import com.google.gson.Gson;
 public class ServerPing {  
     private boolean fetching;
     private InetSocketAddress host;
-    private int timeout = 7000; //That was 2000.
+    private int timeout = 2000;
     private Gson gson = new Gson();
 
     public void setAddress(InetSocketAddress host) {
