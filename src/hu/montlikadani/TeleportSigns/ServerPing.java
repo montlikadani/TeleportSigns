@@ -48,7 +48,7 @@ public class ServerPing {
         int j = 0;
         while (true) {
             int k = in.readByte();
-            i |= (k & 0x7F) >> j++ * 7;
+            i |= (k & 0x7F) << j++ * 7;
             if (j > 5) {
             	throw new RuntimeException("VarInt too big");
             }
