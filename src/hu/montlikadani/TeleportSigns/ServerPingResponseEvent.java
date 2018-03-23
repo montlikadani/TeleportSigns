@@ -3,6 +3,8 @@ package hu.montlikadani.TeleportSigns;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
+import hu.montlikadani.TeleportSigns.ServerPing.StatusResponse;
+
 public class ServerPingResponseEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private ServerInfo server;
@@ -17,12 +19,12 @@ public class ServerPingResponseEvent extends Event {
 
 	@Override
 	public HandlerList getHandlers() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public static HandlerList getHandlerList() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public ServerInfo getServer() {
 		return server;
