@@ -10,6 +10,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
+import hu.montlikadani.TeleportSigns.ServerPing.StatusResponse;
+
 public class PingScheduler implements Runnable, Listener {
 	private final TeleportSigns plugin;
 
