@@ -49,7 +49,7 @@ public class ServerPing {
         int j = 0;
         while (true) {
             int k = in.readByte();
-            i |= (k & 0x7F) << j++ * 7;
+            i |= (k & 0x7F) << (j++ * 7);
             if (j > 5) {
             	throw new RuntimeException("VarInt too big");
             }
@@ -81,7 +81,7 @@ public class ServerPing {
         InputStreamReader inputStreamReader;
 
         socket.setSoTimeout(this.timeout);
-        socket.connect(host, this.timeout);
+        socket.connect(host, getTimeout());
 
         outputStream = socket.getOutputStream();
         dataOutputStream = new DataOutputStream(outputStream);
