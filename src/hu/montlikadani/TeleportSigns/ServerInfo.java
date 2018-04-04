@@ -73,14 +73,14 @@ public class ServerInfo {
 	}
 
 	public int getTimeout() {
-        return this.timeout;
+		return this.timeout;
 	}
 
 	public void setTimeout(int timeout) {
 	    this.timeout = timeout;
 	}
 
-    public boolean isLocal() {
+	public boolean isLocal() {
 		return local;
 	}
 
@@ -168,20 +168,20 @@ public class ServerInfo {
 	public void teleportPlayer(Player p) {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
-		if (this.name != null) {
-			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().messages.getString("already-server").replace("%server%", this.name).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
+		if (getName() != null) {
+			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().messages.getString("already-server").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
 			return;
 		}
 		try {
 			out.writeUTF("Connect");
-			out.writeUTF(this.name);
+			out.writeUTF(getName());
 		} catch (IOException io) {
 			io.printStackTrace();
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 		if (TeleportSigns.getInstance().getConfig().getBoolean("options.enter-msg-enable")) {
-			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", this.name).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
+			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
 			return;
 		}
 	}
