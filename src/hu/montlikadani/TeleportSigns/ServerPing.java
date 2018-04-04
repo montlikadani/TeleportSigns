@@ -80,7 +80,7 @@ public class ServerPing {
         InputStream inputStream;
         InputStreamReader inputStreamReader;
 
-        socket.setSoTimeout(this.timeout);
+        socket.setSoTimeout(getTimeout());
         socket.connect(host, getTimeout());
 
         outputStream = socket.getOutputStream();
