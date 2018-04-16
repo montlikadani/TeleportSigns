@@ -13,15 +13,15 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-public class ServerPing {  
-    private boolean fetching;
-    private InetSocketAddress host;
-    private int timeout = 2000;
-    private Gson gson = new Gson();
+public class ServerPing {
+	private boolean fetching;
+	private InetSocketAddress host;
+	private int timeout = 2000;
+	private Gson gson = new Gson();
 
     public void setAddress(InetSocketAddress host) {
-        this.fetching = false;
         this.host = host;
+	this.fetching = false;
     }
 
     public InetSocketAddress getAddress() {
@@ -104,8 +104,8 @@ public class ServerPing {
         dataOutputStream.writeByte(0x01);
         dataOutputStream.writeByte(0x00);
         DataInputStream dataInputStream = new DataInputStream(inputStream);
-	int size = readVarInt(dataInputStream);
-	int id = readVarInt(dataInputStream);
+		int size = readVarInt(dataInputStream);
+        int id = readVarInt(dataInputStream);
 
         if (id == -1) {
             throw new IOException("Premature end of stream.");
