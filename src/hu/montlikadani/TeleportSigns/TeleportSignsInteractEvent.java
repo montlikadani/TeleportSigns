@@ -20,12 +20,12 @@ public class TeleportSignsInteractEvent extends Event implements Cancellable {
 
 	@Override
 	public HandlerList getHandlers() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public static HandlerList getHandlerList() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public Player getPlayer() {
 		return player;
