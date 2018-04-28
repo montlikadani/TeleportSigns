@@ -35,17 +35,17 @@ public class ServerInfo {
 		this.online = false;
 		this.name = servername;
 		this.displayname = displayname;
-	    this.address = new InetSocketAddress(address, port);
-	    this.timeout = timeout;
-	    this.pingStartTime = System.currentTimeMillis();
-	    this.pingEndTime = System.currentTimeMillis();
+		this.address = new InetSocketAddress(address, port);
+		this.timeout = timeout;
+		this.pingStartTime = System.currentTimeMillis();
+		this.pingEndTime = System.currentTimeMillis();
 
-	    if (Bukkit.getServer().getIp().equals(address) && Bukkit.getServer().getPort() == Integer.valueOf(port)) {
-	    	this.local = true;
-	    }
-	    /**if (Bukkit.getServer().getPort() == Integer.valueOf(port).intValue()) {
-	        this.local = true;
-	    }*/
+		if (Bukkit.getServer().getIp().equals(address) && Bukkit.getServer().getPort() == Integer.valueOf(port)) {
+			this.local = true;
+		}
+		/*if (Bukkit.getServer().getPort() == Integer.valueOf(port).intValue()) {
+			this.local = true;
+		}*/
 	}
 
 	public ServerPing getPing() {
@@ -77,7 +77,7 @@ public class ServerInfo {
 	}
 
 	public void setTimeout(int timeout) {
-	    this.timeout = timeout;
+		this.timeout = timeout;
 	}
 
 	public boolean isLocal() {
@@ -168,10 +168,10 @@ public class ServerInfo {
 	public void teleportPlayer(Player p) {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
-		if (getName() != null) {
+		/**if (this.name != null) {
 			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().messages.getString("already-server").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
 			return;
-		}
+		}*/
 		try {
 			out.writeUTF("Connect");
 			out.writeUTF(getName());
