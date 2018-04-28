@@ -204,25 +204,25 @@ public class ConfigData {
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {
-	    if (type.equals(ConfigType.SETTINGS)) {
-	    	return this.config;
-	    } else if (type.equals(ConfigType.LAYOUTS)) {
-	    	return this.layout;
-	    } else if (type.equals(ConfigType.SIGNS)) {
-	    	return this.sign;
-	    }
+		if (type.equals(ConfigType.SETTINGS)) {
+			return this.config;
+		} else if (type.equals(ConfigType.LAYOUTS)) {
+			return this.layout;
+		} else if (type.equals(ConfigType.SIGNS)) {
+			return this.sign;
+		}
 
 		return null;
 	}
 
 	public void saveConfig(ConfigType type) throws Exception {
 		if (type.equals(ConfigType.SETTINGS)) {
-	    	config.save(config_file);
-	    } else if (type.equals(ConfigType.LAYOUTS)) {
-	    	layout.save(layout_file);
-	    } else if (type.equals(ConfigType.SIGNS)) {
-	    	sign.save(sign_file);
-	    }
+			config.save(config_file);
+		} else if (type.equals(ConfigType.LAYOUTS)) {
+			layout.save(layout_file);
+		} else if (type.equals(ConfigType.SIGNS)) {
+			sign.save(sign_file);
+		}
 	}
 
 	public List<ServerInfo> getServers() {
@@ -230,7 +230,7 @@ public class ConfigData {
 	}
 
 	public void setServers(List<ServerInfo> servers) {
-	    this.servers = servers;
+		this.servers = servers;
 	}
 
 	public List<TeleportSign> getSigns() {
@@ -238,15 +238,15 @@ public class ConfigData {
 	}
 
 	public void setSigns(List<TeleportSign> signs) {
-	    this.signs = signs;
+		this.signs = signs;
 	}
 
 	public Map<String, SignLayout> getLayouts() {
-	    return this.layouts;
+		return this.layouts;
 	}
 
 	public void setLayouts(Map<String, SignLayout> signLayouts) {
-	    this.layouts = signLayouts;
+		this.layouts = signLayouts;
 	}
 
 	public List<CustomVariable> getVariables() {
