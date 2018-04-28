@@ -84,11 +84,11 @@ public class PingScheduler implements Runnable, Listener {
 							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
 							plugin.callSyncEvent(sevent);
 						}
-					} catch (Exception ex) {
+					} catch (Exception e) {
 						server.setOnline(false);
-						ex.printStackTrace();
-						if (!(ex instanceof ConnectException)) {
-							plugin.logConsole(Level.WARNING, "[TeleportSigns] Error fetching data from server '" + String.valueOf(server.getAddress().getAddress().getHostAddress().toString()) + ":" + server.getAddress().getPort() + "'. - Check the config file!");
+						e.printStackTrace();
+						if (!(e instanceof ConnectException)) {
+							plugin.logConsole(Level.WARNING, "Error fetching data from server '" + String.valueOf(server.getAddress().getAddress().getHostAddress().toString()) + ":" + server.getAddress().getPort() + "'. - Check the config file!");
 						}
 					}
 					finally {
