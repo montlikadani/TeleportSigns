@@ -17,12 +17,12 @@ public class TeleportSignsPingEvent extends Event implements Cancellable {
 
 	@Override
 	public HandlerList getHandlers() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public static HandlerList getHandlerList() {
-        return handlers;
-    }
+		return handlers;
+	}
 
 	public List<ServerInfo> getServers() {
 		return servers;
