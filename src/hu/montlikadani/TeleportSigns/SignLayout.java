@@ -136,19 +136,19 @@ public class SignLayout {
 	public String formatDescription(String description) {
 		String line = "";
 		int motdCount = 0;
-        String tempMotd = description == null ? "" : description;
-        String[] splitMotd = tempMotd.split("(?<=\\G.{15})");
-        if (motdCount < splitMotd.length) {
-            String motd = splitMotd[motdCount];
-            if (motd != null) {
-                line = motd;
-            }
-            motdCount++;
-        } else {
-            line = "";
-        }
+		String tempMotd = description == null ? "" : description;
+		String[] splitMotd = tempMotd.split("(?<=\\G.{15})");
+		if (motdCount < splitMotd.length) {
+			String motd = splitMotd[motdCount];
+			if (motd != null) {
+				line = motd;
+			}
+			motdCount++;
+		} else {
+			line = "";
+		}
 
-        return line;
+		return line;
 	}
 
 	private String textValues(String line) {
@@ -175,13 +175,13 @@ public class SignLayout {
 		line = line.replaceAll("&o", ChatColor.ITALIC.toString());
 		line = line.replaceAll("&r", ChatColor.RESET.toString());
 		line = line.replaceAll("&&", "&");
-		line = line.replaceAll("%a", "á");
-		line = line.replaceAll("%A", "Á");
-		line = line.replaceAll("%o", "ö");
-		line = line.replaceAll("%O", "Ö");
-		line = line.replaceAll("%u", "ü");
-		line = line.replaceAll("%U", "Ü");
-		line = line.replaceAll("%s", "ß");
+		line = line.replaceAll("%a", "Ã¡");
+		line = line.replaceAll("%A", "Ã");
+		line = line.replaceAll("%o", "Ã¶");
+		line = line.replaceAll("%O", "Ã–");
+		line = line.replaceAll("%u", "Ã¼");
+		line = line.replaceAll("%U", "Ãœ");
+		line = line.replaceAll("%s", "ÃŸ");
 
 		return line;
 	}
