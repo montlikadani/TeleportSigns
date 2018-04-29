@@ -39,7 +39,7 @@ public class Listeners implements Listener {
 					String lname = event.getLine(2);
 					if (lname.equalsIgnoreCase("")) {
 						lname = "default";
-				    }
+					}
 
 					Location location = b.getLocation();
 					ServerInfo server = plugin.getConfigData().getServer(sname);
@@ -47,19 +47,19 @@ public class Listeners implements Listener {
 					if (server != null) {
 						if (layout != null) {
 							plugin.getConfigData().addSign(location, server, layout);
-				        	p.sendMessage(plugin.colorMsg(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
-				        } else {
+							p.sendMessage(plugin.colorMsg(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+						} else {
 							p.sendMessage(plugin.colorMsg(plugin.messages.getString("unknown-layout").replace("%layout%", lname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
 							if (plugin.getConfig().getBoolean("sign-break-drop")) {
 								b.breakNaturally();
 							}
 						}
-			        } else {
-			        	p.sendMessage(plugin.colorMsg(plugin.messages.getString("unknown-server").replace("%server%", sname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+					} else {
+						p.sendMessage(plugin.colorMsg(plugin.messages.getString("unknown-server").replace("%server%", sname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
 						if (plugin.getConfig().getBoolean("sign-break-drop")) {
 							b.breakNaturally();
 						}
-			        }
+					}
 				} else {
 					p.sendMessage(plugin.colorMsg(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create").replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
 					if (plugin.getConfig().getBoolean("sign-break-drop")) {
@@ -192,37 +192,37 @@ public class Listeners implements Listener {
 			if (p.isOp()) {
 				if (p.hasPermission("teleportsigns.checkupdate")) {
 					TeleportSigns plu = TeleportSigns.getPlugin(TeleportSigns.class);
-			        String[] nVersion;
-			        String[] cVersion;
-			        String lineWithVersion;
-			        URL githubUrl;
-			        try {
+					String[] nVersion;
+					String[] cVersion;
+					String lineWithVersion;
+					URL githubUrl;
+					try {
 						githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
-			            lineWithVersion = "";
+						lineWithVersion = "";
 						Scanner websiteScanner = new Scanner(githubUrl.openStream());
-			            while (websiteScanner.hasNextLine()) {
-			                String line = websiteScanner.nextLine();
-			                if (line.toLowerCase().contains("version")) {
-			                    lineWithVersion = line;
-			                    break;
-			                }
-			            }
-			            String versionString = lineWithVersion.split(": ")[1];
-			            nVersion = versionString.split("\\.");
-			            double newestVersionNumber = Double.parseDouble(nVersion[0] + "." + nVersion[1]);
-			            cVersion = plu.getDescription().getVersion().split("\\.");
-			            double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
-			            if (newestVersionNumber > currentVersionNumber) {
-			            	p.sendMessage(plugin.colorMsg("&8&m&l--------------------------------------------------\n" + 
-			            plugin.messages.getString("prefix") + "&a A new update is available!&4 Version:&7 " + versionString + 
-			            "\n&6Download:&c &nhttps://www.spigotmc.org/resources/teleport-signs.37446/" + 
-			            "\n&8&m&l--------------------------------------------------"));
-			            }
+						while (websiteScanner.hasNextLine()) {
+							String line = websiteScanner.nextLine();
+							if (line.toLowerCase().contains("version")) {
+								lineWithVersion = line;
+								break;
+							}
+						}
+						String versionString = lineWithVersion.split(": ")[1];
+						nVersion = versionString.split("\\.");
+						double newestVersionNumber = Double.parseDouble(nVersion[0] + "." + nVersion[1]);
+						cVersion = plu.getDescription().getVersion().split("\\.");
+						double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
+						if (newestVersionNumber > currentVersionNumber) {
+							p.sendMessage(plugin.colorMsg("&8&m&l--------------------------------------------------\n" + 
+							plugin.messages.getString("prefix") + "&a A new update is available!&4 Version:&7 " + versionString + 
+							"\n&6Download:&c &nhttps://www.spigotmc.org/resources/teleport-signs.37446/" + 
+							"\n&8&m&l--------------------------------------------------"));
+						}
 					} catch (Exception ex) {
 						ex.printStackTrace();
 						plugin.logConsole(Level.WARNING, "Failed to compare versions. " + ex + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 					}
-			    }
+				}
 			}
 		}
 	}
