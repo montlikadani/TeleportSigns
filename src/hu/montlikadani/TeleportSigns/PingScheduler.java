@@ -44,9 +44,9 @@ public class PingScheduler implements Runnable, Listener {
 					server.setPlayerCount(ping.getNumPlayers());
 					server.setPingStart(System.currentTimeMillis());
 					server.setPingEnd(System.currentTimeMillis());
-			        server.setOnline(true);
+					server.setOnline(true);
 
-			        if (!server.getMotd().equals(status)) {
+					if (!server.getMotd().equals(status)) {
 						ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
 						plugin.callSyncEvent(sevent);
 					}
