@@ -117,23 +117,23 @@ public class TeleportSign {
 							Sign sign = (Sign)b.getState();
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
-					            sign.setLine(i, (String)lines.get(i));
+								sign.setLine(i, (String)lines.get(i));
 								if (TeleportSigns.getInstance().getConfig().getBoolean("options.background-enable")) {
-								    if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("wool")) {
-								        updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
-								    } else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("glass")) {
-								    	updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
-								    } else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("clay")) {
-								    	updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
-								    }
+									if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("wool")) {
+										updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
+									} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("glass")) {
+										updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
+									} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("clay")) {
+										updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
+									}
 								}
-					        }
+							}
 							sign.update(true);
 							//sign.update();
 						} else {
 							Sign sign = (Sign)b.getState();
 							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
-							String[] error = { "ง4ERROR:", "ง6Layout" , "งe'" + this.layout + "'", "ง6 not found!" };
+							String[] error = { "ยง4ERROR:", "ยง6Layout" , "ยงe'" + this.layout + "'", "ยง6 not found!" };
 							signError(sign, error);
 							if (TeleportSigns.getInstance().getConfig().getBoolean("options.sign-break-drop")) {
 								sign.getLocation().getBlock().breakNaturally();
@@ -143,7 +143,7 @@ public class TeleportSign {
 					} else {
 						Sign sign = (Sign)b.getState();
 						TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
-						String[] error = { "ง4ERROR:", "ง6Server" , "งe'" + this.server + "'", "ง6 not found!" };
+						String[] error = { "ยง4ERROR:", "ยง6Server" , "ยงe'" + this.server + "'", "ยง6 not found!" };
 						signError(sign, error);
 						if (TeleportSigns.getInstance().getConfig().getBoolean("options.sign-break-drop")) {
 							sign.getLocation().getBlock().breakNaturally();
@@ -157,21 +157,21 @@ public class TeleportSign {
 
 	@SuppressWarnings("deprecation")
 	public void updateBackground(Material mat, int color) {
-	    Location loc3 = this.getLocation();
-	    BlockState s = (Sign) loc3.getBlock().getState();
-	    if (s.getType() == Material.WALL_SIGN) {
-	    	BlockFace bf = ((Directional)s.getData()).getFacing();
-	    	Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
-	    	Block wall = loc2.getBlock();
-	    	wall.setType(mat);
-	    	wall.setData((byte) color);
-	    }
+		Location loc3 = this.getLocation();
+		BlockState s = (Sign) loc3.getBlock().getState();
+		if (s.getType() == Material.WALL_SIGN) {
+			BlockFace bf = ((Directional)s.getData()).getFacing();
+			Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
+			Block wall = loc2.getBlock();
+			wall.setType(mat);
+			wall.setData((byte) color);
+		}
 	}
 
 	private int getStartingColor(String s) {
 		try {
 			if (s.length() > 1) {
-				if (s.toCharArray()[0] == 'ง') {
+				if (s.toCharArray()[0] == 'ยง') {
 					switch (s.toCharArray()[1]) {
 					case '0':
 		  				return 15;
