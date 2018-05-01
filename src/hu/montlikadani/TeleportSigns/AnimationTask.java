@@ -32,13 +32,15 @@ public class AnimationTask {
 						sign.setLine(line, lines[line]);
 						sign.update(true);
 						if (plugin.getConfig().getBoolean("options.background-enable")) {
-						    if (plugin.getConfig().getString("options.background").equalsIgnoreCase("wool")) {
-						    	s.updateBackground(Material.WOOL, 3);
-						    } else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("glass")) {
-						    	s.updateBackground(Material.STAINED_GLASS, 11);
-						    } else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("clay")) {
-						    	s.updateBackground(Material.STAINED_CLAY, 3);
-						    }
+							if (sign.getType().equals(Material.WALL_SIGN)) {
+								if (plugin.getConfig().getString("options.background").equalsIgnoreCase("wool")) {
+									s.updateBackground(Material.WOOL, 3);
+								} else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("glass")) {
+									s.updateBackground(Material.STAINED_GLASS, 11);
+								} else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("clay")) {
+									s.updateBackground(Material.STAINED_CLAY, 3);
+								}
+							}
 						}
 					}
 				}
@@ -60,7 +62,7 @@ public class AnimationTask {
 				Sign sign = (Sign)s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "TeleportSigns");
-				sign.setLine(2, "§lVersion 1.7");
+				sign.setLine(2, "Â§lVersion 1.7");
 				sign.setLine(3, "---------------");
 				sign.update(true);
 			}
