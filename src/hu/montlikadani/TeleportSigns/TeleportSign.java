@@ -119,17 +119,18 @@ public class TeleportSign {
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, (String)lines.get(i));
 								if (TeleportSigns.getInstance().getConfig().getBoolean("options.background-enable")) {
-									if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("wool")) {
-										updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
-									} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("glass")) {
-										updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
-									} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("clay")) {
-										updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
+									if (sign.getType().equals(Material.WALL_SIGN)) {
+										if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("wool")) {
+											updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
+										} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("glass")) {
+											updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
+										} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("clay")) {
+											updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
+										}
 									}
 								}
 							}
 							sign.update(true);
-							//sign.update();
 						} else {
 							Sign sign = (Sign)b.getState();
 							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
