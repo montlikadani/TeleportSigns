@@ -1,3 +1,13 @@
+# v1.7
+Added:
+    Added /ts listlayouts command.
+    Added support for teleportsigns.* permission. - To access for all permissions.
+Fixes:
+    Fixed not find the signs and write a long error in the console.
+    Fixed some config loading problems.
+    Fixed always checked the sign, even if the sign was not on a wall.
+    Fixed the server always send the long error in the console when the server is offline.
+
 # v1.6
      Fixes:
         Fixed connect-timeout function did not do anything. - Now, in the bukkit.yml, rewrite the connection-throttle for which it is configured.
