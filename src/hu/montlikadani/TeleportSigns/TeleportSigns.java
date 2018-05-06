@@ -72,7 +72,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			if (getConfig().getString("options.connect-timeout") != null) {
 				setBukkitConnectTimeOut();
 			}
-			//setSpigotBungeeBoolean();
 			if (getConfig().getBoolean("check-update")) {
 				logConsole(Level.INFO, checkVersion());
 			}
@@ -106,7 +105,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				logConsole(Level.INFO, "Metrics enabled.");
 			}
 			if (getConfig().getBoolean("plugin-enable-message")) {
-				getServer().getConsoleSender().sendMessage(colorMsg(getConfig().getString("plugin-enable").replace("%newline%", "\n").replace("%prefix%", messages.getString("prefix"))));
+				getServer().getConsoleSender().sendMessage(defaults(getConfig().getString("plugin-enable")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -129,7 +128,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
 			if (getConfig().getBoolean("plugin-disable-message")) {
-				getServer().getConsoleSender().sendMessage(colorMsg(getConfig().getString("plugin-disable").replace("%newline%", "\n").replace("%prefix%", messages.getString("prefix"))));
+				getServer().getConsoleSender().sendMessage(defaults(getConfig().getString("plugin-disable")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -276,47 +275,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		}
 	}
 
-	public static String getIP(Player player) {
-		String playerIP = player.getAddress().getAddress().getHostAddress();
-		return playerIP;
-	}
-
-	public static int getPort(Player player) {
-		int playerPort = player.getServer().getPort();
-		return playerPort;
-	}
-
-	public String colorMsg(String msg) {
-		return ChatColor.translateAlternateColorCodes('&', msg);
-	}
-
-	public void reload() {
-		getConfigData().unloadConfig();
-		loadConfigs();
-		getConfigData().reloadConfig();
-		Bukkit.getPluginManager().disablePlugin(this);
-		Bukkit.getPluginManager().enablePlugin(this);
-	}
-
-/**	private void setSpigotBungeeBoolean() {
-		YamlConfiguration spigFile = Bukkit.spigot().getConfig();
-		if (spigFile == null) {
-			logConsole(Level.WARNING, "[TeleportSigns] WARNING! The spigot.yml file can not be found!");
-			return;
-		}
-		if (spigFile.getBoolean("settings.bungeecord", true)) {
-			return;
-		} else {
-			spigFile.set("settings.bungeecord", true);
-			try {
-				spigFile.save("spigot.yml");
-				spigFile.options().copyDefaults(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
-	}*/
-
 	private void setBukkitConnectTimeOut() {
 		File bukFile = new File(Bukkit.getServer().getWorldContainer().getName(), "bukkit.yml");
 		if (!bukFile.exists()) {
@@ -330,6 +288,34 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String getIP(Player player) {
+		String playerIP = player.getAddress().getAddress().getHostAddress();
+		return playerIP;
+	}
+
+	public static int getPort(Player player) {
+		int playerPort = player.getServer().getPort();
+		return playerPort;
+	}
+
+	public void reload() {
+		getConfigData().unloadConfig();
+		loadConfigs();
+		getConfigData().reloadConfig();
+		Bukkit.getPluginManager().disablePlugin(this);
+		Bukkit.getPluginManager().enablePlugin(this);
+	}
+
+	public String defaults(String str) {
+		str = str.replace("%prefix%", messages.getString("prefix"));
+		str = str.replace("%newline%", "\n");
+		return colorMsg(str);
+	}
+
+	public String colorMsg(String msg) {
+		return ChatColor.translateAlternateColorCodes('&', msg);
 	}
 
 	public void throwMsg() {
