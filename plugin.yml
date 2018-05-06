@@ -1,8 +1,8 @@
 name: TeleportSigns
 main: hu.montlikadani.TeleportSigns.TeleportSigns
-version: 1.6
+version: 1.7
 author: montlikadani
-description: Teleport to the server with the sign!
+description: Teleport to the server with the sign.
 # DO NOT EDIT ANYTHING ABOVE THIS LINE!
 
 commands:
@@ -12,6 +12,19 @@ commands:
     aliases: [ts]
 
 permissions:
+  teleportsigns.*:
+     description: Gives access to all TeleportSigns permissions.
+     children:
+       teleportsigns.use: true
+       teleportsigns.use.nocooldown: true
+       teleportsigns.create: true
+       teleportsigns.destroy: true
+       teleportsigns.checkip: true
+       teleportsigns.listlayouts: true
+       teleportsigns.reload: true
+       teleportsigns.plugindisable: true
+       teleportsigns.help: true
+       teleportsigns.cmd.tabcomplete: true
   teleportsigns.use:
     description: Allows player to use the sign.
     default: true
@@ -24,6 +37,12 @@ permissions:
   teleportsigns.destroy:
     description: Allows the player to break the sign.
     default: false
+  teleportsigns.checkip:
+    description: Check your IP address permission.
+    default: op
+  teleportsigns.listlayouts:
+    description: You can use the /ts listlayouts command.
+    default: false
   teleportsigns.help:
     description: Help commands for TeleportSigns.
     default: false
@@ -31,10 +50,7 @@ permissions:
     description: Reload the config files.
     default: op
   teleportsigns.plugindisable:
-    description: Disable the plugin.
-    default: op
-  teleportsigns.checkip:
-    description: Check your IP address permission.
+    description: Allow to player to disable plugin.
     default: op
   teleportsigns.cmd.tabcomplete:
     description: You can use [TAB] in commands.
