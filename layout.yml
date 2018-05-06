@@ -64,7 +64,7 @@ layouts:
     offline-message: '&a[Games]&7 %name%&c is offline!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
 
-# Do not take these into account, these are just tests.
+# Custom variables.
 variables:
   mapname:
     type: SPLIT
