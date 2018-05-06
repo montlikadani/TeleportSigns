@@ -9,7 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.nio.charset.Charset;
 import java.util.List;
 
 import com.google.gson.Gson;
@@ -82,7 +81,7 @@ public class ServerPing {
 		InputStreamReader inputStreamReader;
 
 		socket.setSoTimeout(this.timeout);
-		socket.connect(host, timeout);
+		socket.connect(host, this.timeout);
 
 		outputStream = socket.getOutputStream();
 		dataOutputStream = new DataOutputStream(outputStream);
@@ -127,8 +126,9 @@ public class ServerPing {
 
 		byte[] in = new byte[length];
 		dataInputStream.readFully(in);
-		//String json = new String(in);
-		String json = new String(in, Charset.forName("utf-8"));
+		String json = new String(in);
+		// Test...
+		//String json = new String(in, Charset.forName("utf-8"));
 
 		long now = System.currentTimeMillis();
 		dataOutputStream.writeByte(0x09);
