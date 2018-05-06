@@ -17,13 +17,11 @@
 # https://github.com/montlikadani/TeleportSigns/issues              #
 #-----------------------------OOO-----------------------------------#
 
-# If these number mark (#) are in the way, you can safely remove it.
-
 #=========================================#
 #                Settings                 #
 #=========================================#
 options:
-  # Log in to the console with plugin messages.
+  # Log plugin messages into console.
   logconsole: true
 
   # Sign usage time. (Permission: teleportsigns.use.nocooldown)
@@ -49,7 +47,7 @@ options:
 
   # Server connection message.
   enter-msg-enable: true
-  # Use %server% placeholder.
+  # Use %newline%, %prefix%, %server% placeholder.
   enter-message: '&6You entered the server&7 %server%!'
 
   # Defines a background of the sign, possible types: glass, wool, clay (color depends on motd start color).
@@ -87,7 +85,7 @@ log-to-file: true
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
 plugin-enable-message: true
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v1.6&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${version}&a!'
 plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
@@ -97,7 +95,7 @@ default-can-see-plugin-information: false
 
 # Unknown-command - If more than one word/letter you write to it.
 # Example: /ts reload something...
+# Use %command% placeholder.
 # This feature is NOT enter into the unknown command Minecraft, it's just your own.
-# Use %command% placeholder. - When you type the command (example: /teleportsigns), it writes the command to it.
 unknown-command-enable: true
 unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
