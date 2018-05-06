@@ -181,7 +181,7 @@ public class ServerInfo {
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 		if (TeleportSigns.getInstance().getConfig().getBoolean("options.enter-msg-enable")) {
-			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
+			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", getName())));
 			return;
 		}
 	}
