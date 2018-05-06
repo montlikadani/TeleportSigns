@@ -47,21 +47,21 @@ public class Listeners implements Listener {
 					if (server != null) {
 						if (layout != null) {
 							plugin.getConfigData().addSign(location, server, layout);
-							p.sendMessage(plugin.colorMsg(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+							p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 						} else {
-							p.sendMessage(plugin.colorMsg(plugin.messages.getString("unknown-layout").replace("%layout%", lname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
 							if (plugin.getConfig().getBoolean("sign-break-drop")) {
 								b.breakNaturally();
 							}
 						}
 					} else {
-						p.sendMessage(plugin.colorMsg(plugin.messages.getString("unknown-server").replace("%server%", sname).replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
 						if (plugin.getConfig().getBoolean("sign-break-drop")) {
 							b.breakNaturally();
 						}
 					}
 				} else {
-					p.sendMessage(plugin.colorMsg(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create").replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+					p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
 					if (plugin.getConfig().getBoolean("sign-break-drop")) {
 						b.breakNaturally();
 					}
@@ -79,9 +79,9 @@ public class Listeners implements Listener {
 				if (plugin.getConfigData().containsSign(b)) {
 					if (p.hasPermission(Permissions.DESTROY)) {
 						plugin.getConfigData().removeSign(b.getLocation());
-						p.sendMessage(plugin.colorMsg(plugin.messages.getString("sign-destroyed").replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+						p.sendMessage(plugin.defaults(plugin.messages.getString("sign-destroyed")));
 					} else {
-						p.sendMessage(plugin.colorMsg(plugin.messages.getString("no-sign-destroy").replace("%perm%", "teleportsigns.destroy").replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+						p.sendMessage(plugin.defaults(plugin.messages.getString("no-sign-destroy").replace("%perm%", "teleportsigns.destroy")));
 						event.setCancelled(true);
 					}
 				}
@@ -110,7 +110,7 @@ public class Listeners implements Listener {
 								}
 							}
 						} else {
-							p.sendMessage(plugin.colorMsg(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.use").replace("%newline%", "\n").replace("%prefix%", plugin.messages.getString("prefix"))));
+							p.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.use")));
 						}
 					}
 				}
