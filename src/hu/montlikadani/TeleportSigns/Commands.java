@@ -29,7 +29,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					sender.sendMessage("§6§l[§2§lTeleport§e§lSigns§b§l Info§e§l]");
-					sender.sendMessage("§5Version:§a 1.7");
+					sender.sendMessage("§5Version:§a ${version}");
 					sender.sendMessage("§5Author, created by:§a montlikadani");
 					sender.sendMessage("§5Commands:§8 /§7" + commandLabel + "§a help");
 					sender.sendMessage("§4In case of an error, write here:§e §nhttps://github.com/montlikadani/TeleportSigns/issues");
