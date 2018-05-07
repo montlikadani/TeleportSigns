@@ -62,7 +62,7 @@ public class AnimationTask {
 				Sign sign = (Sign)s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "TeleportSigns");
-				sign.setLine(2, "§lVersion 1.7");
+				sign.setLine(2, "§lVersion ${version}");
 				sign.setLine(3, "---------------");
 				sign.update(true);
 			}
