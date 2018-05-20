@@ -28,6 +28,8 @@ public class ConfigData {
 	private long signUpdates;
 	private int pingTimeout;
 	private int pingInterval;
+	private int cver = 1;
+	private int lyver = 1;
 
 	private File config_file = new File("plugins/TeleportSigns/config.yml");
 	private File layout_file = new File("plugins/TeleportSigns/layout.yml");
@@ -46,25 +48,47 @@ public class ConfigData {
 	public void loadConfig() {
 		unloadConfig();
 
-		if (config_file.exists()) {
-			config = YamlConfiguration.loadConfiguration(config_file);
-		} else {
-			plugin.saveResource("config.yml", false);
-			config = YamlConfiguration.loadConfiguration(config_file);
-		}
+		try {
+			if (config_file.exists()) {
+				config = YamlConfiguration.loadConfiguration(config_file);
+				config.load(config_file);
+				plugin.reloadConfig();
+				plugin.saveDefaultConfig();
+				if (!config.get("config-version").equals(cver)) {
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getString("config-version") + " | Newest version: " + cver + ")");
+				}
+			} else {
+				plugin.saveResource("config.yml", false);
+				config = YamlConfiguration.loadConfiguration(config_file);
+				plugin.logConsole(Level.INFO, "The 'config.yml' file successfully created!");
+			}
 
-		if (layout_file.exists()) {
-			layout = YamlConfiguration.loadConfiguration(layout_file);
-		} else {
-			plugin.saveResource("layout.yml", false);
-			layout = YamlConfiguration.loadConfiguration(layout_file);
-		}
+			plugin.createMsgFile();
 
-		if (sign_file.exists()) {
-			sign = YamlConfiguration.loadConfiguration(sign_file);
-		} else {
-			plugin.saveResource("signs.yml", false);
-			sign = YamlConfiguration.loadConfiguration(sign_file);
+			if (layout_file.exists()) {
+				layout = YamlConfiguration.loadConfiguration(layout_file);
+				layout.load(layout_file);
+				if (!layout.get("config-version").equals(lyver)) {
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: " + layout.getString("config-version") + " | Newest version: " + lyver + ")");
+				}
+			} else {
+				plugin.saveResource("layout.yml", false);
+				layout = YamlConfiguration.loadConfiguration(layout_file);
+				plugin.logConsole(Level.INFO, "The 'layout.yml' file successfully created!");
+			}
+
+			if (sign_file.exists()) {
+				sign = YamlConfiguration.loadConfiguration(sign_file);
+				sign.load(sign_file);
+				sign.save(sign_file);
+			} else {
+				plugin.saveResource("signs.yml", false);
+				sign = YamlConfiguration.loadConfiguration(sign_file);
+				plugin.logConsole(Level.INFO, "The 'signs.yml' file successfully created!");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			plugin.throwMsg();
 		}
 
 		loadSettings();
@@ -74,14 +98,9 @@ public class ConfigData {
 		loadVariables();
 	}
 
-	public void reloadConfig() {
-		unloadConfig();
-
-		loadConfig();
-	}
-
 	public void unloadConfig() {
 		config = null;
+		plugin.messages = null;
 		layout = null;
 		sign = null;
 
@@ -96,7 +115,7 @@ public class ConfigData {
 		this.signUpdates = this.config.getInt("options.sign-updates");
 		this.pingInterval = this.config.getInt("options.ping-interval");
 		this.pingTimeout = this.config.getInt("options.ping-timeout");
-		this.config.getBoolean("options.sign-break-drop");
+		this.config.getBoolean("options.drop-sign");
 		this.config.getBoolean("options.enter-msg-enable");
 		this.config.getString("options.enter-message");
 		this.config.getBoolean("options.logconsole");
@@ -320,7 +339,6 @@ public class ConfigData {
 			e.printStackTrace();
 			plugin.throwMsg();
 		}
-
 		blocks.add(location.getBlock());
 		TeleportSign tsign = new TeleportSign(server, location, layout);
 		signs.add(tsign);
@@ -343,7 +361,7 @@ public class ConfigData {
 				}
 				blocks.remove(location.getBlock());
 				signs.remove(sign);
-				if (plugin.getConfig().getBoolean("options.sign-break-drop")) {
+				if (plugin.getConfig().getBoolean("options.drop-sign")) {
 					sign.getLocation().getBlock().breakNaturally();
 				}
 				break;
