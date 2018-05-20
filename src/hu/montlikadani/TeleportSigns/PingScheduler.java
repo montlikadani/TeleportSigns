@@ -36,7 +36,7 @@ public class PingScheduler implements Runnable, Listener {
 					pingAsync(server);
 				} else {
 					final String status = server.getMotd();
-					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(Bukkit.getIp(), Bukkit.getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
+					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(Bukkit.getServer().getIp(), Bukkit.getServer().getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
 					Bukkit.getPluginManager().callEvent(ping);
 					server.setProtocol(getBukkitVersion());
 					server.setMotd(ping.getMotd());
