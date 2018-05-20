@@ -42,16 +42,17 @@ options:
   # The plugin can not be rewritten in BungeeCord.
   connect-timeout: 4000
 
-  # When you break the sign, drop a sign.
-  sign-break-drop: false
+  # When you break the sign or not find the layout on the sign, drop a sign?
+  drop-sign: false
 
   # Server connection message.
   enter-msg-enable: true
   # Use %newline%, %prefix%, %server% placeholder.
   enter-message: '&6You entered the server&7 %server%!'
 
-  # Defines a background of the sign, possible types: glass, wool, clay (color depends on motd start color).
+  # Defines a background of the sign.
   background-enable: false
+  # Possible types: glass, wool, clay (color depends on motd start color).
   background: glass
 
 # The servers that players join.
@@ -99,3 +100,6 @@ default-can-see-plugin-information: false
 # This feature is NOT enter into the unknown command Minecraft, it's just your own.
 unknown-command-enable: true
 unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
+
+# DO NOT CHANGE THIS!
+config-version: 1
