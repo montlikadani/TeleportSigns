@@ -136,7 +136,7 @@ public class TeleportSign {
 							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
 							String[] error = { "§4ERROR:", "§6Layout" , "§e'" + this.layout + "'", "§6 not found!" };
 							signError(sign, error);
-							if (TeleportSigns.getInstance().getConfig().getBoolean("options.sign-break-drop")) {
+							if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) {
 								sign.getLocation().getBlock().breakNaturally();
 							}
 							this.broken = true;
@@ -146,7 +146,7 @@ public class TeleportSign {
 						TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
 						String[] error = { "§4ERROR:", "§6Server" , "§e'" + this.server + "'", "§6 not found!" };
 						signError(sign, error);
-						if (TeleportSigns.getInstance().getConfig().getBoolean("options.sign-break-drop")) {
+						if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) {
 							sign.getLocation().getBlock().breakNaturally();
 						}
 						this.broken = true;
