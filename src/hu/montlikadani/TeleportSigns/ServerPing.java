@@ -18,6 +18,7 @@ public class ServerPing {
 	private InetSocketAddress host;
 	private int timeout = 2000;
 	private Gson gson = new Gson();
+	private Socket socket = new Socket();
 
 	public void setAddress(InetSocketAddress host) {
 		this.host = host;
@@ -74,7 +75,8 @@ public class ServerPing {
 
 	@SuppressWarnings({ "resource", "unused" })
 	public StatusResponse fetchData() throws IOException {
-		Socket socket = new Socket();
+		socket.close();
+		socket = new Socket();
 		OutputStream outputStream;
 		DataOutputStream dataOutputStream;
 		InputStream inputStream;
@@ -127,8 +129,6 @@ public class ServerPing {
 		byte[] in = new byte[length];
 		dataInputStream.readFully(in);
 		String json = new String(in);
-		// Test...
-		//String json = new String(in, Charset.forName("utf-8"));
 
 		long now = System.currentTimeMillis();
 		dataOutputStream.writeByte(0x09);
