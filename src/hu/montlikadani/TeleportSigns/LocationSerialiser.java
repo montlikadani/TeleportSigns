@@ -3,7 +3,7 @@ package hu.montlikadani.TeleportSigns;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-public class LocationSerialiser {	
+public class LocationSerialiser {
 	public static String getServerFromSign(String raw) {
 		String[] splited = raw.split(",");
 		String returnServer = splited[4];
