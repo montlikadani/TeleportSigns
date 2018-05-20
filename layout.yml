@@ -75,3 +75,6 @@ variables:
   motdfix:
     type: REPLACE
     arguments: 'Death,Deathmatch'
+
+# DO NOT CHANGE THIS!
+config-version: 1
