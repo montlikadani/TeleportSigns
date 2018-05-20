@@ -175,12 +175,6 @@ public class SignLayout {
 		line = line.replaceAll("&o", ChatColor.ITALIC.toString());
 		line = line.replaceAll("&r", ChatColor.RESET.toString());
 		line = line.replaceAll("&&", "&");
-		line = line.replaceAll("%a", "á");
-		line = line.replaceAll("%A", "Á");
-		line = line.replaceAll("%o", "ö");
-		line = line.replaceAll("%O", "Ö");
-		line = line.replaceAll("%u", "ü");
-		line = line.replaceAll("%U", "Ü");
 		line = line.replaceAll("%s", "ß");
 
 		return line;

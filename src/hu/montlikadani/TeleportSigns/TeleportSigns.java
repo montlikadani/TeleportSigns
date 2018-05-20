@@ -21,24 +21,24 @@ import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
 public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
+
+	private static TeleportSigns instance;
+
+	FileConfiguration messages;
+	private File messages_file = new File("plugins/TeleportSigns/messages.yml");
+
+	private int msver = 1;
 	private PingScheduler ping;
 	private SignScheduler sign;
 	private AnimationTask anim;
-	private static TeleportSigns instance;
 	private static ConfigData data;
-
-	FileConfiguration config = getConfig();
-	FileConfiguration layout, signf, messages;
-	File config_file = new File("plugins/TeleportSigns/config.yml");
-	File layout_file = new File("plugins/TeleportSigns/layout.yml");
-	File sign_file = new File("plugins/TeleportSigns/signs.yml");
-	File messages_file = new File("plugins/TeleportSigns/messages.yml");
 
 	@Override
 	public void onEnable() {
 		try {
 			super.onEnable();
-			createFiles();
+			data = new ConfigData(this);
+			data.loadConfig();
 			if (!getConfig().getBoolean("enabled")) {
 				this.getServer().getPluginManager().disablePlugin(this);
 				return;
@@ -48,10 +48,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				return;
 			}
 			instance = this;
-			data = new ConfigData(this);
 			this.ping = new PingScheduler(this);
 			this.sign = new SignScheduler(this);
-			data.loadConfig();
 			this.anim = new AnimationTask(this);
 			anim.resetAnimation();
 			anim.startAnimation();
@@ -68,7 +66,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}
 			}, time);
 			registerCommands();
-			loadConfigs();
 			if (getConfig().getString("options.connect-timeout") != null) {
 				setBukkitConnectTimeOut();
 			}
@@ -136,52 +133,22 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		}
 	}
 
-	public void loadConfigs() {
+	public void createMsgFile() {
 		try {
-			createFiles();
-			config.load(config_file);
-			messages.load(messages_file);
-			layout.load(layout_file);
-			signf.save(sign_file);
-			signf.load(sign_file);
-			YamlConfiguration.loadConfiguration(new File(getDataFolder(), "layout.yml"));
-			YamlConfiguration.loadConfiguration(new File(getDataFolder(), "signs.yml"));
-			reloadConfig();
-			saveDefaultConfig();
+			if (messages_file.exists()) {
+				messages = YamlConfiguration.loadConfiguration(messages_file);
+				messages.load(messages_file);
+				if (!messages.get("config-version").equals(msver)) {
+					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " + messages.getString("config-version") + " | Newest version: " + msver + ")");
+				}
+			} else {
+				saveResource("messages.yml", false);
+				messages = YamlConfiguration.loadConfiguration(messages_file);
+				logConsole(Level.INFO, "The 'messages.yml' file successfully created!");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throwMsg();
-		}
-	}
-
-	public void createFiles() {
-		if (config_file.exists()) {
-			config = YamlConfiguration.loadConfiguration(config_file);
-		} else {
-			saveResource("config.yml", false);
-			config = YamlConfiguration.loadConfiguration(config_file);
-			logConsole(Level.INFO, "The 'config.yml' file successfully created!");
-		}
-		if (messages_file.exists()) {
-			messages = YamlConfiguration.loadConfiguration(messages_file);
-		} else {
-			saveResource("messages.yml", false);
-			messages = YamlConfiguration.loadConfiguration(messages_file);
-			logConsole(Level.INFO, "The 'messages.yml' file successfully created!");
-		}
-		if (layout_file.exists()) {
-			layout = YamlConfiguration.loadConfiguration(layout_file);
-		} else {
-			saveResource("layout.yml", false);
-			layout = YamlConfiguration.loadConfiguration(layout_file);
-			logConsole(Level.INFO, "The 'layout.yml' file successfully created!");
-		}
-		if (sign_file.exists()) {
-			signf = YamlConfiguration.loadConfiguration(sign_file);
-		} else {
-			saveResource("signs.yml", false);
-			signf = YamlConfiguration.loadConfiguration(sign_file);
-			logConsole(Level.INFO, "The 'signs.yml' file successfully created!");
 		}
 	}
 
@@ -207,23 +174,15 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			cVersion = pl.getDescription().getVersion().split("\\.");
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 			if (newestVersionNumber > currentVersionNumber) {
-				return "[TeleportSigns] New version (" + versionString + ") is available at https://www.spigotmc.org/resources/teleport-signs.37446/";
+				return "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/teleport-signs.37446/";
 			} else {
-				return "[TeleportSigns] You're running the latest version.";
+				return "You're running the latest version.";
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			pl.logConsole(Level.WARNING, "Failed to compare versions. " + e + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		}
-		return "[TeleportSigns] Failed to get newest version number.";
-	}
-
-	public static TeleportSigns getInstance() {
-		return instance;
-	}
-
-	public ConfigData getConfigData() {
-		return data;
+		return "Failed to get newest version number.";
 	}
 
 	public void callSyncEvent(final Event event) {
@@ -301,11 +260,17 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public void reload() {
-		getConfigData().unloadConfig();
-		loadConfigs();
-		getConfigData().reloadConfig();
+		getConfigData().loadConfig();
 		Bukkit.getPluginManager().disablePlugin(this);
 		Bukkit.getPluginManager().enablePlugin(this);
+	}
+
+	public static TeleportSigns getInstance() {
+		return instance;
+	}
+
+	public ConfigData getConfigData() {
+		return data;
 	}
 
 	public String defaults(String str) {

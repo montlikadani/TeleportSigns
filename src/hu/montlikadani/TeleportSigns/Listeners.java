@@ -50,19 +50,19 @@ public class Listeners implements Listener {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 						} else {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
-							if (plugin.getConfig().getBoolean("sign-break-drop")) {
+							if (plugin.getConfig().getBoolean("drop-sign")) {
 								b.breakNaturally();
 							}
 						}
 					} else {
 						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
-						if (plugin.getConfig().getBoolean("sign-break-drop")) {
+						if (plugin.getConfig().getBoolean("drop-sign")) {
 							b.breakNaturally();
 						}
 					}
 				} else {
 					p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
-					if (plugin.getConfig().getBoolean("sign-break-drop")) {
+					if (plugin.getConfig().getBoolean("drop-sign")) {
 						b.breakNaturally();
 					}
 				}
