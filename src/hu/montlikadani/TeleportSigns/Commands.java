@@ -11,6 +11,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class Commands implements CommandExecutor, TabCompleter {
 
 	private TeleportSigns plugin;
@@ -107,7 +109,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						}
 					}
 					try {
-						Set<String> layouts = plugin.layout.getConfigurationSection("layouts").getKeys(false);
+						Set<String> layouts = plugin.getConfigData().getConfig(ConfigType.LAYOUTS).getConfigurationSection("layouts").getKeys(false);
 						StringBuilder sb = new StringBuilder();
 						for (String s : layouts) {
 							sb.append(s);
@@ -118,6 +120,38 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.logConsole(Level.WARNING, "There are no layouts in the layouts.yml file!");
 					}
 					return true;
+
+					/*
+					* This is NOT done yet.
+					*/
+				} else if (args[0].equalsIgnoreCase("connect")) {
+					if (!sender.hasPermission(Permissions.CONNECT)) {
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.connect")));
+						return true;
+					}
+					if (!(sender instanceof Player)) {
+						sender.sendMessage(plugin.defaults("&cA console-ban nem használható ez a parancs!"));
+						return true;
+					}
+					if (args.length > 2) {
+						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+							return true;
+						}
+					}
+					if (args.length != 2) {
+						sender.sendMessage("§c/ts connect <server>");
+						return true;
+					}
+					final String servergroup = args[1];
+					Player p = (Player)sender;
+					if (plugin.getConfigData().getServer(servergroup) != null) {
+						ServerInfo server = plugin.getConfigData().getServer(servergroup);
+						server.teleportPlayer(p, servergroup);
+					} else {
+						sender.sendMessage("§cServer group " + servergroup + " does not exists!");
+						return true;
+					}
 				} else {
 					sender.sendMessage(plugin.defaults(plugin.messages.getString("unknown-sub-command").replace("%subcmd%", args[0])));
 					return true;
@@ -133,30 +167,27 @@ public class Commands implements CommandExecutor, TabCompleter {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
     	if (sender.hasPermission(Permissions.TABCOMP)) {
-        List<String> list = new ArrayList<String>();
-
-        if (args.length == 1) {
-            list.add("help");
-        }
-
-        if (args.length == 1) {
-            list.add("disable");
-        }
-
-        if (args.length == 1) {
-            list.add("reload");
-        }
-
-        if (args.length == 1) {
-            list.add("checkip");
-        }
-
-        if (args.length == 1) {
-            list.add("listlayouts");
-        }
-
-        return list;
-        }
+    		List<String> list = new ArrayList<String>();
+    		if (args.length == 1) {
+    			list.add("help");
+    		}
+    		if (args.length == 1) {
+    			list.add("disable");
+    		}
+    		if (args.length == 1) {
+    			list.add("reload");
+    		}
+    		if (args.length == 1) {
+    			list.add("checkip");
+    		}
+    		if (args.length == 1) {
+    			list.add("listlayouts");
+    		}
+    		if (args.length == 1) {
+    			list.add("connect");
+    		}
+    		return list;
+    	}
     	return null;
     }
 }
