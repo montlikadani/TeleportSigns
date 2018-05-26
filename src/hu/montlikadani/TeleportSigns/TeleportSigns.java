@@ -118,7 +118,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				anim.resetAnimation();
 				anim.stopAnimation();
 			}
-			data.unloadConfig();
 			Messenger messenger = Bukkit.getServer().getMessenger();
 			messenger.unregisterIncomingPluginChannel(instance, "BungeeCord", instance);
 			messenger.unregisterOutgoingPluginChannel(instance);
@@ -127,6 +126,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			if (getConfig().getBoolean("plugin-disable-message")) {
 				getServer().getConsoleSender().sendMessage(defaults(getConfig().getString("plugin-disable")));
 			}
+			data.unloadConfig();
 		} catch (Exception e) {
 			e.printStackTrace();
 			getLogger().warning("There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
@@ -247,16 +247,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static String getIP(Player player) {
-		String playerIP = player.getAddress().getAddress().getHostAddress();
-		return playerIP;
-	}
-
-	public static int getPort(Player player) {
-		int playerPort = player.getServer().getPort();
-		return playerPort;
 	}
 
 	public void reload() {
