@@ -1,6 +1,6 @@
 name: TeleportSigns
 main: hu.montlikadani.TeleportSigns.TeleportSigns
-version: 1.7
+version: 1.8
 author: montlikadani
 description: Teleport to the server with the sign.
 # DO NOT EDIT ANYTHING ABOVE THIS LINE!
@@ -19,8 +19,8 @@ permissions:
        teleportsigns.use.nocooldown: true
        teleportsigns.create: true
        teleportsigns.destroy: true
-       teleportsigns.checkip: true
        teleportsigns.listlayouts: true
+       teleportsigns.connect: true
        teleportsigns.reload: true
        teleportsigns.plugindisable: true
        teleportsigns.help: true
@@ -37,11 +37,11 @@ permissions:
   teleportsigns.destroy:
     description: Allows the player to break the sign.
     default: false
-  teleportsigns.checkip:
-    description: Check your IP address permission.
-    default: op
   teleportsigns.listlayouts:
-    description: You can use the /ts listlayouts command.
+    description: Allows the player to use the /ts listlayouts command.
+    default: false
+  teleportsigns.connect:
+    description: Allows the player to use the /ts connect command.
     default: false
   teleportsigns.help:
     description: Help commands for TeleportSigns.
