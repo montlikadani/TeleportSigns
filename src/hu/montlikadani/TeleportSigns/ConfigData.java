@@ -347,10 +347,14 @@ public class ConfigData {
 	public void removeSign(Location location) {
 		for (TeleportSign sign : signs) {
 			if (location.equals(sign.getLocation())) {
-				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(), sign.getLayout().getName());
-				List<String> list = this.sign.getStringList("signs");
-				list.remove(index);
-				this.sign.set("signs", list);
+				try {
+					String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(), sign.getLayout().getName());
+					List<String> list = this.sign.getStringList("signs");
+					list.remove(index);
+					this.sign.set("signs", list);
+				} catch (NullPointerException e) {
+					plugin.logConsole(Level.WARNING, "Can not find the sign with this name: " + sign.getServer().getName());
+				}
 				try {
 					this.sign.save(sign_file);
 					this.sign.load(sign_file);
