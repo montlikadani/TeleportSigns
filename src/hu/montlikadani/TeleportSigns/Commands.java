@@ -79,24 +79,6 @@ public class Commands implements CommandExecutor, TabCompleter {
 					plugin.getServer().getPluginManager().disablePlugin(plugin);
 					sender.sendMessage(plugin.defaults(plugin.messages.getString("warning-disable-command")));
 					return true;
-				} else if (args[0].equalsIgnoreCase("checkip")) {
-					if (!(sender instanceof Player)) {
-						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console-check-IP")));
-						return true;
-					}
-		  			if (!(sender.hasPermission(Permissions.CHECKIP) && sender.isOp())) {
-		  				sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.checkip + op")));
-		  				return true;
-		  			}
-					if (args.length > 1) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
-							return true;
-						}
-					}
-					Player p = (Player)sender;
-					sender.sendMessage(plugin.defaults(plugin.messages.getString("check-IP-message").replace("%ipaddress%", TeleportSigns.getIP(p) + ":" + TeleportSigns.getPort(p))));
-					return true;
 				} else if (args[0].equalsIgnoreCase("listlayouts")) {
 					if (!sender.hasPermission(Permissions.LISTLAYOUT)) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.listlayouts")));
@@ -120,17 +102,13 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.logConsole(Level.WARNING, "There are no layouts in the layouts.yml file!");
 					}
 					return true;
-
-					/*
-					* This is NOT done yet.
-					*/
 				} else if (args[0].equalsIgnoreCase("connect")) {
 					if (!sender.hasPermission(Permissions.CONNECT)) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.connect")));
 						return true;
 					}
 					if (!(sender instanceof Player)) {
-						sender.sendMessage(plugin.defaults("&cA console-ban nem használható ez a parancs!"));
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel)));
 						return true;
 					}
 					if (args.length > 2) {
@@ -140,16 +118,16 @@ public class Commands implements CommandExecutor, TabCompleter {
 						}
 					}
 					if (args.length != 2) {
-						sender.sendMessage("§c/ts connect <server>");
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("connect-usage").replace("%command%", commandLabel)));
 						return true;
 					}
 					final String servergroup = args[1];
 					Player p = (Player)sender;
 					if (plugin.getConfigData().getServer(servergroup) != null) {
 						ServerInfo server = plugin.getConfigData().getServer(servergroup);
-						server.teleportPlayer(p, servergroup);
+						server.teleportPlayer(p);
 					} else {
-						sender.sendMessage("§cServer group " + servergroup + " does not exists!");
+						p.sendMessage(plugin.defaults(plugin.messages.getString("server-group-not-found").replace("%server%", servergroup)));
 						return true;
 					}
 				} else {
@@ -176,9 +154,6 @@ public class Commands implements CommandExecutor, TabCompleter {
     		}
     		if (args.length == 1) {
     			list.add("reload");
-    		}
-    		if (args.length == 1) {
-    			list.add("checkip");
     		}
     		if (args.length == 1) {
     			list.add("listlayouts");
