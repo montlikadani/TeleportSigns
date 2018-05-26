@@ -99,7 +99,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						}
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("list-layouts").replace("%layouts%", sb.toString())));
 					} catch (NullPointerException e) {
-						plugin.logConsole(Level.WARNING, "There are no layouts in the layouts.yml file!");
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-layouts-found")));
 					}
 					return true;
 				} else if (args[0].equalsIgnoreCase("connect")) {
