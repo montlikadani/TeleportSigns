@@ -58,14 +58,14 @@ options:
 # The servers that players join.
 servers:
   pvp:
-    # Server IP address.
-    # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
+    # Server IP address and port.
     address: '127.0.0.1:25566'
+    # Display name that are on the sign.
     displayname: '&6[&cPvP&6]'
   survival:
-    # Server IP address.
-    # Go to your server and enter "/ts checkip" - this will show the ip and port address you need to enter here.
+    # Server IP address and port.
     address: '127.0.0.1:25567'
+    # Display name that are on the sign.
     displayname: '&e[&aSurvival&e]'
 
 #=========================================#
