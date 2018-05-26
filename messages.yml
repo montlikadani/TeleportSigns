@@ -30,6 +30,7 @@ server-group-not-found: '%prefix%&c Server group&7 %server%&c does not exists.'
 
 # Use %layouts% placeholder.
 list-layouts: '%prefix%&a Layouts:&7 %layouts%'
+no-layouts-found: '%prefix%&c There are no layouts in the layouts.yml file!'
 
 # This feature lists all the chat panel help.
 chat-messages:
