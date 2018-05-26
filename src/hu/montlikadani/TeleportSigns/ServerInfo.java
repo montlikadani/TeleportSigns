@@ -168,20 +168,20 @@ public class ServerInfo {
 	public void teleportPlayer(Player p) {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
-		/**if (this.name != null) {
+		/*if (this.name != null) {
 			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().messages.getString("already-server").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
 			return;
 		}*/
 		try {
 			out.writeUTF("Connect");
-			out.writeUTF(getName());
+			out.writeUTF(this.name);
 		} catch (IOException io) {
 			io.printStackTrace();
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 		if (TeleportSigns.getInstance().getConfig().getBoolean("options.enter-msg-enable")) {
-			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", getName())));
+			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", this.name)));
 			return;
 		}
 	}
