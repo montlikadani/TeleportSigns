@@ -54,7 +54,7 @@ public class ConfigData {
 				config.load(config_file);
 				plugin.reloadConfig();
 				plugin.saveDefaultConfig();
-				if (!config.get("config-version").equals(cver)) {
+				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
 					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getString("config-version") + " | Newest version: " + cver + ")");
 				}
 			} else {
@@ -68,7 +68,7 @@ public class ConfigData {
 			if (layout_file.exists()) {
 				layout = YamlConfiguration.loadConfiguration(layout_file);
 				layout.load(layout_file);
-				if (!layout.get("config-version").equals(lyver)) {
+				if (!layout.isSet("config-version") || !layout.get("config-version").equals(lyver)) {
 					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: " + layout.getString("config-version") + " | Newest version: " + lyver + ")");
 				}
 			} else {
