@@ -138,7 +138,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			if (messages_file.exists()) {
 				messages = YamlConfiguration.loadConfiguration(messages_file);
 				messages.load(messages_file);
-				if (!messages.get("config-version").equals(msver)) {
+				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
 					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " + messages.getString("config-version") + " | Newest version: " + msver + ")");
 				}
 			} else {
