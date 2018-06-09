@@ -144,17 +144,17 @@ public class ConfigData {
 		ConfigurationSection layouts = this.layout.getConfigurationSection("layouts");
 
 		for (String layout : layouts.getKeys(false)) {
-		    ConfigurationSection cs = layouts.getConfigurationSection(layout);
-		    String online = cs.getString("online");
-		    String offline = cs.getString("offline");
-		    List<String> lines = cs.getStringList("layout");
-		    boolean teleport = cs.getBoolean("teleport");
-		    String offlineInt = cs.getString("offline-int");
-		    String offlineMotd = cs.getString("offline-motd");
-		    String offlineMessage = cs.getString("offline-message");
-		    String cooldownMessage = cs.getString("cooldown-message");
-		    SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt, offlineMotd, offlineMessage, cooldownMessage);
-		    this.layouts.put(layout, signLayout);
+			ConfigurationSection cs = layouts.getConfigurationSection(layout);
+			String online = cs.getString("online");
+			String offline = cs.getString("offline");
+			List<String> lines = cs.getStringList("layout");
+			boolean teleport = cs.getBoolean("teleport");
+			String offlineInt = cs.getString("offline-int");
+			String offlineMotd = cs.getString("offline-motd");
+			String offlineMessage = cs.getString("offline-message");
+			String cooldownMessage = cs.getString("cooldown-message");
+			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt, offlineMotd, offlineMessage, cooldownMessage);
+			this.layouts.put(layout, signLayout);
 		}
 	}
 
@@ -170,6 +170,9 @@ public class ConfigData {
 				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
 				Location loc = location;
+				if (loc == null) {
+					return;
+				}
 				Block b = loc.getBlock();
 				if (b.getState() instanceof Sign) {
 					TeleportSign tsign = new TeleportSign(server, location, layout);
@@ -187,12 +190,12 @@ public class ConfigData {
 		ConfigurationSection variables = this.layout.getConfigurationSection("variables");
 
 		for (String var : variables.getKeys(false)) {
-		    ConfigurationSection cs = variables.getConfigurationSection(var);
-		    String type = cs.getString("type");
-		    String args = cs.getString("arguments");
+			ConfigurationSection cs = variables.getConfigurationSection(var);
+			String type = cs.getString("type");
+			String args = cs.getString("arguments");
 
-		    CustomVariable cvar = new CustomVariable(type, "%" + var + "%", args);
-		    this.variables.add(cvar);
+			CustomVariable cvar = new CustomVariable(type, "%" + var + "%", args);
+			this.variables.add(cvar);
 		}
 	}
 
@@ -219,7 +222,7 @@ public class ConfigData {
 	}
 
 	public TeleportSigns getPlugin() {
-	    return this.plugin;
+		return this.plugin;
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {
