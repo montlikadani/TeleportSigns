@@ -251,8 +251,15 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	public void reload() {
 		getConfigData().loadConfig();
-		Bukkit.getPluginManager().disablePlugin(this);
-		Bukkit.getPluginManager().enablePlugin(this);
+		ping = null;
+		sign = null;
+		ping = new PingScheduler(this);
+		sign = new SignScheduler(this);
+		if (anim != null) {
+			anim.resetAnimation();
+			anim.stopAnimation();
+		}
+		anim.startAnimation();
 	}
 
 	public static TeleportSigns getInstance() {
