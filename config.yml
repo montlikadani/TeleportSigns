@@ -4,7 +4,7 @@
 # config.yml file. Plugin version: ${version}                       #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
-# [Default configurations]                                          #
+# [Default configuration]                                           #
 # github.com/montlikadani/TeleportSigns/blob/master/config.yml      #
 #                                                                   #
 # [Placeholders]                                                    #
@@ -20,6 +20,24 @@
 #=========================================#
 #                Settings                 #
 #=========================================#
+# Sign errors.
+sign-errors:
+  # If the layout not found when restart the server.
+  # Use %layout% placeholder.
+  layout-not-found:
+    line0: '§4ERROR:'
+    line1: '§6Layout'
+    line2: '&e%layout%'
+    line3: '§6 not found!'
+  # If the server not found when restart the server.
+  # Use %server% placeholder.
+  server-not-found:
+    line0: '§4ERROR:'
+    line1: '§6Server'
+    line2: '&e%server%'
+    line3: '§6 not found!'
+
+# Options.
 options:
   # Log plugin messages into console.
   logconsole: true
@@ -48,7 +66,7 @@ options:
   # Server connection message.
   enter-msg-enable: true
   # Use %newline%, %prefix%, %server% placeholder.
-  enter-message: '&6You entered the server&7 %server%!'
+  enter-message: '&6You entered the server&7 %server%&6!'
 
   # Defines a background of the sign.
   background-enable: false
