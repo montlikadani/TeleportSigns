@@ -3,7 +3,6 @@ package hu.montlikadani.TeleportSigns;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -142,27 +141,27 @@ public class Commands implements CommandExecutor, TabCompleter {
 		return true;
 	}
 
-    @Override
-    public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-    	if (sender.hasPermission(Permissions.TABCOMP)) {
-    		List<String> list = new ArrayList<String>();
-    		if (args.length == 1) {
-    			list.add("help");
-    		}
-    		if (args.length == 1) {
-    			list.add("disable");
-    		}
-    		if (args.length == 1) {
-    			list.add("reload");
-    		}
-    		if (args.length == 1) {
-    			list.add("listlayouts");
-    		}
-    		if (args.length == 1) {
-    			list.add("connect");
-    		}
-    		return list;
-    	}
-    	return null;
-    }
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+		if (sender.hasPermission(Permissions.TABCOMP)) {
+			List<String> list = new ArrayList<String>();
+			if (args.length == 1) {
+				list.add("help");
+			}
+			if (args.length == 1) {
+				list.add("disable");
+			}
+			if (args.length == 1) {
+				list.add("reload");
+			}
+			if (args.length == 1) {
+				list.add("listlayouts");
+			}
+			if (args.length == 1) {
+				list.add("connect");
+			}
+			return list;
+		}
+		return null;
+	}
 }
