@@ -216,8 +216,4 @@ public class AnimationTask {
 			Bukkit.getScheduler().cancelTask(task.getTaskId());
 		}
 	}
-
-	public BukkitTask getTask() {
-		return task;
-	}
 }
