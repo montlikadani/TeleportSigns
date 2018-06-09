@@ -235,17 +235,18 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	private void setBukkitConnectTimeOut() {
-		File bukFile = new File(Bukkit.getServer().getWorldContainer().getName(), "bukkit.yml");
-		if (!bukFile.exists()) {
-			logConsole(Level.WARNING, "WARNING! The bukkit.yml file can not be found!");
-			return;
-		}
-		FileConfiguration bfi = YamlConfiguration.loadConfiguration(bukFile);
-		bfi.set("settings.connection-throttle", Integer.valueOf(getConfig().getInt("options.connect-timeout")));
 		try {
+			File bukFile = new File(Bukkit.getServer().getWorldContainer().getName(), "bukkit.yml");
+			if (!bukFile.exists()) {
+				logConsole(Level.WARNING, "WARNING! The bukkit.yml file can not be found!");
+				return;
+			}
+			FileConfiguration bfi = YamlConfiguration.loadConfiguration(bukFile);
+			bfi.set("settings.connection-throttle", Integer.valueOf(getConfig().getInt("options.connect-timeout")));
 			bfi.save(bukFile);
 		} catch (Exception e) {
 			e.printStackTrace();
+			throwMsg();
 		}
 	}
 

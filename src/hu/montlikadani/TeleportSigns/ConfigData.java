@@ -368,7 +368,7 @@ public class ConfigData {
 				}
 				blocks.remove(location.getBlock());
 				signs.remove(sign);
-				if (plugin.getConfig().getBoolean("options.drop-sign")) {
+				if (config.getBoolean("options.drop-sign")) {
 					sign.getLocation().getBlock().breakNaturally();
 				}
 				break;

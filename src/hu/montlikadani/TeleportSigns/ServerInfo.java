@@ -176,8 +176,9 @@ public class ServerInfo {
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
-		if (TeleportSigns.getInstance().getConfig().getBoolean("options.enter-msg-enable")) {
-			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfig().getString("options.enter-message").replace("%server%", this.name)));
+		if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.enter-msg-enable")) {
+			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS)
+			.getString("options.enter-message").replace("%server%", this.name)));
 			return;
 		}
 	}
