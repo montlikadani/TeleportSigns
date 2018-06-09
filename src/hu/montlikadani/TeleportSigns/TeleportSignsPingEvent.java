@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 public class TeleportSignsPingEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private List<ServerInfo> servers;
-	private boolean cancelled;
+	private boolean cancelled = false;
 
 	public TeleportSignsPingEvent(List<ServerInfo> servers) {
 		this.servers = servers;
