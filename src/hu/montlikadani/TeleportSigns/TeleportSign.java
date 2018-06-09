@@ -134,21 +134,23 @@ public class TeleportSign {
 						} else {
 							Sign sign = (Sign)b.getState();
 							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
-							String[] error = { "§4ERROR:", "§6Layout" , "§e'" + this.layout + "'", "§6 not found!" };
+							String[] error = { TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line0").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line1").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line2").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line3").replace("%layout%", this.layout.getName()) };
 							signError(sign, error);
-							if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) {
-								sign.getLocation().getBlock().breakNaturally();
-							}
+							if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 							this.broken = true;
 						}
 					} else {
 						Sign sign = (Sign)b.getState();
 						TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
-						String[] error = { "§4ERROR:", "§6Server" , "§e'" + this.server + "'", "§6 not found!" };
+						String[] error = { TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line0").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line1").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line2").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line3").replace("%server%", this.server.getName()) };
 						signError(sign, error);
-						if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) {
-							sign.getLocation().getBlock().breakNaturally();
-						}
+						if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 						this.broken = true;
 					}
 				}
@@ -175,46 +177,46 @@ public class TeleportSign {
 				if (s.toCharArray()[0] == '§') {
 					switch (s.toCharArray()[1]) {
 					case '0':
-		  				return 15;
-		  			case '1':
-		  				return 11;
-		  			case '2':
-		  				return 13;
-		  			case '3':
-		  				return 9;
-		  			case '4':
-		  				return 14;
-		  			case '5':
-		  				return 10;
-		  			case '6':
-		  				return 1;
-		  			case '7':
-		  				return 8;
-		  			case '8':
-		  				return 7;
-		  			case '9':
-		  				return 3;
-		  			case 'a':
-		  				return 5;
-		  			case 'b':
-		  				return 9;
-		  			case 'c':
-		  				return 14;
-		  			case 'd':
-		  				return 2;
-		  			case 'e':
-		  				return 4;
-		  			case 'f':
-		  				return 0;
-		  			default:
-		  				return 0;
-		  			}
-		  		} else {
-		  			return 0;
-		  		}
-		  	} else {
-		  		return 0;
-		  	}
+						return 15;
+					case '1':
+						return 11;
+					case '2':
+						return 13;
+					case '3':
+						return 9;
+					case '4':
+						return 14;
+					case '5':
+						return 10;
+					case '6':
+						return 1;
+					case '7':
+						return 8;
+					case '8':
+						return 7;
+					case '9':
+						return 3;
+					case 'a':
+						return 5;
+					case 'b':
+						return 9;
+					case 'c':
+						return 14;
+					case 'd':
+						return 2;
+					case 'e':
+						return 4;
+					case 'f':
+						return 0;
+					default:
+						return 0;
+					}
+				} else {
+					return 0;
+				}
+			} else {
+				return 0;
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			TeleportSigns.getInstance().throwMsg();
@@ -234,20 +236,20 @@ public class TeleportSign {
 	}
 
 	private String editLine(String text, int num) {
-	    int length = text.length();
+		int length = text.length();
 
-	    if (num == 2) {
-	    	if (length > 15) {
-	    		text = text.substring(0, 11);
-	    		text = text + "...";
-	    		return text;
-		    }
-	    }
+		if (num == 2) {
+			if (length > 15) {
+				text = text.substring(0, 11);
+				text = text + "...";
+				return text;
+			}
+		}
 
-	    if (length > 16) {
-	    	text = text.substring(0, 16);
-	    }
+		if (length > 16) {
+			text = text.substring(0, 16);
+		}
 
-	    return text;
+		return text;
 	}
 }
