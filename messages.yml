@@ -9,6 +9,7 @@ prefix: '&6&l[&2&lTeleport&e&lSigns&6&l]&7&l >'
 reload-config: '%prefix%&a The plugin successfully reloaded!'
 warning-disable-command: '&4&lWarning!&c If you disable the plugin, you can only enable it when you refresh the server and enable "enabled: true" in the config.yml file.'
 sign-destroyed: '%prefix%&c The sign successfully destroyed!'
+no-layouts-found: '%prefix%&c There are no layouts in the layouts.yml file!'
 
 # Use %subcmd% placeholder.
 unknown-sub-command: '%prefix%&c Unknown sub-command&7 %subcmd%&c.'
@@ -30,7 +31,6 @@ server-group-not-found: '%prefix%&c Server group&7 %server%&c does not exists.'
 
 # Use %layouts% placeholder.
 list-layouts: '%prefix%&a Layouts:&7 %layouts%'
-no-layouts-found: '%prefix%&c There are no layouts in the layouts.yml file!'
 
 # This feature lists all the chat panel help.
 chat-messages:
@@ -44,7 +44,7 @@ chat-messages:
 - '&8/&a%command% help&5 -&6 Help commands.'
 - '&8/&a%command% connect&c <server>&5 -&6 Connect the server.'
 - '&8/&a%command% listlayouts&5 -&6 List layouts.'
-- '&8/&a%command% reload&3 (or rl)&5 -&6 Reload the config files.'
+- '&8/&a%command% reload&3 (or rl)&5 -&6 Reload the plugin.'
 - '&c&m----------------------------------------'
 
 # DO NOT CHANGE THIS!
