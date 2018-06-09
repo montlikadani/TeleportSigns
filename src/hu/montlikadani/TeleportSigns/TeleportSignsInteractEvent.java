@@ -10,7 +10,7 @@ public class TeleportSignsInteractEvent extends Event implements Cancellable {
 	private Player player;
 	private TeleportSign sign;
 	private ServerInfo server;
-	private boolean cancelled;
+	private boolean cancelled = false;
 
 	public TeleportSignsInteractEvent(Player player, TeleportSign sign, ServerInfo server) {
 		this.player = player;
