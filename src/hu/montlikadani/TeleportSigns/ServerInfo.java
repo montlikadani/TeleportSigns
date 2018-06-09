@@ -89,11 +89,11 @@ public class ServerInfo {
 	}
 
 	public boolean isOnline() {
-	    return this.online;
+		return this.online;
 	}
 
 	public void setOnline(boolean online) {
-	    this.online = online;
+		this.online = online;
 	}
 
 	public String getProtocol() {
@@ -113,27 +113,27 @@ public class ServerInfo {
 	}
 
 	public int getPlayerCount() {
-	    return this.playercount;
+		return this.playercount;
 	}
 
 	public void setPlayerCount(int playercount) {
-	    this.playercount = playercount;
+		this.playercount = playercount;
 	}
 
 	public int getMaxPlayers() {
-	    return this.maxplayers;
+		return this.maxplayers;
 	}
 
 	public void setMaxPlayers(int maxplayers) {
-	    this.maxplayers = maxplayers;
+		this.maxplayers = maxplayers;
 	}
 
 	public String getMotd() {
-	    return this.motd;
+		return this.motd;
 	}
 
 	public void setMotd(String motd) {
-	    this.motd = motd;
+		this.motd = motd;
 	}
 
 	public String getDisplayname() {
@@ -168,10 +168,6 @@ public class ServerInfo {
 	public void teleportPlayer(Player p) {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
-		/*if (this.name != null) {
-			p.sendMessage(TeleportSigns.getInstance().colorMsg(TeleportSigns.getInstance().messages.getString("already-server").replace("%server%", getName()).replace("%newline%", "\n").replace("%prefix%", TeleportSigns.getInstance().messages.getString("prefix"))));
-			return;
-		}*/
 		try {
 			out.writeUTF("Connect");
 			out.writeUTF(this.name);
