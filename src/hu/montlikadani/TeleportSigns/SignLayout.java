@@ -17,43 +17,43 @@ public class SignLayout {
 	private String cooldownMessage;
 
 	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport, String offlineInt, String offlineMotd, String offlineMessage, String cooldownMessage) {
-	    this.name = name;
-	    this.online = online;
-	    this.offline = offline;
-	    this.lines = lines;
-	    this.teleport = teleport;
-	    this.offlineInt = offlineInt;
-	    this.offlineMotd = offlineMotd;
-	    this.offlineMessage = offlineMessage;
-	    this.cooldownMessage = cooldownMessage;
+		this.name = name;
+		this.online = online;
+		this.offline = offline;
+		this.lines = lines;
+		this.teleport = teleport;
+		this.offlineInt = offlineInt;
+		this.offlineMotd = offlineMotd;
+		this.offlineMessage = offlineMessage;
+		this.cooldownMessage = cooldownMessage;
 	}
 
 	public String getName() {
-	    return this.name;
+		return this.name;
 	}
 
 	public String getOnline() {
-	    return this.online;
+		return this.online;
 	}
 
 	public String getOffline() {
-	    return this.offline;
+		return this.offline;
 	}
 
 	public List<String> getLines() {
-	    return this.lines;
+		return this.lines;
 	}
 
 	public boolean isTeleport() {
-	    return this.teleport;
+		return this.teleport;
 	}
 
 	public String getOfflineInt() {
-	    return this.offlineInt;
+		return this.offlineInt;
 	}
 
 	public String getOfflineMotd() {
-	    return this.offlineMotd;
+		return this.offlineMotd;
 	}
 
 	public String getOfflineMessage() {
@@ -181,12 +181,12 @@ public class SignLayout {
 	}
 
 	private String editText(String text) {
-	    int length = text.length();
+		int length = text.length();
 
-	    if (length > 16) {
-	    	text = text.substring(0, 16);
-	    }
+		if (length > 16) {
+			text = text.substring(0, 16);
+		}
 
-	    return text;
+		return text;
 	}
 }
