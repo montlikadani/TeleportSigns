@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 public class TeleportSignsUpdateEvent extends Event implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	private List<TeleportSign> signs;
-	private boolean cancelled;
+	private boolean cancelled = false;
 
 	public TeleportSignsUpdateEvent(List<TeleportSign> signs) {
 		this.signs = signs;
