@@ -36,7 +36,10 @@ public class PingScheduler implements Runnable, Listener {
 					pingAsync(server);
 				} else {
 					final String status = server.getMotd();
-					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(Bukkit.getIp(), Bukkit.getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
+					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(), 
+							server.getAddress().getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
+					/*ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(Bukkit.getIp(), Bukkit.getPort()).getAddress(), Bukkit.getMotd(), 
+					Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());*/
 					Bukkit.getPluginManager().callEvent(ping);
 					server.setProtocol(getBukkitVersion());
 					server.setMotd(ping.getMotd());
@@ -100,8 +103,6 @@ public class PingScheduler implements Runnable, Listener {
 	}
 
 	private String getBukkitVersion() {
-	    /**final String packageName = Bukkit.getServer().getClass().getPackage().getName();
-	    return packageName.substring(packageName.lastIndexOf('.') + 1);*/
 		String version = Bukkit.getVersion();
 		version = version.replace("(", "");
 		version = version.replace(")", "");
