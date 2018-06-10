@@ -48,15 +48,15 @@ public class Listeners implements Listener {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 						} else {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
-							if (plugin.getConfig().getBoolean("drop-sign")) b.breakNaturally();
+							if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
 						}
 					} else {
 						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
-						if (plugin.getConfig().getBoolean("drop-sign")) b.breakNaturally();
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
 					}
 				} else {
 					p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
-					if (plugin.getConfig().getBoolean("drop-sign")) b.breakNaturally();
+					if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
 				}
 			}
 		}
@@ -180,7 +180,7 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (plugin.getConfig().getBoolean("check-update") && p.isOp() && p.hasPermission("teleportsigns.checkupdate")) {
+		if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("check-update") && p.isOp() && p.hasPermission("teleportsigns.checkupdate")) {
 			TeleportSigns plu = TeleportSigns.getPlugin(TeleportSigns.class);
 			String[] nVersion;
 			String[] cVersion;

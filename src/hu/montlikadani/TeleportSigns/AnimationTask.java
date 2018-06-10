@@ -31,13 +31,13 @@ public class AnimationTask {
 						Sign sign = (Sign)s.getLocation().getBlock().getState();
 						sign.setLine(line, lines[line]);
 						sign.update(true);
-						if (plugin.getConfig().getBoolean("options.background-enable")) {
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background-enable")) {
 							if (sign.getType().equals(Material.WALL_SIGN)) {
-								if (plugin.getConfig().getString("options.background").equalsIgnoreCase("wool")) {
+								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("wool")) {
 									s.updateBackground(Material.WOOL, 3);
-								} else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("glass")) {
+								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("glass")) {
 									s.updateBackground(Material.STAINED_GLASS, 11);
-								} else if (plugin.getConfig().getString("options.background").equalsIgnoreCase("clay")) {
+								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("clay")) {
 									s.updateBackground(Material.STAINED_CLAY, 3);
 								}
 							}

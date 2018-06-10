@@ -25,7 +25,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 		try {
 			if (cmd.getName().equalsIgnoreCase("teleportsigns")) {
 				if (args.length == 0) {
-					if (!sender.hasPermission(Permissions.PINFO) && plugin.getConfig().getBoolean("default-can-see-plugin-information") != true) {
+					if (!sender.hasPermission(Permissions.PINFO) && plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("default-can-see-plugin-information") != true) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.plugininfo")));
 						return true;
 					}
@@ -41,8 +41,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -56,8 +56,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -70,8 +70,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -84,8 +84,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -111,8 +111,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 2) {
-						if (plugin.getConfig().getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfig().getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}

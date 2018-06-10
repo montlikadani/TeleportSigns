@@ -118,13 +118,13 @@ public class TeleportSign {
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, (String)lines.get(i));
-								if (TeleportSigns.getInstance().getConfig().getBoolean("options.background-enable")) {
+								if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background-enable")) {
 									if (sign.getType().equals(Material.WALL_SIGN)) {
-										if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("wool")) {
+										if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("wool")) {
 											updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
-										} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("glass")) {
+										} else if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("glass")) {
 											updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
-										} else if (TeleportSigns.getInstance().getConfig().getString("options.background").equalsIgnoreCase("clay")) {
+										} else if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("clay")) {
 											updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
 										}
 									}
@@ -134,23 +134,23 @@ public class TeleportSign {
 						} else {
 							Sign sign = (Sign)b.getState();
 							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
-							String[] error = { TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line0").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line1").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line2").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfig().getString("sign-errors.layout-not-found.line3").replace("%layout%", this.layout.getName()) };
+							String[] error = { TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line0").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line1").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line2").replace("%layout%", this.layout.getName()), 
+									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line3").replace("%layout%", this.layout.getName()) };
 							signError(sign, error);
-							if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+							if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 							this.broken = true;
 						}
 					} else {
 						Sign sign = (Sign)b.getState();
 						TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
-						String[] error = { TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line0").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line1").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line2").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfig().getString("sign-errors.server-not-found.line3").replace("%server%", this.server.getName()) };
+						String[] error = { TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line0").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line1").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line2").replace("%server%", this.server.getName()), 
+								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line3").replace("%server%", this.server.getName()) };
 						signError(sign, error);
-						if (TeleportSigns.getInstance().getConfig().getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+						if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 						this.broken = true;
 					}
 				}
