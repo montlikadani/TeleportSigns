@@ -20,6 +20,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	private static TeleportSigns instance;

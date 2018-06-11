@@ -18,6 +18,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class Listeners implements Listener {
 
 	private TeleportSigns plugin;

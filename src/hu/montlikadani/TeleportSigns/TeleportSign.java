@@ -12,6 +12,8 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.material.Directional;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class TeleportSign {
 	private String world;
 	private int x;
@@ -174,7 +176,7 @@ public class TeleportSign {
 	private int getStartingColor(String s) {
 		try {
 			if (s.length() > 1) {
-				if (s.toCharArray()[0] == '§') {
+				if (s.toCharArray()[0] == '') {
 					switch (s.toCharArray()[1]) {
 					case '0':
 						return 15;

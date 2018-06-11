@@ -5,6 +5,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class AnimationTask {
 
 	private TeleportSigns plugin;
