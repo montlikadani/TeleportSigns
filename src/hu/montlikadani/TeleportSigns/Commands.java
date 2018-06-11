@@ -76,7 +76,6 @@ public class Commands implements CommandExecutor, TabCompleter {
 						}
 					}
 					plugin.getServer().getPluginManager().disablePlugin(plugin);
-					sender.sendMessage(plugin.defaults(plugin.messages.getString("warning-disable-command")));
 					return true;
 				} else if (args[0].equalsIgnoreCase("listlayouts")) {
 					if (!sender.hasPermission(Permissions.LISTLAYOUT)) {
