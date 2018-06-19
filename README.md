@@ -3,7 +3,7 @@
 [![bStats](https://img.shields.io/badge/bStats-1.1-brightgreen.svg)](https://bstats.org/plugin/bukkit/TeleportSigns)
 
 ## Link
-* [Spigot] https://www.spigotmc.org/resources/teleport-signs.37446/
+* [Spigot](https://www.spigotmc.org/resources/teleport-signs.37446/)
 
 ### Other
 If you find a bug, please write here: https://github.com/montlikadani/TeleportSigns/issues
