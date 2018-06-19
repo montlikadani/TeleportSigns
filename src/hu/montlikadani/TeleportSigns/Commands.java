@@ -30,7 +30,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					sender.sendMessage("§6§l[§2§lTeleport§e§lSigns§b§l Info§e§l]");
-					sender.sendMessage("§5Version:§a ${version}");
+					sender.sendMessage("§5Version:§a ${project.version}");
 					sender.sendMessage("§5Author, created by:§a montlikadani");
 					sender.sendMessage("§5Commands:§8 /§7" + commandLabel + "§a help");
 					sender.sendMessage("§4In case of an error, write here:§e §nhttps://github.com/montlikadani/TeleportSigns/issues");
@@ -51,8 +51,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 					}
 					return true;
 				} else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
-					if (!(sender.hasPermission(Permissions.RELOAD) && sender.isOp())) {
-						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.reload + op")));
+					if (!sender.hasPermission(Permissions.RELOAD)) {
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.reload")));
 						return true;
 					}
 					if (args.length > 1) {

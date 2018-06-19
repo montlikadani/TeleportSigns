@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+
 public class ServerInfo {
 
 	private ServerPing ping;
@@ -178,7 +180,7 @@ public class ServerInfo {
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 		if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.enter-msg-enable")) {
 			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS)
-			.getString("options.enter-message").replace("%server%", this.name)));
+					.getString("options.enter-message").replace("%server%", this.name)));
 			return;
 		}
 	}
