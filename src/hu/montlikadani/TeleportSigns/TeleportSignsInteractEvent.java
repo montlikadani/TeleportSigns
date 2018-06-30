@@ -43,10 +43,12 @@ public class TeleportSignsInteractEvent extends Event implements Cancellable {
 		this.server = server;
 	}
 
+	@Override
 	public void setCancelled(boolean cancel) {
 		this.cancelled = cancel;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}

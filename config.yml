@@ -1,7 +1,7 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: ${project.version}                #
+# config.yml file. Plugin version: ${project.version}               #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configuration]                                           #
@@ -15,28 +15,12 @@
 # http://minecraft.gamepedia.com/Formatting_codes                   #
 # - In case of an error, write here:                                #
 # https://github.com/montlikadani/TeleportSigns/issues              #
+# - If the string is empty does not send the message.               #
 #-----------------------------OOO-----------------------------------#
 
 #=========================================#
 #                Settings                 #
 #=========================================#
-# Sign errors.
-sign-errors:
-  # If the layout not found when restart the server.
-  # Use %layout% placeholder.
-  layout-not-found:
-    line0: '§4ERROR:'
-    line1: '§6Layout'
-    line2: '&e%layout%'
-    line3: '§6 not found!'
-  # If the server not found when restart the server.
-  # Use %server% placeholder.
-  server-not-found:
-    line0: '§4ERROR:'
-    line1: '§6Server'
-    line2: '&e%server%'
-    line3: '§6 not found!'
-
 # Options.
 options:
   # Log plugin messages into console.
@@ -64,14 +48,31 @@ options:
   drop-sign: false
 
   # Server connection message.
-  enter-msg-enable: true
   # Use %newline%, %prefix%, %server% placeholder.
   enter-message: '&6You entered the server&7 %server%&6!'
 
   # Defines a background of the sign.
-  background-enable: false
-  # Possible types: glass, wool, clay (color depends on motd start color).
-  background: glass
+  background:
+    enable: false
+    # Possible types: glass, wool, clay (color depends on motd start color).
+    type: glass
+    # Block colors.
+    block-colors:
+      # When the server is online.
+      online:
+        wool: 5
+        glass: 5
+        clay: 5
+      # When the server is offline.
+      offline:
+        wool: 14
+        glass: 14
+        clay: 14
+      # When the server loading.
+      loading:
+        wool: 3
+        glass: 11
+        clay: 3
 
 # The servers that players join.
 servers:
@@ -103,9 +104,7 @@ log-to-file: true
 
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
-plugin-enable-message: true
 plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${project.version}&a!'
-plugin-disable-message: true
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
 # The default is allowed to see the plugin information.

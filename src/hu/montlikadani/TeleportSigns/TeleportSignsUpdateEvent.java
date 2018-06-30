@@ -28,10 +28,12 @@ public class TeleportSignsUpdateEvent extends Event implements Cancellable {
 		return signs;
 	}
 
+	@Override
 	public void setCancelled(boolean cancel) {
 		this.cancelled = cancel;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}

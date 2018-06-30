@@ -21,6 +21,10 @@ no-sign-destroy: '&cYou have no permission to break the sign!&7 (%perm%)'
 # Use %command% placeholder.
 no-console: '%prefix%&c This command "&7/%command% connect&c" is not use in the console!'
 connect-usage: '%prefix%&c Use "&7/%command% connect <server>&c".'
+editsign:
+  usage: '&cUsage:&7 /%command% editsign <servername> <layout>&c.'
+  created: '%prefix%&a The sign successfully created!&c Please wait, loading server...'
+  look-at-sign: '%prefix%&c Please look at a sign.'
 
 # Use %server%, %layout% placeholder.
 sign-created: '%prefix%&a The sign successfully created!%newline%&aServer:&7 %server%%newline%&aLayout:&7 %layout%'
@@ -43,6 +47,7 @@ chat-messages:
 - '&8/&a%command% help&5 -&6 Help commands.'
 - '&8/&a%command% connect&c <server>&5 -&6 Connect the server.'
 - '&8/&a%command% listlayouts&5 -&6 List layouts.'
+- '&8/&a%command% editsign&c <servername> <layout>&5 -&6 Edit sign at the look.'
 - '&8/&a%command% reload&3 (or rl)&5 -&6 Reload the plugin.'
 - '&c&m----------------------------------------'
 

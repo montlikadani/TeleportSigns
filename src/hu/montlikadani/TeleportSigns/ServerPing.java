@@ -146,7 +146,7 @@ public class ServerPing {
 		}
 		long pingtime = dataInputStream.readLong();
 
-		StatusResponse response = (StatusResponse)gson.fromJson(json, StatusResponse.class);
+		StatusResponse response = (StatusResponse) gson.fromJson(json, StatusResponse.class);
 		response.setTime((int) (now - pingtime));
 
 		dataOutputStream.close();

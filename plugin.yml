@@ -21,6 +21,7 @@ permissions:
        teleportsigns.destroy: true
        teleportsigns.listlayouts: true
        teleportsigns.connect: true
+       telepoortsigs.editsign: true
        teleportsigns.reload: true
        teleportsigns.plugindisable: true
        teleportsigns.help: true
@@ -42,6 +43,9 @@ permissions:
     default: false
   teleportsigns.connect:
     description: Allows the player to use the /ts connect command.
+    default: false
+  teleportsigns.editsign:
+    description: Allows the player to use the /ts editsign command.
     default: false
   teleportsigns.help:
     description: Help commands for TeleportSigns.

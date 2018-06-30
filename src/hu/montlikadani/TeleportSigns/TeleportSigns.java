@@ -67,7 +67,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 					Bukkit.getServer().getMessenger().registerIncomingPluginChannel(instance, "BungeeCord", instance);
 				}
 			}, time);
-			registerCommands();
+			getCommand("teleportsigns").setExecutor(new Commands(this));
 			if (data.getConfig(ConfigType.SETTINGS).getString("options.connect-timeout") != null) {
 				setBukkitConnectTimeOut();
 			}
@@ -76,11 +76,11 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			}
 			if (data.getConfig(ConfigType.SETTINGS).getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
-				Boolean backgr = data.getConfig(ConfigType.SETTINGS).getBoolean("options.background-enable");
+				Boolean backgr = data.getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable");
 				metrics.addCustomChart(new Metrics.SimplePie("background_type", new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						return data.getConfig(ConfigType.SETTINGS).getString("options.background").toString();
+						return data.getConfig(ConfigType.SETTINGS).getString("options.background.type");
 					}
 				}));
 				metrics.addCustomChart(new Metrics.SimplePie("using_background", new Callable<String>() {
@@ -103,7 +103,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}));
 				logConsole(Level.INFO, "Metrics enabled.");
 			}
-			if (data.getConfig(ConfigType.SETTINGS).getBoolean("plugin-enable-message")) {
+			if (data.getConfig(ConfigType.SETTINGS).getString("plugin-enable") != null && 
+					!data.getConfig(ConfigType.SETTINGS).getString("plugin-enable").equals("")) {
 				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.SETTINGS).getString("plugin-enable")));
 			}
 		} catch (Exception e) {
@@ -125,7 +126,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			messenger.unregisterOutgoingPluginChannel(instance);
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
-			if (data.getConfig(ConfigType.SETTINGS).getBoolean("plugin-disable-message")) {
+			if (data.getConfig(ConfigType.SETTINGS).getString("plugin-disable") != null && 
+					!data.getConfig(ConfigType.SETTINGS).getString("plugin-disable").equals("")) {
 				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.SETTINGS).getString("plugin-disable")));
 			}
 			data.unloadConfig();
@@ -223,10 +225,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				throwMsg();
 			}
 		}
-	}
-
-	private void registerCommands() {
-		getCommand("teleportsigns").setExecutor(new Commands(this));
 	}
 
 	@Override

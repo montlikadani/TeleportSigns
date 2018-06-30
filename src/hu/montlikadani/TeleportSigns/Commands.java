@@ -1,9 +1,13 @@
 package hu.montlikadani.TeleportSigns;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -119,13 +123,54 @@ public class Commands implements CommandExecutor, TabCompleter {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("connect-usage").replace("%command%", commandLabel)));
 						return true;
 					}
-					final String servergroup = args[1];
-					Player p = (Player)sender;
-					if (plugin.getConfigData().getServer(servergroup) != null) {
-						ServerInfo server = plugin.getConfigData().getServer(servergroup);
+					final String serverGroup = args[1];
+					Player p = (Player) sender;
+					if (plugin.getConfigData().getServer(serverGroup) != null) {
+						ServerInfo server = plugin.getConfigData().getServer(serverGroup);
 						server.teleportPlayer(p);
 					} else {
-						p.sendMessage(plugin.defaults(plugin.messages.getString("server-group-not-found").replace("%server%", servergroup)));
+						p.sendMessage(plugin.defaults(plugin.messages.getString("server-group-not-found").replace("%server%", serverGroup)));
+						return true;
+					}
+				} else if (args[0].equalsIgnoreCase("editsign")) {
+					if (!sender.hasPermission(Permissions.EDITSIGN)) {
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.editsign")));
+						return true;
+					}
+					if (!(sender instanceof Player)) {
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel)));
+						return true;
+					}
+					if (args.length != 3) {
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("editsign.usage").replace("%command%", commandLabel)));
+						return true;
+					}
+					if (args.length > 3) {
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+							return true;
+						}
+					}
+					Player p = (Player) sender;
+					HashSet<Material> mat = null;
+					Block b = p.getTargetBlock(mat, 100);
+					if ((b.getState() instanceof Sign)) {
+						String sName = args[1];
+						String lName = args[2];
+						ServerInfo server = plugin.getConfigData().getServer(sName);
+						if (server == null) {
+							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sName)));
+							return true;
+						}
+						SignLayout layout = plugin.getConfigData().getLayout(lName);
+						if (layout == null) {
+							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lName)));
+							return true;
+						}
+						plugin.getConfigData().addSign(b.getLocation(), server, layout);
+						p.sendMessage(plugin.defaults(plugin.messages.getString("editsign.created")));
+					} else {
+						p.sendMessage(plugin.defaults(plugin.messages.getString("editsign.look-at-sign")));
 						return true;
 					}
 				} else {
@@ -158,6 +203,9 @@ public class Commands implements CommandExecutor, TabCompleter {
 			}
 			if (args.length == 1) {
 				list.add("connect");
+			}
+			if (args.length == 1) {
+				list.add("editsign");
 			}
 			return list;
 		}

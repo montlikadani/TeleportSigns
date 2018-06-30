@@ -28,10 +28,12 @@ public class TeleportSignsPingEvent extends Event implements Cancellable {
 		return servers;
 	}
 
+	@Override
 	public void setCancelled(boolean cancel) {
 		this.cancelled = cancel;
 	}
 
+	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}

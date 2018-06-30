@@ -15,5 +15,6 @@ public class Permissions {
 	public static final Permission USE = new Permission("teleportsigns.use");
 	public static final Permission LISTLAYOUT = new Permission("teleportsigns.listlayouts");
 	public static final Permission CONNECT = new Permission("teleportsigns.connect");
+	public static final Permission EDITSIGN = new Permission("teleportsigns.editsign");
 
 }

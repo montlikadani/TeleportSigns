@@ -15,7 +15,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigData {
+
 	private TeleportSigns plugin;
+
 	private FileConfiguration config;
 	private FileConfiguration layout;
 	private FileConfiguration sign;
@@ -169,16 +171,14 @@ public class ConfigData {
 				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
 				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
-				Location loc = location;
-				if (loc == null) {
-					return;
-				}
-				Block b = loc.getBlock();
-				if (b.getState() instanceof Sign) {
-					TeleportSign tsign = new TeleportSign(server, location, layout);
-					this.signs.add(tsign);
-					this.blocks.add(b);
-				}
+				try {
+					Block b = location.getBlock();
+					if (b.getState() instanceof Sign) {
+						TeleportSign tsign = new TeleportSign(server, location, layout);
+						this.signs.add(tsign);
+						this.blocks.add(b);
+					}
+				} catch (NullPointerException e) {}
 			} catch (Exception e) {
 				e.printStackTrace();
 				plugin.throwMsg();
@@ -219,10 +219,6 @@ public class ConfigData {
 
 	public void setCooldown(int seconds) {
 		this.cooldown = seconds * 1000;
-	}
-
-	public TeleportSigns getPlugin() {
-		return this.plugin;
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {

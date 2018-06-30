@@ -11,10 +11,14 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.material.Directional;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
 
 public class TeleportSign {
+
+	private TeleportSigns plugin = JavaPlugin.getPlugin(TeleportSigns.class);
+
 	private String world;
 	private int x;
 	private int y;
@@ -116,43 +120,56 @@ public class TeleportSign {
 				if (b.getState() instanceof Sign) {
 					if (server != null) {
 						if (layout != null) {
-							Sign sign = (Sign)b.getState();
+							Sign sign = (Sign) b.getState();
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
-								sign.setLine(i, (String)lines.get(i));
-								if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background-enable")) {
-									if (sign.getType().equals(Material.WALL_SIGN)) {
-										if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("wool")) {
-											updateBackground(Material.WOOL, getStartingColor((String)lines.get(i)));
-										} else if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("glass")) {
-											updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
-										} else if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("clay")) {
-											updateBackground(Material.STAINED_CLAY, getStartingColor((String)lines.get(i)));
+								sign.setLine(i, (String) lines.get(i));
+								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable")) {
+									if (server.isOnline()) {
+										if (sign.getType().equals(Material.WALL_SIGN)) {
+											//updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
+											if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+												updateBackground(Material.WOOL,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.wool"));
+											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+												updateBackground(Material.STAINED_GLASS,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.glass"));
+											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+												updateBackground(Material.STAINED_CLAY,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.clay"));
+											}
+										}
+									} else {
+										if (sign.getType().equals(Material.WALL_SIGN)) {
+											if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+												updateBackground(Material.WOOL,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.wool"));
+											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+												updateBackground(Material.STAINED_GLASS,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.glass"));
+											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+												updateBackground(Material.STAINED_CLAY,
+														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.clay"));
+											}
 										}
 									}
 								}
 							}
 							sign.update(true);
 						} else {
-							Sign sign = (Sign)b.getState();
-							TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
-							String[] error = { TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line0").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line1").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line2").replace("%layout%", this.layout.getName()), 
-									TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.layout-not-found.line3").replace("%layout%", this.layout.getName()) };
+							Sign sign = (Sign) b.getState();
+							plugin.logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
+							String[] error = { "§4ERROR:", "§6Layout", "§e" + this.layout.getName(), "§6not found!" };
 							signError(sign, error);
-							if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+							if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 							this.broken = true;
 						}
 					} else {
-						Sign sign = (Sign)b.getState();
-						TeleportSigns.getInstance().logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
-						String[] error = { TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line0").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line1").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line2").replace("%server%", this.server.getName()), 
-								TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getString("sign-errors.server-not-found.line3").replace("%server%", this.server.getName()) };
+						Sign sign = (Sign) b.getState();
+						plugin.logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
+						String[] error = { "§4ERROR:", "§6Server", "§e" + this.server.getName(), "§6not found!" };
 						signError(sign, error);
-						if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
 						this.broken = true;
 					}
 				}
@@ -165,7 +182,7 @@ public class TeleportSign {
 		Location loc3 = this.getLocation();
 		BlockState s = (Sign) loc3.getBlock().getState();
 		if (s.getType() == Material.WALL_SIGN) {
-			BlockFace bf = ((Directional)s.getData()).getFacing();
+			BlockFace bf = ((Directional) s.getData()).getFacing();
 			Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
 			Block wall = loc2.getBlock();
 			wall.setType(mat);
@@ -173,10 +190,10 @@ public class TeleportSign {
 		}
 	}
 
-	private int getStartingColor(String s) {
+/*	private int getStartingColor(String s) {
 		try {
 			if (s.length() > 1) {
-				if (s.toCharArray()[0] == '�') {
+				if (s.toCharArray()[0] == '§') {
 					switch (s.toCharArray()[1]) {
 					case '0':
 						return 15;
@@ -221,10 +238,10 @@ public class TeleportSign {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			TeleportSigns.getInstance().throwMsg();
+			plugin.throwMsg();
 		}
 		return 0;
-	}
+	}*/
 
 	private void signError(Sign sign, String[] exception) {
 		if (sign != null) {

@@ -30,17 +30,20 @@ public class AnimationTask {
 				if (line >= 4) return;
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign)s.getLocation().getBlock().getState();
+						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(line, lines[line]);
 						sign.update(true);
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background-enable")) {
+						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable")) {
 							if (sign.getType().equals(Material.WALL_SIGN)) {
-								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("wool")) {
-									s.updateBackground(Material.WOOL, 3);
-								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("glass")) {
-									s.updateBackground(Material.STAINED_GLASS, 11);
-								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background").equalsIgnoreCase("clay")) {
-									s.updateBackground(Material.STAINED_CLAY, 3);
+								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+									s.updateBackground(Material.WOOL,
+											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.wool"));
+								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+									s.updateBackground(Material.STAINED_GLASS,
+											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.glass"));
+								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+									s.updateBackground(Material.STAINED_CLAY,
+											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.clay"));
 								}
 							}
 						}
@@ -61,10 +64,10 @@ public class AnimationTask {
 	private void runSecondAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign)s.getLocation().getBlock().getState();
+				Sign sign = (Sign) s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "TeleportSigns");
-				sign.setLine(2, "§lVersion ${project.version}");
+				sign.setLine(2, "§lVersion " + plugin.getDescription().getVersion());
 				sign.setLine(3, "---------------");
 				sign.update(true);
 			}
@@ -81,7 +84,7 @@ public class AnimationTask {
 	private void runThirdAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign)s.getLocation().getBlock().getState();
+				Sign sign = (Sign) s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "Loading");
 				sign.setLine(2, "Servers");
@@ -98,7 +101,7 @@ public class AnimationTask {
 				if (pnt >= 3) return;
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign)s.getLocation().getBlock().getState();
+						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(2, sign.getLine(2) + ".");
 						sign.update(true);
 					}
@@ -118,7 +121,7 @@ public class AnimationTask {
 	private void runFourthAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign)s.getLocation().getBlock().getState();
+				Sign sign = (Sign) s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "Loading");
 				sign.setLine(2, "Layouts");
@@ -135,7 +138,7 @@ public class AnimationTask {
 				if (pnt >= 3) return;
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign)s.getLocation().getBlock().getState();
+						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(2, sign.getLine(2) + ".");
 						sign.update(true);
 					}
@@ -155,7 +158,7 @@ public class AnimationTask {
 	private void runFifthAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign)s.getLocation().getBlock().getState();
+				Sign sign = (Sign) s.getLocation().getBlock().getState();
 				sign.setLine(0, "---------------");
 				sign.setLine(1, "Please wait");
 				sign.setLine(2, "Getting data");
@@ -172,7 +175,7 @@ public class AnimationTask {
 				if (pnt >= 3) {
 					for (TeleportSign s : plugin.getConfigData().getSigns()) {
 						if (s.getLocation().getBlock().getState() instanceof Sign) {
-							Sign sign = (Sign)s.getLocation().getBlock().getState();
+							Sign sign = (Sign) s.getLocation().getBlock().getState();
 							if (sign.getLine(2).contains("Getting data")) {
 								sign.setLine(2, "Getting data");
 								sign.update(true);
@@ -185,7 +188,7 @@ public class AnimationTask {
 				} else {
 					for (TeleportSign s : plugin.getConfigData().getSigns()) {
 						if (s.getLocation().getBlock().getState() instanceof Sign) {
-							Sign sign = (Sign)s.getLocation().getBlock().getState();
+							Sign sign = (Sign) s.getLocation().getBlock().getState();
 							if (sign.getLine(2).contains("Getting data")) {
 								sign.setLine(2, sign.getLine(2) + ".");
 								sign.update(true);
@@ -203,7 +206,7 @@ public class AnimationTask {
 	public void resetAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign)s.getLocation().getBlock().getState();
+				Sign sign = (Sign) s.getLocation().getBlock().getState();
 				sign.setLine(0, "");
 				sign.setLine(1, "");
 				sign.setLine(2, "");
@@ -216,6 +219,7 @@ public class AnimationTask {
 	public void stopAnimation() {
 		if (task != null) {
 			Bukkit.getScheduler().cancelTask(task.getTaskId());
+			task.cancel();
 		}
 	}
 }
