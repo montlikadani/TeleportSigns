@@ -1,6 +1,6 @@
 name: TeleportSigns
 main: hu.montlikadani.TeleportSigns.TeleportSigns
-version: 1.8
+version: 1.9
 author: montlikadani
 description: Teleport to the server with the sign.
 # DO NOT EDIT ANYTHING ABOVE THIS LINE!

@@ -1,3 +1,30 @@
+# v1.9
+Added:
+    Added /ts editsign command. - To edit the sign at the look.
+	Added customizable block colors to the configuration.
+	Added offline placeholder: %displayname%
+Fixes:
+    Fixed when the config version integer was not found then send a bug in the console.
+	Improved sign saving problems.
+Removed:
+    Removed enable-message booleans. If the message is empty not send the message.
+	Removed custom-variables setting, because has throw a long bug into the console, so it not working.
+	Removed unused code.
+Other:
+    Moved no-layouts message to messages.yml file.
+
+# v1.8
+Added:
+    Added version checker to configurations. - If the version number abandoned.
+    Added /ts connect command. - To join the server with command.
+Fixes:
+    Fixed it could not be teleport to the server with sign.
+    Fixed did not ping the server, so it did not work. (I tested, worked for me and I could join.)
+Removed:
+    Removed /ts checkip command. - It was unnecessary and only one server can be retrieved from the IP address.
+Other:
+    Now the configurations successfully creating it when reload the plugin.
+
 # v1.7
 Added:
     Added /ts listlayouts command.

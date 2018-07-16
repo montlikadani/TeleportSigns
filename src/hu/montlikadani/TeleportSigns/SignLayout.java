@@ -16,7 +16,8 @@ public class SignLayout {
 	private String offlineMessage;
 	private String cooldownMessage;
 
-	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport, String offlineInt, String offlineMotd, String offlineMessage, String cooldownMessage) {
+	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport,
+			String offlineInt, String offlineMotd, String offlineMessage, String cooldownMessage) {
 		this.name = name;
 		this.online = online;
 		this.offline = offline;
@@ -81,12 +82,6 @@ public class SignLayout {
 				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 				line = line.replaceAll("%version%", server.getVersion());
 
-				for (CustomVariable var : TeleportSigns.getInstance().getConfigData().getVariables()) {
-					if (line.contains(var.getVariable())) {
-						line = var.parseVariable(server.getMotd());
-					}
-				}
-
 				line = textValues(line);
 				line = editText(line);
 			} else {
@@ -98,12 +93,6 @@ public class SignLayout {
 				line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
 				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 				line = line.replaceAll("%version%", "");
-
-				for (CustomVariable var : TeleportSigns.getInstance().getConfigData().getVariables()) {
-					if (line.contains(var.getVariable())) {
-						line = line.replaceAll(var.getVariable(), "");
-					}
-				}
 
 				line = textValues(line);
 				line = editText(line);
@@ -118,6 +107,7 @@ public class SignLayout {
 	public String parseOfflineMessage(ServerInfo server) {
 		String line = this.offlineMessage;
 		line = line.replaceAll("%name%", server.getName());
+		line = line.replaceAll("%displayname%", server.getDisplayname());
 		line = line.replaceAll("%address%", server.getAddress().getHostName());
 		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
 		line = textValues(line);

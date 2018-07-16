@@ -29,7 +29,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	FileConfiguration messages;
 	private File messages_file = new File("plugins/TeleportSigns/messages.yml");
 
-	private int msver = 1;
+	private int msver = 2;
 	private PingScheduler ping;
 	private SignScheduler sign;
 	private AnimationTask anim;
@@ -41,7 +41,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			super.onEnable();
 			data = new ConfigData(this);
 			data.loadConfig();
-			if (!data.getConfig(ConfigType.SETTINGS).getBoolean("enabled")) {
+			if (!data.getConfig(ConfigType.CONFIG).getBoolean("enabled")) {
 				this.getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
@@ -68,19 +68,19 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}
 			}, time);
 			getCommand("teleportsigns").setExecutor(new Commands(this));
-			if (data.getConfig(ConfigType.SETTINGS).getString("options.connect-timeout") != null) {
+			if (data.getConfig(ConfigType.CONFIG).getString("options.connect-timeout") != null) {
 				setBukkitConnectTimeOut();
 			}
-			if (data.getConfig(ConfigType.SETTINGS).getBoolean("check-update")) {
+			if (data.getConfig(ConfigType.CONFIG).getBoolean("check-update")) {
 				logConsole(Level.INFO, checkVersion());
 			}
-			if (data.getConfig(ConfigType.SETTINGS).getBoolean("metrics")) {
+			if (data.getConfig(ConfigType.CONFIG).getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
-				Boolean backgr = data.getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable");
+				Boolean backgr = data.getConfig(ConfigType.CONFIG).getBoolean("options.background.enable");
 				metrics.addCustomChart(new Metrics.SimplePie("background_type", new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						return data.getConfig(ConfigType.SETTINGS).getString("options.background.type");
+						return data.getConfig(ConfigType.CONFIG).getString("options.background.type");
 					}
 				}));
 				metrics.addCustomChart(new Metrics.SimplePie("using_background", new Callable<String>() {
@@ -103,9 +103,9 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}));
 				logConsole(Level.INFO, "Metrics enabled.");
 			}
-			if (data.getConfig(ConfigType.SETTINGS).getString("plugin-enable") != null && 
-					!data.getConfig(ConfigType.SETTINGS).getString("plugin-enable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.SETTINGS).getString("plugin-enable")));
+			if (data.getConfig(ConfigType.CONFIG).getString("plugin-enable") != null && 
+					!data.getConfig(ConfigType.CONFIG).getString("plugin-enable").equals("")) {
+				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.CONFIG).getString("plugin-enable")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -124,11 +124,12 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			Messenger messenger = Bukkit.getServer().getMessenger();
 			messenger.unregisterIncomingPluginChannel(instance, "BungeeCord", instance);
 			messenger.unregisterOutgoingPluginChannel(instance);
+			messenger = null;
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
-			if (data.getConfig(ConfigType.SETTINGS).getString("plugin-disable") != null && 
-					!data.getConfig(ConfigType.SETTINGS).getString("plugin-disable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.SETTINGS).getString("plugin-disable")));
+			if (data.getConfig(ConfigType.CONFIG).getString("plugin-disable") != null && 
+					!data.getConfig(ConfigType.CONFIG).getString("plugin-disable").equals("")) {
+				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.CONFIG).getString("plugin-disable")));
 			}
 			data.unloadConfig();
 		} catch (Exception e) {
@@ -156,8 +157,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		}
 	}
 
-	public static String checkVersion() {
-		TeleportSigns pl = getPlugin(TeleportSigns.class);
+	private String checkVersion() {
 		String[] nVersion;
 		String[] cVersion;
 		String lineWithVersion;
@@ -175,7 +175,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			String versionString = lineWithVersion.split(": ")[1];
 			nVersion = versionString.split("\\.");
 			double newestVersionNumber = Double.parseDouble(nVersion[0] + "." + nVersion[1]);
-			cVersion = pl.getDescription().getVersion().split("\\.");
+			cVersion = getDescription().getVersion().split("\\.");
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 			if (newestVersionNumber > currentVersionNumber) {
 				return "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/teleport-signs.37446/";
@@ -184,7 +184,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			pl.logConsole(Level.WARNING, "Failed to compare versions. " + e + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
+			logConsole(Level.WARNING, "Failed to compare versions. " + e + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		}
 		return "Failed to get newest version number.";
 	}
@@ -199,10 +199,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public void logConsole(Level level, String error) {
-		if (data.getConfig(ConfigType.SETTINGS).getBoolean("options.logconsole")) {
+		if (data.getConfig(ConfigType.CONFIG).getBoolean("options.logconsole")) {
 			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
 		}
-		if (data.getConfig(ConfigType.SETTINGS).getBoolean("log-to-file")) {
+		if (data.getConfig(ConfigType.CONFIG).getBoolean("log-to-file")) {
 			try {
 				File dataFolder = getDataFolder();
 				if (!dataFolder.exists()) {
@@ -215,7 +215,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				FileWriter fw = new FileWriter(saveTo, true);
 				PrintWriter pw = new PrintWriter(fw);
 				Date dt = new Date();
-				SimpleDateFormat df = new SimpleDateFormat("yyyy.MM.dd - HH:mm:ss");
+				SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
 				String time = df.format(dt);
 				pw.println(time + " - " + "[" + level + "] " + error);
 				pw.flush();
@@ -242,7 +242,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				return;
 			}
 			FileConfiguration bfi = YamlConfiguration.loadConfiguration(bukFile);
-			bfi.set("settings.connection-throttle", Integer.valueOf(data.getConfig(ConfigType.SETTINGS).getInt("options.connect-timeout")));
+			bfi.set("settings.connection-throttle", Integer.valueOf(data.getConfig(ConfigType.CONFIG).getInt("options.connect-timeout")));
 			bfi.save(bukFile);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -272,8 +272,12 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public String defaults(String str) {
-		str = str.replace("%prefix%", messages.getString("prefix"));
-		str = str.replace("%newline%", "\n");
+		if (str.contains("%prefix%")) {
+			str = str.replace("%prefix%", messages.getString("prefix"));
+		}
+		if (str.contains("%newline%")) {
+			str = str.replace("%newline%", "\n");
+		}
 		return colorMsg(str);
 	}
 

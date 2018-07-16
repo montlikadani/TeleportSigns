@@ -33,17 +33,17 @@ public class AnimationTask {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(line, lines[line]);
 						sign.update(true);
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable")) {
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("options.background.enable")) {
 							if (sign.getType().equals(Material.WALL_SIGN)) {
-								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+								if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("wool")) {
 									s.updateBackground(Material.WOOL,
-											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.wool"));
-								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.wool"));
+								} else if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("glass")) {
 									s.updateBackground(Material.STAINED_GLASS,
-											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.glass"));
-								} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.glass"));
+								} else if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("clay")) {
 									s.updateBackground(Material.STAINED_CLAY,
-											plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.loading.clay"));
+											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.clay"));
 								}
 							}
 						}
@@ -218,7 +218,6 @@ public class AnimationTask {
 
 	public void stopAnimation() {
 		if (task != null) {
-			Bukkit.getScheduler().cancelTask(task.getTaskId());
 			task.cancel();
 		}
 	}

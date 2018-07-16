@@ -13,6 +13,7 @@
 # 
 # In offline messages you can use those variables:
 # %name% = Name of the server.
+# %displayname% = Displayname of the server.
 # %address% = IP address of the server.
 # %port% = Port of the server.
 # 
@@ -63,18 +64,6 @@ layouts:
     # Message when a player tries to connect to offline server.
     offline-message: '&a[Games]&7 %name%&c is offline!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
-
-# Custom variables.
-variables:
-  mapname:
-    type: SPLIT
-    arguments: '-,2'
-  status:
-    type: SUBSTRING
-    arguments: '5,15'
-  motdfix:
-    type: REPLACE
-    arguments: 'Death,Deathmatch'
 
 # DO NOT CHANGE THIS!
 config-version: 1

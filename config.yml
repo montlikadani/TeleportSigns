@@ -1,7 +1,7 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
 #-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: ${project.version}               #
+# config.yml file. Plugin version: ${version}                       #
 # Author, created by: montlikadani                                  #
 #-----------------------------OOO-----------------------------------#
 # [Default configuration]                                           #
@@ -54,9 +54,12 @@ options:
   # Defines a background of the sign.
   background:
     enable: false
-    # Possible types: glass, wool, clay (color depends on motd start color).
+    # Possible types: glass, wool, clay.
     type: glass
-    # Block colors.
+    # Block id colors:
+    # Glass: https://minecraft.gamepedia.com/Glass#Data_values
+    # Wool: https://minecraft.gamepedia.com/Wool#Data_values
+    # Clay (Terracotta): https://minecraft.gamepedia.com/Terracotta#Data_values
     block-colors:
       # When the server is online.
       online:
@@ -104,7 +107,7 @@ log-to-file: true
 
 # Plugin enable/disable messages in console.
 # Use %prefix%, %newline% placeholder.
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${project.version}&a!'
+plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${version}&a!'
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
 # The default is allowed to see the plugin information.
@@ -119,4 +122,4 @@ unknown-command-enable: true
 unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
 
 # DO NOT CHANGE THIS!
-config-version: 1
+config-version: 2

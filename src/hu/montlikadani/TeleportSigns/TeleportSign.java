@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.Configuration;
 import org.bukkit.material.Directional;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -112,6 +113,7 @@ public class TeleportSign {
 	}
 
 	public void updateSign() {
+		Configuration c = plugin.getConfigData().getConfig(ConfigType.CONFIG);
 		if (!isBroken()) {
 			Location location = getLocation();
 
@@ -124,32 +126,31 @@ public class TeleportSign {
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, (String) lines.get(i));
-								if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.background.enable")) {
+								if (c.getBoolean("options.background.enable")) {
 									if (server.isOnline()) {
 										if (sign.getType().equals(Material.WALL_SIGN)) {
-											//updateBackground(Material.STAINED_GLASS, getStartingColor((String)lines.get(i)));
-											if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
 												updateBackground(Material.WOOL,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.wool"));
-											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+														c.getInt("options.background.block-colors.online.wool"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
 												updateBackground(Material.STAINED_GLASS,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.glass"));
-											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+														c.getInt("options.background.block-colors.online.glass"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
 												updateBackground(Material.STAINED_CLAY,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.online.clay"));
+														c.getInt("options.background.block-colors.online.clay"));
 											}
 										}
 									} else {
 										if (sign.getType().equals(Material.WALL_SIGN)) {
-											if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("wool")) {
+											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
 												updateBackground(Material.WOOL,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.wool"));
-											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("glass")) {
+														c.getInt("options.background.block-colors.offline.wool"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
 												updateBackground(Material.STAINED_GLASS,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.glass"));
-											} else if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("options.background.type").equalsIgnoreCase("clay")) {
+														c.getInt("options.background.block-colors.offline.glass"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
 												updateBackground(Material.STAINED_CLAY,
-														plugin.getConfigData().getConfig(ConfigType.SETTINGS).getInt("options.background.block-colors.offline.clay"));
+														c.getInt("options.background.block-colors.offline.clay"));
 											}
 										}
 									}
@@ -161,7 +162,9 @@ public class TeleportSign {
 							plugin.logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
 							String[] error = { "§4ERROR:", "§6Layout", "§e" + this.layout.getName(), "§6not found!" };
 							signError(sign, error);
-							if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+							if (c.getBoolean("options.drop-sign")) {
+								sign.getLocation().getBlock().breakNaturally();
+							}
 							this.broken = true;
 						}
 					} else {
@@ -169,7 +172,9 @@ public class TeleportSign {
 						plugin.logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
 						String[] error = { "§4ERROR:", "§6Server", "§e" + this.server.getName(), "§6not found!" };
 						signError(sign, error);
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("options.drop-sign")) sign.getLocation().getBlock().breakNaturally();
+						if (c.getBoolean("options.drop-sign")) {
+							sign.getLocation().getBlock().breakNaturally();
+						}
 						this.broken = true;
 					}
 				}
@@ -189,59 +194,6 @@ public class TeleportSign {
 			wall.setData((byte) color);
 		}
 	}
-
-/*	private int getStartingColor(String s) {
-		try {
-			if (s.length() > 1) {
-				if (s.toCharArray()[0] == '§') {
-					switch (s.toCharArray()[1]) {
-					case '0':
-						return 15;
-					case '1':
-						return 11;
-					case '2':
-						return 13;
-					case '3':
-						return 9;
-					case '4':
-						return 14;
-					case '5':
-						return 10;
-					case '6':
-						return 1;
-					case '7':
-						return 8;
-					case '8':
-						return 7;
-					case '9':
-						return 3;
-					case 'a':
-						return 5;
-					case 'b':
-						return 9;
-					case 'c':
-						return 14;
-					case 'd':
-						return 2;
-					case 'e':
-						return 4;
-					case 'f':
-						return 0;
-					default:
-						return 0;
-					}
-				} else {
-					return 0;
-				}
-			} else {
-				return 0;
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			plugin.throwMsg();
-		}
-		return 0;
-	}*/
 
 	private void signError(Sign sign, String[] exception) {
 		if (sign != null) {

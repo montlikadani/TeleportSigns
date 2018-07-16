@@ -50,15 +50,21 @@ public class Listeners implements Listener {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 						} else {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
-							if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
+							if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+								b.breakNaturally();
+							}
 						}
 					} else {
 						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+							b.breakNaturally();
+						}
 					}
 				} else {
 					p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
-					if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("drop-sign")) b.breakNaturally();
+					if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+						b.breakNaturally();
+					}
 				}
 			}
 		}
@@ -105,6 +111,8 @@ public class Listeners implements Listener {
 							}
 						} else {
 							p.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.use")));
+							event.setCancelled(true);
+							return;
 						}
 					}
 				}
@@ -182,8 +190,7 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("check-update") && p.isOp() && p.hasPermission("teleportsigns.checkupdate")) {
-			TeleportSigns plu = TeleportSigns.getPlugin(TeleportSigns.class);
+		if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("check-update") && p.isOp() && p.hasPermission("teleportsigns.checkupdate")) {
 			String[] nVersion;
 			String[] cVersion;
 			String lineWithVersion;
@@ -202,7 +209,7 @@ public class Listeners implements Listener {
 				String versionString = lineWithVersion.split(": ")[1];
 				nVersion = versionString.split("\\.");
 				double newestVersionNumber = Double.parseDouble(nVersion[0] + "." + nVersion[1]);
-				cVersion = plu.getDescription().getVersion().split("\\.");
+				cVersion = plugin.getDescription().getVersion().split("\\.");
 				double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 				if (newestVersionNumber > currentVersionNumber) {
 					p.sendMessage(plugin.colorMsg("&8&m&l--------------------------------------------------\n" + 

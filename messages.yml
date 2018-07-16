@@ -18,8 +18,8 @@ no-permission: '&cYou don''t have permission for that!&7 (%perm%)'
 no-create-sign: '&cYou have no permission to create a sign!&7 (%perm%)'
 no-sign-destroy: '&cYou have no permission to break the sign!&7 (%perm%)'
 
-# Use %command% placeholder.
-no-console: '%prefix%&c This command "&7/%command% connect&c" is not use in the console!'
+# Use %command%, %args% placeholder.
+no-console: '%prefix%&c This command "&7/%command% %args%&c" is not use in the console!'
 connect-usage: '%prefix%&c Use "&7/%command% connect <server>&c".'
 editsign:
   usage: '&cUsage:&7 /%command% editsign <servername> <layout>&c.'
@@ -52,4 +52,4 @@ chat-messages:
 - '&c&m----------------------------------------'
 
 # DO NOT CHANGE THIS!
-config-version: 1
+config-version: 2

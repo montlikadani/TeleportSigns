@@ -1,6 +1,7 @@
 package hu.montlikadani.TeleportSigns;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,14 +24,13 @@ public class ConfigData {
 	private FileConfiguration sign;
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
-	private List<CustomVariable> variables = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
 	private Map<String, SignLayout> layouts = new HashMap<>();
 	private long cooldown;
 	private long signUpdates;
 	private int pingTimeout;
 	private int pingInterval;
-	private int cver = 1;
+	private int cver = 2;
 	private int lyver = 1;
 
 	private File config_file = new File("plugins/TeleportSigns/config.yml");
@@ -38,7 +38,7 @@ public class ConfigData {
 	private File sign_file = new File("plugins/TeleportSigns/signs.yml");
 
 	public enum ConfigType {
-		SETTINGS,
+		CONFIG,
 		LAYOUTS,
 		SIGNS;
 	}
@@ -93,11 +93,10 @@ public class ConfigData {
 			plugin.throwMsg();
 		}
 
-		loadSettings();
+		loadSomeSettings();
 		loadServers();
 		loadLayouts();
 		loadSigns();
-		loadVariables();
 	}
 
 	public void unloadConfig() {
@@ -109,21 +108,13 @@ public class ConfigData {
 		servers.clear();
 		signs.clear();
 		layouts.clear();
-		variables.clear();
 	}
 
-	private void loadSettings() {
+	private void loadSomeSettings() {
 		this.cooldown = (this.config.getInt("options.use-cooldown") * 1000);
 		this.signUpdates = this.config.getInt("options.sign-updates");
 		this.pingInterval = this.config.getInt("options.ping-interval");
 		this.pingTimeout = this.config.getInt("options.ping-timeout");
-		this.config.getBoolean("options.drop-sign");
-		this.config.getBoolean("options.enter-msg-enable");
-		this.config.getString("options.enter-message");
-		this.config.getBoolean("options.logconsole");
-		this.config.getBoolean("options.background-enable");
-		this.config.getString("options.background");
-		this.config.getBoolean("options.connect-timeout");
 	}
 
 	private void loadServers() {
@@ -172,6 +163,7 @@ public class ConfigData {
 				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
 				try {
+					// It does not work when the server starts and the saved sign in the database.
 					Block b = location.getBlock();
 					if (b.getState() instanceof Sign) {
 						TeleportSign tsign = new TeleportSign(server, location, layout);
@@ -183,19 +175,6 @@ public class ConfigData {
 				e.printStackTrace();
 				plugin.throwMsg();
 			}
-		}
-	}
-
-	private void loadVariables() {
-		ConfigurationSection variables = this.layout.getConfigurationSection("variables");
-
-		for (String var : variables.getKeys(false)) {
-			ConfigurationSection cs = variables.getConfigurationSection(var);
-			String type = cs.getString("type");
-			String args = cs.getString("arguments");
-
-			CustomVariable cvar = new CustomVariable(type, "%" + var + "%", args);
-			this.variables.add(cvar);
 		}
 	}
 
@@ -222,7 +201,7 @@ public class ConfigData {
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {
-		if (type.equals(ConfigType.SETTINGS)) {
+		if (type.equals(ConfigType.CONFIG)) {
 			return this.config;
 		} else if (type.equals(ConfigType.LAYOUTS)) {
 			return this.layout;
@@ -231,16 +210,6 @@ public class ConfigData {
 		}
 
 		return null;
-	}
-
-	public void saveConfig(ConfigType type) throws Exception {
-		if (type.equals(ConfigType.SETTINGS)) {
-			config.save(config_file);
-		} else if (type.equals(ConfigType.LAYOUTS)) {
-			layout.save(layout_file);
-		} else if (type.equals(ConfigType.SIGNS)) {
-			sign.save(sign_file);
-		}
 	}
 
 	public List<ServerInfo> getServers() {
@@ -265,14 +234,6 @@ public class ConfigData {
 
 	public void setLayouts(Map<String, SignLayout> signLayouts) {
 		this.layouts = signLayouts;
-	}
-
-	public List<CustomVariable> getVariables() {
-		return variables;
-	}
-
-	public void setVariables(List<CustomVariable> variables) {
-		this.variables = variables;
 	}
 
 	public List<Block> getBlocks() {
@@ -331,10 +292,8 @@ public class ConfigData {
 		list.add(index);
 		sign.set("signs", list);
 		try {
-			this.saveConfig(ConfigType.SIGNS);
 			this.sign.save(sign_file);
-			this.sign.load(sign_file);
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			plugin.throwMsg();
 		}
@@ -356,9 +315,7 @@ public class ConfigData {
 				}
 				try {
 					this.sign.save(sign_file);
-					this.sign.load(sign_file);
-					this.saveConfig(ConfigType.SIGNS);
-				} catch (Exception e) {
+				} catch (IOException e) {
 					e.printStackTrace();
 					plugin.throwMsg();
 				}

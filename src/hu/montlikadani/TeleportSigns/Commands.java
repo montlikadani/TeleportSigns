@@ -29,15 +29,15 @@ public class Commands implements CommandExecutor, TabCompleter {
 		try {
 			if (cmd.getName().equalsIgnoreCase("teleportsigns")) {
 				if (args.length == 0) {
-					if (!sender.hasPermission(Permissions.PINFO) && plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("default-can-see-plugin-information") != true) {
+					if (!sender.hasPermission(Permissions.PINFO) && plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("default-can-see-plugin-information") != true) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.plugininfo")));
 						return true;
 					}
 					sender.sendMessage("§6§l[§2§lTeleport§e§lSigns§b§l Info§e§l]");
-					sender.sendMessage("§5Version:§a ${project.version}");
+					sender.sendMessage("§5Version:§a " + plugin.getDescription().getVersion());
 					sender.sendMessage("§5Author, created by:§a montlikadani");
 					sender.sendMessage("§5Commands:§8 /§7" + commandLabel + "§a help");
-					sender.sendMessage("§4In case of an error, write here:§e §nhttps://github.com/montlikadani/TeleportSigns/issues");
+					sender.sendMessage("§4If you find a bug, send issue here:§e §nhttps://github.com/montlikadani/TeleportSigns/issues");
 					return true;
 				} else if (args[0].equalsIgnoreCase("help")) {
 					if (!sender.hasPermission(Permissions.HELP)) {
@@ -45,8 +45,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -60,8 +60,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -74,8 +74,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -87,8 +87,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 1) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -110,12 +110,12 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (!(sender instanceof Player)) {
-						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel)));
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel).replace("%args%", args[0])));
 						return true;
 					}
 					if (args.length > 2) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
@@ -138,7 +138,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (!(sender instanceof Player)) {
-						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel)));
+						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-console").replace("%command%", commandLabel).replace("%args%", args[0])));
 						return true;
 					}
 					if (args.length != 3) {
@@ -146,8 +146,8 @@ public class Commands implements CommandExecutor, TabCompleter {
 						return true;
 					}
 					if (args.length > 3) {
-						if (plugin.getConfigData().getConfig(ConfigType.SETTINGS).getBoolean("unknown-command-enable")) {
-							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.SETTINGS).getString("unknown-command").replace("%command%", commandLabel)));
+						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("unknown-command-enable")) {
+							sender.sendMessage(plugin.defaults(plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("unknown-command").replace("%command%", commandLabel)));
 							return true;
 						}
 					}
