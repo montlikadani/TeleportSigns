@@ -9,6 +9,7 @@ prefix: '&6&l[&2&lTeleport&e&lSigns&6&l]&7&l >'
 reload-config: '%prefix%&a The plugin successfully reloaded!'
 sign-destroyed: '%prefix%&c The sign successfully destroyed!'
 no-layouts-found: '%prefix%&c There are no layouts in the layouts.yml file!'
+no-servers-found: '%prefix%&c There are no servers in the configuration file!'
 
 # Use %subcmd% placeholder.
 unknown-sub-command: '%prefix%&c Unknown sub-command&7 %subcmd%&c.'
@@ -18,7 +19,8 @@ no-permission: '&cYou don''t have permission for that!&7 (%perm%)'
 no-create-sign: '&cYou have no permission to create a sign!&7 (%perm%)'
 no-sign-destroy: '&cYou have no permission to break the sign!&7 (%perm%)'
 
-# Use %command%, %args% placeholder.
+# Use %command% placeholder.
+unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
 no-console: '%prefix%&c This command "&7/%command% %args%&c" is not use in the console!'
 connect-usage: '%prefix%&c Use "&7/%command% connect <server>&c".'
 editsign:
@@ -35,6 +37,9 @@ server-group-not-found: '%prefix%&c Server group&7 %server%&c does not exists.'
 # Use %layouts% placeholder.
 list-layouts: '%prefix%&a Layouts:&7 %layouts%'
 
+# Use %servers% placeholder.
+list-servers: '%prefix%&a Servers:&6 %servers%'
+
 # This feature lists all the chat panel help.
 chat-messages:
 - '&c&m---------&b> &6[&2Teleport&eSigns&2 Help&6]&b <&c&m----------'
@@ -47,9 +52,10 @@ chat-messages:
 - '&8/&a%command% help&5 -&6 Help commands.'
 - '&8/&a%command% connect&c <server>&5 -&6 Connect the server.'
 - '&8/&a%command% listlayouts&5 -&6 List layouts.'
+- '&8/&a%command% listservers&5 -&6 List servers.'
 - '&8/&a%command% editsign&c <servername> <layout>&5 -&6 Edit sign at the look.'
 - '&8/&a%command% reload&3 (or rl)&5 -&6 Reload the plugin.'
 - '&c&m----------------------------------------'
 
 # DO NOT CHANGE THIS!
-config-version: 2
+config-version: 3

@@ -32,39 +32,39 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onCreateTeleportSign(SignChangeEvent event) {
-		if (!event.isCancelled()) {
-			Player p = event.getPlayer();
-			Block b = event.getBlock();
-			if (event.getLine(0).equalsIgnoreCase("[tsigns]") || event.getLine(0).equalsIgnoreCase("[teleportsigns]")) {
-				if (p.hasPermission(Permissions.CREATE)) {
-					String sname = event.getLine(1);
-					String lname = event.getLine(2);
-					if (lname.equalsIgnoreCase("")) lname = "default";
+		if (event.isCancelled()) return;
 
-					Location location = b.getLocation();
-					ServerInfo server = plugin.getConfigData().getServer(sname);
-					SignLayout layout = plugin.getConfigData().getLayout(lname);
-					if (server != null) {
-						if (layout != null) {
-							plugin.getConfigData().addSign(location, server, layout);
-							p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
-						} else {
-							p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
-							if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
-								b.breakNaturally();
-							}
-						}
+		Player p = event.getPlayer();
+		Block b = event.getBlock();
+		if (event.getLine(0).equalsIgnoreCase("[tsigns]") || event.getLine(0).equalsIgnoreCase("[teleportsigns]")) {
+			if (p.hasPermission(Permissions.CREATE)) {
+				String sname = event.getLine(1);
+				String lname = event.getLine(2);
+				if (lname.equalsIgnoreCase("")) lname = "default";
+
+				Location location = b.getLocation();
+				ServerInfo server = plugin.getConfigData().getServer(sname);
+				SignLayout layout = plugin.getConfigData().getLayout(lname);
+				if (server != null) {
+					if (layout != null) {
+						plugin.getConfigData().addSign(location, server, layout);
+						p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 					} else {
-						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
+						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
 						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
 							b.breakNaturally();
 						}
 					}
 				} else {
-					p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
+					p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
 					if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
 						b.breakNaturally();
 					}
+				}
+			} else {
+				p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
+				if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+					b.breakNaturally();
 				}
 			}
 		}
@@ -93,27 +93,27 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (!event.isCancelled()) {
-			Player p = event.getPlayer();
-			if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-				if (event.getClickedBlock().getState() instanceof Sign) {
-					if (plugin.getConfigData().getBlocks().contains(event.getClickedBlock())) {
-						if (p.hasPermission(Permissions.USE)) {
-							for (TeleportSign sign : plugin.getConfigData().getSigns()) {
-								if (sign != null && !sign.isBroken() && sign.getLocation().equals(event.getClickedBlock().getLocation())) {
-									ServerInfo server = sign.getServer();
-									if (server != null) {
-										TeleportSignsInteractEvent e = new TeleportSignsInteractEvent(p, sign, server);
-										Bukkit.getPluginManager().callEvent(e);
-										event.setCancelled(true);
-									}
+		if (event.isCancelled()) return;
+
+		Player p = event.getPlayer();
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (event.getClickedBlock().getState() instanceof Sign) {
+				if (plugin.getConfigData().getBlocks().contains(event.getClickedBlock())) {
+					if (p.hasPermission(Permissions.USE)) {
+						for (TeleportSign sign : plugin.getConfigData().getSigns()) {
+							if (sign != null && !sign.isBroken() && sign.getLocation().equals(event.getClickedBlock().getLocation())) {
+								ServerInfo server = sign.getServer();
+								if (server != null) {
+									TeleportSignsInteractEvent e = new TeleportSignsInteractEvent(p, sign, server);
+									Bukkit.getPluginManager().callEvent(e);
+									event.setCancelled(true);
 								}
 							}
-						} else {
-							p.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.use")));
-							event.setCancelled(true);
-							return;
 						}
+					} else {
+						p.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.use")));
+						event.setCancelled(true);
+						return;
 					}
 				}
 			}
@@ -122,19 +122,19 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onTeleportSignInteract(TeleportSignsInteractEvent event) {
-		if (!event.isCancelled()) {
-			Player p = event.getPlayer();
-			if (event.getSign().getLayout().isTeleport()) {
-				if (event.getServer().isOnline()) {
-					if (!hasCooldown(p)) {
-						addCooldown(p);
-						event.getServer().teleportPlayer(p);
-					} else {
-						p.sendMessage(event.getSign().getLayout().parseCooldownMessage(getCooldown(p)));
-					}
+		if (event.isCancelled()) return;
+
+		Player p = event.getPlayer();
+		if (event.getSign().getLayout().isTeleport()) {
+			if (event.getServer().isOnline()) {
+				if (!hasCooldown(p)) {
+					addCooldown(p);
+					event.getServer().teleportPlayer(p);
 				} else {
-					p.sendMessage(event.getSign().getLayout().parseOfflineMessage(event.getServer()));
+					p.sendMessage(event.getSign().getLayout().parseCooldownMessage(getCooldown(p)));
 				}
+			} else {
+				p.sendMessage(event.getSign().getLayout().parseOfflineMessage(event.getServer()));
 			}
 		}
 	}
@@ -190,7 +190,7 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("check-update") && p.isOp() && p.hasPermission("teleportsigns.checkupdate")) {
+		if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("check-update") && p.isOp()) {
 			String[] nVersion;
 			String[] cVersion;
 			String lineWithVersion;

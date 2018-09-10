@@ -13,7 +13,7 @@
 # [Tips]                                                            #
 # - Use color coding '&' character, on this page:                   #
 # http://minecraft.gamepedia.com/Formatting_codes                   #
-# - In case of an error, write here:                                #
+# - If you find a bug, send here:                                   #
 # https://github.com/montlikadani/TeleportSigns/issues              #
 # - If the string is empty does not send the message.               #
 #-----------------------------OOO-----------------------------------#
@@ -37,12 +37,6 @@ options:
   # Important! If you do not want the pinging to end ping-timeout to be smaller than one and take the ping interval by one more.
   # How much time does the server pinging down? (In ticks)
   ping-timeout: 29
-
-  # Connection time. (How much time to wait for a player to join and another to wait for him to join the server.)
-  # To avoid waiting for the connection time, enter -1 in two places.
-  # The plugin rewrites the connection-throttle in bukkit.yml to the number that is in it.
-  # The plugin can not be rewritten in BungeeCord.
-  connect-timeout: 4000
 
   # When you break the sign or not find the layout on the sign, drop a sign?
   drop-sign: false
@@ -113,13 +107,6 @@ plugin-disable: '%prefix%&c The plugin successfully disabled!'
 # The default is allowed to see the plugin information.
 # Permission: teleportsigns.plugininfo
 default-can-see-plugin-information: false
-
-# Unknown-command - If more than one word/letter you write to it.
-# Example: /ts reload something...
-# Use %command% placeholder.
-# This feature is NOT enter into the unknown command Minecraft, it's just your own.
-unknown-command-enable: true
-unknown-command: '%prefix%&c Unknown command.&7 Type "&f/%command% help&7" for help.'
 
 # DO NOT CHANGE THIS!
 config-version: 2

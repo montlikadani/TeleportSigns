@@ -30,50 +30,50 @@ public class SignLayout {
 	}
 
 	public String getName() {
-		return this.name;
+		return name;
 	}
 
 	public String getOnline() {
-		return this.online;
+		return online;
 	}
 
 	public String getOffline() {
-		return this.offline;
+		return offline;
 	}
 
 	public List<String> getLines() {
-		return this.lines;
+		return lines;
 	}
 
 	public boolean isTeleport() {
-		return this.teleport;
+		return teleport;
 	}
 
 	public String getOfflineInt() {
-		return this.offlineInt;
+		return offlineInt;
 	}
 
 	public String getOfflineMotd() {
-		return this.offlineMotd;
+		return offlineMotd;
 	}
 
 	public String getOfflineMessage() {
-		return this.offlineMessage;
+		return offlineMessage;
 	}
 
 	public String getCooldownMessage() {
-		return this.cooldownMessage;
+		return cooldownMessage;
 	}
 
 	public List<String> parseLayout(ServerInfo server) {
 		List<String> layout = new ArrayList<>();
 
-		for (String line : this.lines) {
+		for (String line : lines) {
 			line = line.replaceAll("%name%", server.getName());
 			line = line.replaceAll("%displayname%", server.getDisplayname());
 
 			if (server.isOnline()) {
-				line = line.replaceAll("%isonline%", getOnline());
+				line = line.replaceAll("%isonline%", online);
 				line = line.replaceAll("%numpl%", String.valueOf(server.getPlayerCount()));
 				line = line.replaceAll("%maxpl%", String.valueOf(server.getMaxPlayers()));
 				line = line.replaceAll("%motd%", formatDescription(server.getMotd()));
@@ -85,10 +85,10 @@ public class SignLayout {
 				line = textValues(line);
 				line = editText(line);
 			} else {
-				line = line.replaceAll("%isonline%", getOffline());
-				line = line.replaceAll("%numpl%", String.valueOf(getOfflineInt()));
-				line = line.replaceAll("%maxpl%", String.valueOf(getOfflineInt()));
-				line = line.replaceAll("%motd%", getOfflineMotd());
+				line = line.replaceAll("%isonline%", offline);
+				line = line.replaceAll("%numpl%", String.valueOf(offlineInt));
+				line = line.replaceAll("%maxpl%", String.valueOf(offlineInt));
+				line = line.replaceAll("%motd%", offlineMotd);
 				line = line.replaceAll("%address%", server.getAddress().getHostName());
 				line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
 				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
@@ -105,7 +105,7 @@ public class SignLayout {
 	}
 
 	public String parseOfflineMessage(ServerInfo server) {
-		String line = this.offlineMessage;
+		String line = offlineMessage;
 		line = line.replaceAll("%name%", server.getName());
 		line = line.replaceAll("%displayname%", server.getDisplayname());
 		line = line.replaceAll("%address%", server.getAddress().getHostName());
@@ -116,7 +116,7 @@ public class SignLayout {
 	}
 
 	public String parseCooldownMessage(int seconds) {
-		String line = this.cooldownMessage;
+		String line = cooldownMessage;
 		line = line.replaceAll("%cooldown%", String.valueOf(seconds));
 		line = textValues(line);
 

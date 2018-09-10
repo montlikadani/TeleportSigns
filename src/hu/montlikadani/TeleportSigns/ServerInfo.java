@@ -32,10 +32,10 @@ public class ServerInfo {
 	private long pingStartTime;
 	private long pingEndTime;
 
-	public ServerInfo(String servername, String displayname, String address, int port, int timeout) {
+	public ServerInfo(String name, String displayname, String address, int port, int timeout) {
 		this.ping = new ServerPing();
 		this.online = false;
-		this.name = servername;
+		this.name = name;
 		this.displayname = displayname;
 		this.address = new InetSocketAddress(address, port);
 		this.timeout = timeout;
@@ -45,9 +45,6 @@ public class ServerInfo {
 		if (Bukkit.getServer().getIp().equals(address) && Bukkit.getServer().getPort() == Integer.valueOf(port)) {
 			this.local = true;
 		}
-		/*if (Bukkit.getServer().getPort() == Integer.valueOf(port).intValue()) {
-			this.local = true;
-		}*/
 	}
 
 	public ServerPing getPing() {
@@ -75,7 +72,7 @@ public class ServerInfo {
 	}
 
 	public int getTimeout() {
-		return this.timeout;
+		return timeout;
 	}
 
 	public void setTimeout(int timeout) {
@@ -91,7 +88,7 @@ public class ServerInfo {
 	}
 
 	public boolean isOnline() {
-		return this.online;
+		return online;
 	}
 
 	public void setOnline(boolean online) {
@@ -115,7 +112,7 @@ public class ServerInfo {
 	}
 
 	public int getPlayerCount() {
-		return this.playercount;
+		return playercount;
 	}
 
 	public void setPlayerCount(int playercount) {
@@ -123,7 +120,7 @@ public class ServerInfo {
 	}
 
 	public int getMaxPlayers() {
-		return this.maxplayers;
+		return maxplayers;
 	}
 
 	public void setMaxPlayers(int maxplayers) {
@@ -131,7 +128,7 @@ public class ServerInfo {
 	}
 
 	public String getMotd() {
-		return this.motd;
+		return motd;
 	}
 
 	public void setMotd(String motd) {
@@ -139,7 +136,7 @@ public class ServerInfo {
 	}
 
 	public String getDisplayname() {
-		return this.displayname;
+		return displayname;
 	}
 
 	public void setDisplayname(String displayname) {
@@ -147,15 +144,15 @@ public class ServerInfo {
 	}
 
 	public long getPingDelay() {
-		return this.calculatePingDelay();
+		return calculatePingDelay();
 	}
 
-	public void setPingStart(long time) {
-		this.pingStartTime = time;
+	public void setPingStart(long pingStartTime) {
+		this.pingStartTime = pingStartTime;
 	}
 
-	public void setPingEnd(long time) {
-		this.pingEndTime = time;
+	public void setPingEnd(long pingEndTime) {
+		this.pingEndTime = pingEndTime;
 	}
 
 	public void resetPingDelay() {
@@ -163,7 +160,7 @@ public class ServerInfo {
 	}
 
 	private long calculatePingDelay() {
-		long result = (this.pingEndTime - this.pingStartTime);
+		long result = (pingEndTime - pingStartTime);
 		return result;
 	}
 
@@ -172,7 +169,7 @@ public class ServerInfo {
 		DataOutputStream out = new DataOutputStream(b);
 		try {
 			out.writeUTF("Connect");
-			out.writeUTF(this.name);
+			out.writeUTF(name);
 		} catch (IOException io) {
 			io.printStackTrace();
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
@@ -181,7 +178,7 @@ public class ServerInfo {
 		if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG).getString("options.enter-message") != null && 
 				!TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG).getString("options.enter-message").equals("")) {
 			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG)
-					.getString("options.enter-message").replace("%server%", this.name)));
+					.getString("options.enter-message").replace("%server%", name)));
 			return;
 		}
 	}

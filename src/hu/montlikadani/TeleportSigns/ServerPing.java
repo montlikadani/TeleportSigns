@@ -26,7 +26,7 @@ public class ServerPing {
 	}
 
 	public InetSocketAddress getAddress() {
-		return this.host;
+		return host;
 	}
 
 	public void setTimeout(int timeout) {
@@ -34,15 +34,15 @@ public class ServerPing {
 	}
 
 	public int getTimeout() {
-		return this.timeout;
+		return timeout;
 	}
 
 	public boolean isFetching() {
 		return fetching;
 	}
 
-	public void setFetching(boolean pinging) {
-		this.fetching = pinging;
+	public void setFetching(boolean fetching) {
+		this.fetching = fetching;
 	}
 
 	public int readVarInt(DataInputStream in) throws IOException {
@@ -82,8 +82,8 @@ public class ServerPing {
 		InputStream inputStream;
 		InputStreamReader inputStreamReader;
 
-		socket.setSoTimeout(this.timeout);
-		socket.connect(host, this.timeout);
+		socket.setSoTimeout(timeout);
+		socket.connect(host, timeout);
 
 		outputStream = socket.getOutputStream();
 		dataOutputStream = new DataOutputStream(outputStream);
@@ -95,9 +95,9 @@ public class ServerPing {
 		DataOutputStream handshake = new DataOutputStream(b);
 		handshake.writeByte(0x00);
 		writeVarInt(handshake, 4);
-		writeVarInt(handshake, this.host.getHostString().length());
-		handshake.writeBytes(this.host.getHostString());
-		handshake.writeShort(this.host.getPort());
+		writeVarInt(handshake, host.getHostString().length());
+		handshake.writeBytes(host.getHostString());
+		handshake.writeShort(host.getPort());
 		writeVarInt(handshake, 1);
 
 		writeVarInt(dataOutputStream, b.size());

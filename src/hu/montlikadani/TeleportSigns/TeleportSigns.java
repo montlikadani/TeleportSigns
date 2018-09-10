@@ -20,6 +20,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import com.google.common.io.ByteArrayDataInput;
+import com.google.common.io.ByteStreams;
+
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
 
 public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
@@ -27,32 +30,32 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	private static TeleportSigns instance;
 
 	FileConfiguration messages;
-	private File messages_file = new File("plugins/TeleportSigns/messages.yml");
+	private File messages_file = new File(getDataFolder(), "messages.yml");
 
-	private int msver = 2;
+	private int msver = 3;
 	private PingScheduler ping;
 	private SignScheduler sign;
 	private AnimationTask anim;
-	private static ConfigData data;
+	private ConfigData data;
 
 	@Override
 	public void onEnable() {
 		try {
-			super.onEnable();
 			data = new ConfigData(this);
 			data.loadConfig();
 			if (!data.getConfig(ConfigType.CONFIG).getBoolean("enabled")) {
-				this.getServer().getPluginManager().disablePlugin(this);
+				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
 			if (!Bukkit.getBukkitVersion().split("\\.")[1].substring(0, 1).equals("8")) {
 				Bukkit.getServer().getConsoleSender().sendMessage("§cIncorrect Bukkit/Spigot version, not loading plugin. Version support: 1.8.x");
+				setEnabled(false);
 				return;
 			}
 			instance = this;
-			this.ping = new PingScheduler(this);
-			this.sign = new SignScheduler(this);
-			this.anim = new AnimationTask(this);
+			ping = new PingScheduler(this);
+			sign = new SignScheduler(this);
+			anim = new AnimationTask(this);
 			anim.resetAnimation();
 			anim.startAnimation();
 			long time = (long) (10.3*20L);
@@ -68,9 +71,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}
 			}, time);
 			getCommand("teleportsigns").setExecutor(new Commands(this));
-			if (data.getConfig(ConfigType.CONFIG).getString("options.connect-timeout") != null) {
-				setBukkitConnectTimeOut();
-			}
 			if (data.getConfig(ConfigType.CONFIG).getBoolean("check-update")) {
 				logConsole(Level.INFO, checkVersion());
 			}
@@ -115,15 +115,16 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	@Override
 	public void onDisable() {
+		if (!isEnabled()) return;
+
 		try {
-			super.onDisable();
 			if (anim != null) {
 				anim.resetAnimation();
 				anim.stopAnimation();
 			}
 			Messenger messenger = Bukkit.getServer().getMessenger();
+			messenger.unregisterOutgoingPluginChannel(instance, "BungeeCord");
 			messenger.unregisterIncomingPluginChannel(instance, "BungeeCord", instance);
-			messenger.unregisterOutgoingPluginChannel(instance);
 			messenger = null;
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
@@ -232,21 +233,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		if (!channel.equals("BungeeCord")) {
 			return;
 		}
-	}
 
-	private void setBukkitConnectTimeOut() {
-		try {
-			File bukFile = new File(Bukkit.getServer().getWorldContainer().getName(), "bukkit.yml");
-			if (!bukFile.exists()) {
-				logConsole(Level.WARNING, "WARNING! The bukkit.yml file can not be found!");
-				return;
-			}
-			FileConfiguration bfi = YamlConfiguration.loadConfiguration(bukFile);
-			bfi.set("settings.connection-throttle", Integer.valueOf(data.getConfig(ConfigType.CONFIG).getInt("options.connect-timeout")));
-			bfi.save(bukFile);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throwMsg();
+		ByteArrayDataInput in = ByteStreams.newDataInput(msg);
+		String subchannel = in.readUTF();
+		if (subchannel.equals("NULL")) {
 		}
 	}
 

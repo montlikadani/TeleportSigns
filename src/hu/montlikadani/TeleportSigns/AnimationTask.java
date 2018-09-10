@@ -18,16 +18,17 @@ public class AnimationTask {
 	private BukkitTask task;
 
 	public void startAnimation() {
-		this.runFirstAnimation();
+		runFirstAnimation();
 	}
 
 	private void runFirstAnimation() {
-		this.task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int line = 0;
 			String[] lines = { "---------------", "TeleportSigns", "Initialize...", "---------------" };
 			@Override
 			public void run() {
 				if (line >= 4) return;
+
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
@@ -94,11 +95,12 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		this.task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {
 				if (pnt >= 3) return;
+
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
@@ -131,11 +133,12 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		this.task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {
 				if (pnt >= 3) return;
+
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
 					if (s.getLocation().getBlock().getState() instanceof Sign) {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
@@ -168,7 +171,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		this.task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {

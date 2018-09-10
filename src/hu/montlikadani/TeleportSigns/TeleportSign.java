@@ -120,13 +120,28 @@ public class TeleportSign {
 			if (location.getWorld().getChunkAt(location).isLoaded()) {
 				Block b = location.getBlock();
 				if (b.getState() instanceof Sign) {
+					Sign sign = (Sign) b.getState();
 					if (server != null) {
 						if (layout != null) {
-							Sign sign = (Sign) b.getState();
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, (String) lines.get(i));
 								if (c.getBoolean("options.background.enable")) {
+									// Making full background and editable in config
+									/*if (server.getPlayerCount() == server.getMaxPlayers()) {
+										if (sign.getType().equals(Material.WALL_SIGN)) {
+											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
+												updateBackground(Material.WOOL,
+														c.getInt("options.background.block-colors.full.wool"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
+												updateBackground(Material.STAINED_GLASS,
+														c.getInt("options.background.block-colors.full.glass"));
+											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
+												updateBackground(Material.STAINED_CLAY,
+														c.getInt("options.background.block-colors.full.clay"));
+											}
+										}
+									}*/
 									if (server.isOnline()) {
 										if (sign.getType().equals(Material.WALL_SIGN)) {
 											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
@@ -158,24 +173,22 @@ public class TeleportSign {
 							}
 							sign.update(true);
 						} else {
-							Sign sign = (Sign) b.getState();
-							plugin.logConsole(Level.WARNING, "Can't find layout '" + this.layout + "'.");
-							String[] error = { "§4ERROR:", "§6Layout", "§e" + this.layout.getName(), "§6not found!" };
+							plugin.logConsole(Level.WARNING, "Can't find layout '" + layout + "'.");
+							String[] error = { "§4ERROR:", "§6Layout", "§e" + layout.getName(), "§6not found!" };
 							signError(sign, error);
 							if (c.getBoolean("options.drop-sign")) {
 								sign.getLocation().getBlock().breakNaturally();
 							}
-							this.broken = true;
+							broken = true;
 						}
 					} else {
-						Sign sign = (Sign) b.getState();
-						plugin.logConsole(Level.WARNING, "Can't find server '" + this.server + "'.");
-						String[] error = { "§4ERROR:", "§6Server", "§e" + this.server.getName(), "§6not found!" };
+						plugin.logConsole(Level.WARNING, "Can't find server '" + server + "'.");
+						String[] error = { "§4ERROR:", "§6Server", "§e" + server.getName(), "§6not found!" };
 						signError(sign, error);
 						if (c.getBoolean("options.drop-sign")) {
 							sign.getLocation().getBlock().breakNaturally();
 						}
-						this.broken = true;
+						broken = true;
 					}
 				}
 			}
@@ -184,7 +197,7 @@ public class TeleportSign {
 
 	@SuppressWarnings("deprecation")
 	public void updateBackground(Material mat, int color) {
-		Location loc3 = this.getLocation();
+		Location loc3 = getLocation();
 		BlockState s = (Sign) loc3.getBlock().getState();
 		if (s.getType() == Material.WALL_SIGN) {
 			BlockFace bf = ((Directional) s.getData()).getFacing();

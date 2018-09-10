@@ -33,9 +33,9 @@ public class ConfigData {
 	private int cver = 2;
 	private int lyver = 1;
 
-	private File config_file = new File("plugins/TeleportSigns/config.yml");
-	private File layout_file = new File("plugins/TeleportSigns/layout.yml");
-	private File sign_file = new File("plugins/TeleportSigns/signs.yml");
+	private File config_file;
+	private File layout_file;
+	private File sign_file;
 
 	public enum ConfigType {
 		CONFIG,
@@ -45,12 +45,19 @@ public class ConfigData {
 
 	public ConfigData(TeleportSigns plugin) {
 		this.plugin = plugin;
+
+		config_file = new File(plugin.getDataFolder(), "config.yml");
+		layout_file = new File(plugin.getDataFolder(), "layout.yml");
+		sign_file = new File(plugin.getDataFolder(), "signs.yml");
 	}
 
 	public void loadConfig() {
 		unloadConfig();
 
 		try {
+			if (!plugin.getDataFolder().exists()) {
+				plugin.getDataFolder().mkdirs();
+			}
 			if (config_file.exists()) {
 				config = YamlConfiguration.loadConfiguration(config_file);
 				config.load(config_file);
@@ -183,7 +190,7 @@ public class ConfigData {
 	}
 
 	public ServerInfo getServer(String server) {
-		for (ServerInfo info : this.servers) {
+		for (ServerInfo info : servers) {
 			if (info.getName().equals(server)) {
 				return info;
 			}
@@ -193,7 +200,7 @@ public class ConfigData {
 	}
 
 	public long getCooldown() {
-		return this.cooldown;
+		return cooldown;
 	}
 
 	public void setCooldown(int seconds) {
@@ -213,7 +220,7 @@ public class ConfigData {
 	}
 
 	public List<ServerInfo> getServers() {
-		return this.servers;
+		return servers;
 	}
 
 	public void setServers(List<ServerInfo> servers) {
@@ -221,7 +228,7 @@ public class ConfigData {
 	}
 
 	public List<TeleportSign> getSigns() {
-		return this.signs;
+		return signs;
 	}
 
 	public void setSigns(List<TeleportSign> signs) {
@@ -229,15 +236,15 @@ public class ConfigData {
 	}
 
 	public Map<String, SignLayout> getLayouts() {
-		return this.layouts;
+		return layouts;
 	}
 
-	public void setLayouts(Map<String, SignLayout> signLayouts) {
-		this.layouts = signLayouts;
+	public void setLayouts(Map<String, SignLayout> layouts) {
+		this.layouts = layouts;
 	}
 
 	public List<Block> getBlocks() {
-		return this.blocks;
+		return blocks;
 	}
 
 	public void setBlocks(List<Block> blocks) {
@@ -253,19 +260,19 @@ public class ConfigData {
 	}
 
 	public int getPingInterval() {
-		return this.pingInterval;
+		return pingInterval;
 	}
 
 	public int getPingTimeout() {
-		return this.pingTimeout;
+		return pingTimeout;
 	}
 
-	public void setPingInterval(int interval) {
-		this.pingInterval = interval;
+	public void setPingInterval(int pingInterval) {
+		this.pingInterval = pingInterval;
 	}
 
-	public void setPingTimeout(int timeout) {
-		this.pingTimeout = timeout;
+	public void setPingTimeout(int pingTimeout) {
+		this.pingTimeout = pingTimeout;
 	}
 
 	public TeleportSign getSignFromLocation(Location l) {
@@ -288,11 +295,11 @@ public class ConfigData {
 
 	public void addSign(Location location, ServerInfo server, SignLayout layout) {
 		String index = LocationSerialiser.locationSignToString(location, server.getName(), layout.getName());
-		List<String> list = this.sign.getStringList("signs");
+		List<String> list = sign.getStringList("signs");
 		list.add(index);
 		sign.set("signs", list);
 		try {
-			this.sign.save(sign_file);
+			sign.save(sign_file);
 		} catch (IOException e) {
 			e.printStackTrace();
 			plugin.throwMsg();
