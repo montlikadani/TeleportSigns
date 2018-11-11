@@ -1,6 +1,5 @@
 package hu.montlikadani.TeleportSigns;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,7 +28,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 		try {
 			if (cmd.getName().equalsIgnoreCase("teleportsigns")) {
 				if (args.length == 0) {
-					if (!sender.hasPermission(Permissions.PINFO) && plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("default-can-see-plugin-information") != true) {
+					if (!sender.hasPermission(Permissions.PINFO)) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-permission").replace("%perm%", "teleportsigns.plugininfo")));
 						return true;
 					}
@@ -100,7 +99,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("unknown-command").replace("%command%", commandLabel)));
 						return true;
 					}
-					Set<String> servers = plugin.getConfigData().getConfig(ConfigType.CONFIG).getConfigurationSection("servers").getKeys(false);
+					Set<String> servers = plugin.getMainConf().getConfigurationSection("servers").getKeys(false);
 					if (servers.isEmpty()) {
 						sender.sendMessage(plugin.defaults(plugin.messages.getString("no-servers-found")));
 						return true;
@@ -126,6 +125,10 @@ public class Commands implements CommandExecutor, TabCompleter {
 					}
 					final String serverGroup = args[1];
 					Player p = (Player) sender;
+					if (!plugin.getConfigData().getServer(serverGroup).isOnline()) {
+						p.sendMessage(plugin.defaults(plugin.messages.getString("server-offline").replace("%server%", serverGroup)));
+						return true;
+					}
 					if (plugin.getConfigData().getServer(serverGroup) != null) {
 						ServerInfo server = plugin.getConfigData().getServer(serverGroup);
 						server.teleportPlayer(p);
@@ -187,13 +190,20 @@ public class Commands implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		if (sender.hasPermission(Permissions.TABCOMP)) {
-			if (args.length < 2) {
-				for (String com : new String[] { "help", "reload", "disable", "listlayouts", "listservers", "connect", "editsign" }) {
-					if (com.startsWith(args[0])) {
-						return Arrays.asList(com);
+			List<String> cmds = new java.util.ArrayList<>();
+			if (cmd.getName().equalsIgnoreCase("teleportsigns") || cmd.getName().equalsIgnoreCase("ts")) {
+				if (args.length < 2) {
+					for (String com : new String[] { "help", "reload", "disable", "listlayouts", "listservers", "connect", "editsign" }) {
+						cmds.add(com);
+					}
+				}
+				if (args.length < 3 && args[0].equalsIgnoreCase("connect")) {
+					for (ServerInfo com : plugin.getConfigData().getServers()) {
+						cmds.add(com.getName());
 					}
 				}
 			}
+			return cmds;
 		}
 		return null;
 	}

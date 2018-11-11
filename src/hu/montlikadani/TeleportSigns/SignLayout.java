@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.ChatColor;
 
 public class SignLayout {
+
 	private String name;
 	private String online;
 	private String offline;
@@ -14,10 +15,12 @@ public class SignLayout {
 	private String offlineInt;
 	private String offlineMotd;
 	private String offlineMessage;
+	private String fullMessage;
 	private String cooldownMessage;
+	private String full;
 
 	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport,
-			String offlineInt, String offlineMotd, String offlineMessage, String cooldownMessage) {
+			String offlineInt, String offlineMotd, String offlineMessage, String fullMessage, String cooldownMessage, String full) {
 		this.name = name;
 		this.online = online;
 		this.offline = offline;
@@ -26,7 +29,9 @@ public class SignLayout {
 		this.offlineInt = offlineInt;
 		this.offlineMotd = offlineMotd;
 		this.offlineMessage = offlineMessage;
+		this.fullMessage = fullMessage;
 		this.cooldownMessage = cooldownMessage;
+		this.full = full;
 	}
 
 	public String getName() {
@@ -35,6 +40,10 @@ public class SignLayout {
 
 	public String getOnline() {
 		return online;
+	}
+
+	public String getFull() {
+		return full;
 	}
 
 	public String getOffline() {
@@ -61,6 +70,10 @@ public class SignLayout {
 		return offlineMessage;
 	}
 
+	public String getFullMessage() {
+		return fullMessage;
+	}
+
 	public String getCooldownMessage() {
 		return cooldownMessage;
 	}
@@ -71,32 +84,31 @@ public class SignLayout {
 		for (String line : lines) {
 			line = line.replaceAll("%name%", server.getName());
 			line = line.replaceAll("%displayname%", server.getDisplayname());
+			line = line.replaceAll("%address%", server.getAddress().getHostName());
+			line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
+			line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 
 			if (server.isOnline()) {
-				line = line.replaceAll("%isonline%", online);
 				line = line.replaceAll("%numpl%", String.valueOf(server.getPlayerCount()));
 				line = line.replaceAll("%maxpl%", String.valueOf(server.getMaxPlayers()));
 				line = line.replaceAll("%motd%", formatDescription(server.getMotd()));
-				line = line.replaceAll("%address%", server.getAddress().getHostName());
-				line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
-				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 				line = line.replaceAll("%version%", server.getVersion());
 
-				line = textValues(line);
-				line = editText(line);
+				// Bug: doesn't load the texts in signs when the server is full
+				if (server.getPlayerCount() == server.getMaxPlayers()) {
+					line = line.replaceAll("%isonline%", full);
+				} else if (server.getPlayerCount() != server.getMaxPlayers()) {
+					line = line.replaceAll("%isonline%", online);
+				}
 			} else {
 				line = line.replaceAll("%isonline%", offline);
 				line = line.replaceAll("%numpl%", String.valueOf(offlineInt));
 				line = line.replaceAll("%maxpl%", String.valueOf(offlineInt));
 				line = line.replaceAll("%motd%", offlineMotd);
-				line = line.replaceAll("%address%", server.getAddress().getHostName());
-				line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
-				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 				line = line.replaceAll("%version%", "");
-
-				line = textValues(line);
-				line = editText(line);
 			}
+			line = textValues(line);
+			line = editText(line);
 
 			layout.add(line);
 		}
@@ -110,6 +122,19 @@ public class SignLayout {
 		line = line.replaceAll("%displayname%", server.getDisplayname());
 		line = line.replaceAll("%address%", server.getAddress().getHostName());
 		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
+		line = textValues(line);
+
+		return line;
+	}
+
+	public String parseFullMessage(ServerInfo server) {
+		String line = fullMessage;
+		line = line.replaceAll("%name%", server.getName());
+		line = line.replaceAll("%displayname%", server.getDisplayname());
+		line = line.replaceAll("%address%", server.getAddress().getHostName());
+		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
+		line = line.replaceAll("%numpl%", String.valueOf(server.getPlayerCount()));
+		line = line.replaceAll("%maxpl%", String.valueOf(server.getMaxPlayers()));
 		line = textValues(line);
 
 		return line;

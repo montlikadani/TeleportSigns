@@ -18,8 +18,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
-
 public class Listeners implements Listener {
 
 	private TeleportSigns plugin;
@@ -51,19 +49,19 @@ public class Listeners implements Listener {
 						p.sendMessage(plugin.defaults(plugin.messages.getString("sign-created").replace("%server%", sname).replace("%layout%", lname)));
 					} else {
 						p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-layout").replace("%layout%", lname)));
-						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+						if (plugin.getMainConf().getBoolean("drop-sign")) {
 							b.breakNaturally();
 						}
 					}
 				} else {
 					p.sendMessage(plugin.defaults(plugin.messages.getString("unknown-server").replace("%server%", sname)));
-					if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+					if (plugin.getMainConf().getBoolean("drop-sign")) {
 						b.breakNaturally();
 					}
 				}
 			} else {
 				p.sendMessage(plugin.defaults(plugin.messages.getString("no-create-sign").replace("%perm%", "teleportsigns.create")));
-				if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("drop-sign")) {
+				if (plugin.getMainConf().getBoolean("drop-sign")) {
 					b.breakNaturally();
 				}
 			}
@@ -125,16 +123,31 @@ public class Listeners implements Listener {
 		if (event.isCancelled()) return;
 
 		Player p = event.getPlayer();
+		ServerInfo server = event.getServer();
 		if (event.getSign().getLayout().isTeleport()) {
-			if (event.getServer().isOnline()) {
+			if (server.isOnline()) {
 				if (!hasCooldown(p)) {
 					addCooldown(p);
-					event.getServer().teleportPlayer(p);
+					if (server.getPlayerCount() == server.getMaxPlayers()) {
+						String msg = event.getSign().getLayout().getFullMessage();
+						if (msg != null && !msg.equals("")) {
+							p.sendMessage(plugin.defaults(event.getSign().getLayout().parseFullMessage(server)));
+						}
+						event.setCancelled(true);
+						return;
+					}
+					server.teleportPlayer(p);
 				} else {
-					p.sendMessage(event.getSign().getLayout().parseCooldownMessage(getCooldown(p)));
+					String msg = event.getSign().getLayout().getCooldownMessage();
+					if (msg != null && !msg.equals("")) {
+						p.sendMessage(event.getSign().getLayout().parseCooldownMessage(getCooldown(p)));
+					}
 				}
 			} else {
-				p.sendMessage(event.getSign().getLayout().parseOfflineMessage(event.getServer()));
+				String msg = event.getSign().getLayout().getOfflineMessage();
+				if (msg != null && !msg.equals("")) {
+					p.sendMessage(event.getSign().getLayout().parseOfflineMessage(server));
+				}
 			}
 		}
 	}
@@ -190,7 +203,7 @@ public class Listeners implements Listener {
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		Player p = e.getPlayer();
-		if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("check-update") && p.isOp()) {
+		if (plugin.getMainConf().getBoolean("check-update") && p.isOp()) {
 			String[] nVersion;
 			String[] cVersion;
 			String lineWithVersion;
@@ -198,6 +211,7 @@ public class Listeners implements Listener {
 			try {
 				githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
 				lineWithVersion = "";
+				@SuppressWarnings("resource")
 				Scanner websiteScanner = new Scanner(githubUrl.openStream());
 				while (websiteScanner.hasNextLine()) {
 					String line = websiteScanner.nextLine();
@@ -214,7 +228,7 @@ public class Listeners implements Listener {
 				if (newestVersionNumber > currentVersionNumber) {
 					p.sendMessage(plugin.colorMsg("&8&m&l--------------------------------------------------\n" + 
 					plugin.messages.getString("prefix") + "&a A new update is available!&4 Version:&7 " + versionString + 
-					"\n&6Download:&c &nhttps://www.spigotmc.org/resources/teleport-signs.37446/" + 
+					"\n&6Download:&c &nhttps://www.spigotmc.org/resources/37446/" + 
 					"\n&8&m&l--------------------------------------------------"));
 				}
 			} catch (Exception ex) {

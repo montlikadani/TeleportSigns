@@ -43,15 +43,15 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		try {
 			data = new ConfigData(this);
 			data.loadConfig();
-			if (!data.getConfig(ConfigType.CONFIG).getBoolean("enabled")) {
+			if (!getMainConf().getBoolean("enabled")) {
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
-			if (!Bukkit.getBukkitVersion().split("\\.")[1].substring(0, 1).equals("8")) {
+			/*if (!Bukkit.getBukkitVersion().split("\\.")[1].substring(0, 1).equals("8")) {
 				Bukkit.getServer().getConsoleSender().sendMessage("§cIncorrect Bukkit/Spigot version, not loading plugin. Version support: 1.8.x");
 				setEnabled(false);
 				return;
-			}
+			}*/
 			instance = this;
 			ping = new PingScheduler(this);
 			sign = new SignScheduler(this);
@@ -71,16 +71,17 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}
 			}, time);
 			getCommand("teleportsigns").setExecutor(new Commands(this));
-			if (data.getConfig(ConfigType.CONFIG).getBoolean("check-update")) {
+			getCommand("teleportsigns").setTabCompleter(new Commands(this));
+			if (getMainConf().getBoolean("check-update")) {
 				logConsole(Level.INFO, checkVersion());
 			}
-			if (data.getConfig(ConfigType.CONFIG).getBoolean("metrics")) {
+			if (getMainConf().getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
-				Boolean backgr = data.getConfig(ConfigType.CONFIG).getBoolean("options.background.enable");
+				Boolean backgr = getMainConf().getBoolean("options.background.enable");
 				metrics.addCustomChart(new Metrics.SimplePie("background_type", new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						return data.getConfig(ConfigType.CONFIG).getString("options.background.type");
+						return getMainConf().getString("options.background.type");
 					}
 				}));
 				metrics.addCustomChart(new Metrics.SimplePie("using_background", new Callable<String>() {
@@ -103,9 +104,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				}));
 				logConsole(Level.INFO, "Metrics enabled.");
 			}
-			if (data.getConfig(ConfigType.CONFIG).getString("plugin-enable") != null && 
-					!data.getConfig(ConfigType.CONFIG).getString("plugin-enable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.CONFIG).getString("plugin-enable")));
+			if (getMainConf().getString("plugin-enable") != null && !getMainConf().getString("plugin-enable").equals("")) {
+				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-enable")));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -128,9 +128,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			messenger = null;
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
-			if (data.getConfig(ConfigType.CONFIG).getString("plugin-disable") != null && 
-					!data.getConfig(ConfigType.CONFIG).getString("plugin-disable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(data.getConfig(ConfigType.CONFIG).getString("plugin-disable")));
+			if (getMainConf().getString("plugin-disable") != null && !getMainConf().getString("plugin-disable").equals("")) {
+				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-disable")));
 			}
 			data.unloadConfig();
 		} catch (Exception e) {
@@ -165,6 +164,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		try {
 			URL githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
 			lineWithVersion = "";
+			@SuppressWarnings("resource")
 			Scanner websiteScanner = new Scanner(githubUrl.openStream());
 			while (websiteScanner.hasNextLine()) {
 				String line = websiteScanner.nextLine();
@@ -179,7 +179,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			cVersion = getDescription().getVersion().split("\\.");
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 			if (newestVersionNumber > currentVersionNumber) {
-				return "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/teleport-signs.37446/";
+				return "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/37446/";
 			} else {
 				return "You're running the latest version.";
 			}
@@ -200,10 +200,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public void logConsole(Level level, String error) {
-		if (data.getConfig(ConfigType.CONFIG).getBoolean("options.logconsole")) {
+		if (getMainConf().getBoolean("options.logconsole")) {
 			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
 		}
-		if (data.getConfig(ConfigType.CONFIG).getBoolean("log-to-file")) {
+		if (getMainConf().getBoolean("log-to-file")) {
 			try {
 				File dataFolder = getDataFolder();
 				if (!dataFolder.exists()) {
@@ -218,7 +218,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				Date dt = new Date();
 				SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
 				String time = df.format(dt);
-				pw.println(time + " - " + "[" + level + "] " + error);
+				pw.println(time + " - [" + level + "] " + error);
 				pw.flush();
 				pw.close();
 			} catch (Exception e) {
@@ -241,7 +241,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public void reload() {
-		getConfigData().loadConfig();
+		data.loadConfig();
 		ping = null;
 		sign = null;
 		ping = new PingScheduler(this);
@@ -259,6 +259,14 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	public ConfigData getConfigData() {
 		return data;
+	}
+
+	public FileConfiguration getMainConf() {
+		return data.getConfig(ConfigType.CONFIG);
+	}
+
+	public String getBackgroundType() {
+		return getMainConf().getString("options.background.type");
 	}
 
 	public String defaults(String str) {

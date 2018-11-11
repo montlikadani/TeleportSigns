@@ -33,8 +33,11 @@ layouts:
     offline: '&cOffline'
     offline-int: --
     offline-motd: '&cOffline'
+    full: '&9Full'
     # Message when a player tries to connect to offline server.
     offline-message: '&cThe server is offline!'
+    # Message when a player tries to connect to full server.
+    full-message: '&cThe server is full!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
   info:
     teleport: false
@@ -47,6 +50,7 @@ layouts:
     offline: 'Offline'
     offline-int: '-'
     offline-motd: '&cOffline'
+    full: '&9Full'
     # Message when a player tries to connect to offline server.
     offline-message: '&cThe server is offline!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
@@ -61,9 +65,12 @@ layouts:
     offline: '&c---'
     offline-int: '-'
     offline-motd: '&cOffline'
+    full: '&9Full'
     # Message when a player tries to connect to offline server.
     offline-message: '&a[Games]&7 %name%&c is offline!'
+    # Message when a player tries to connect to full server.
+    full-message: '&cThe server is full!'
     cooldown-message: '&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.'
 
 # DO NOT CHANGE THIS!
-config-version: 1
+config-version: 2

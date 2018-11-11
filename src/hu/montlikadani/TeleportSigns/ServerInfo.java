@@ -9,8 +9,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
-
 public class ServerInfo {
 
 	private ServerPing ping;
@@ -175,10 +173,10 @@ public class ServerInfo {
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
-		if (TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG).getString("options.enter-message") != null && 
-				!TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG).getString("options.enter-message").equals("")) {
-			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getConfigData().getConfig(ConfigType.CONFIG)
-					.getString("options.enter-message").replace("%server%", name)));
+		if (TeleportSigns.getInstance().getMainConf().getString("options.enter-message") != null &&
+				!TeleportSigns.getInstance().getMainConf().getString("options.enter-message").equals("")) {
+			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getMainConf().getString("options.enter-message")
+					.replace("%server%", name)));
 			return;
 		}
 	}

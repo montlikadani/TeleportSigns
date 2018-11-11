@@ -10,8 +10,18 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import com.google.gson.Gson;
+
+import hu.montlikadani.TeleportSigns.StatusResponse.StatusResponse_110;
+import hu.montlikadani.TeleportSigns.StatusResponse.StatusResponse_113;
+import hu.montlikadani.TeleportSigns.StatusResponse.StatusResponse_19;
 
 public class ServerPing {
 	private boolean fetching;
@@ -48,33 +58,30 @@ public class ServerPing {
 	public int readVarInt(DataInputStream in) throws IOException {
 		int i = 0;
 		int j = 0;
-		while (true) {
-			int k = in.readByte();
-			i |= (k & 0x7F) << j++ * 7;
+
+		byte k;
+		do {
+			k = in.readByte();
+			i |= (k & 127) << j++ * 7;
 			if (j > 5) {
 				throw new RuntimeException("VarInt too big");
 			}
-			if ((k & 0x80) != 128) {
-				break;
-			}
-		}
+		} while ((k & 128) == 128);
+
 		return i;
 	}
 
 	public void writeVarInt(DataOutputStream out, int paramInt) throws IOException {
-		while (true) {
-			if ((paramInt & 0xFFFFFF80) == 0) {
-				out.writeByte(paramInt);
-				return;
-			}
-
-			out.writeByte(paramInt & 0x7F | 0x80);
+		while ((paramInt & -128) != 0) {
+			out.writeByte(paramInt & 127 | 128);
 			paramInt >>>= 7;
 		}
+
+		out.writeByte(paramInt);
 	}
 
-	@SuppressWarnings({ "resource", "unused" })
-	public StatusResponse fetchData() throws IOException {
+	@SuppressWarnings({ "unused" })
+	public SResponse fetchData() throws IOException {
 		socket.close();
 		socket = new Socket();
 		OutputStream outputStream;
@@ -94,7 +101,7 @@ public class ServerPing {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream handshake = new DataOutputStream(b);
 		handshake.writeByte(0x00);
-		writeVarInt(handshake, 4);
+		writeVarInt(handshake, 47); // old 4
 		writeVarInt(handshake, host.getHostString().length());
 		handshake.writeBytes(host.getHostString());
 		handshake.writeShort(host.getPort());
@@ -130,6 +137,19 @@ public class ServerPing {
 		dataInputStream.readFully(in);
 		String json = new String(in);
 
+		JSONObject jsonMother = new JSONObject();
+		JSONParser parser = new JSONParser();
+
+		try {
+			jsonMother = (JSONObject) parser.parse(json);
+		} catch (ParseException var20) {
+			Logger.getLogger(ServerPing.class.getName()).log(Level.SEVERE, (String) null, var20);
+		}
+
+		JSONObject jsonVersion = (JSONObject) jsonMother.get("version");
+		String version = (String) jsonVersion.get("name");
+		SResponse ret = new SResponse();
+
 		long now = System.currentTimeMillis();
 		dataOutputStream.writeByte(0x09);
 		dataOutputStream.writeByte(0x01);
@@ -146,8 +166,43 @@ public class ServerPing {
 		}
 		long pingtime = dataInputStream.readLong();
 
-		StatusResponse response = (StatusResponse) gson.fromJson(json, StatusResponse.class);
-		response.setTime((int) (now - pingtime));
+		if (version.contains("1.9")) {
+			StatusResponse_19 res = (StatusResponse_19) this.gson.fromJson(json, StatusResponse_19.class);
+			ret.description = res.getDescription();
+			ret.favicon = res.getFavicon();
+			ret.players = res.getPlayers().getOnline();
+			ret.slots = res.getPlayers().getMax();
+			ret.time = res.getTime();
+			ret.protocol = res.getVersion().getProtocol();
+			ret.version = res.getVersion().getName();
+		} else if (!version.contains("1.10") && !version.contains("1.11") && !version.contains("1.12")) {
+			if (version.contains("1.13")) {
+				StatusResponse_113 res = (StatusResponse_113) this.gson.fromJson(json, StatusResponse_113.class);
+				ret.description = res.getDescription().getText();
+				ret.players = res.getPlayers().getOnline();
+				ret.slots = res.getPlayers().getMax();
+				ret.time = -1;
+				ret.protocol = res.getVersion().getProtocol();
+				ret.version = res.getVersion().getName();
+			} else {
+				StatusResponse res = (StatusResponse) this.gson.fromJson(json, StatusResponse.class);
+				ret.description = res.getDescription();
+				ret.favicon = res.getFavicon();
+				ret.players = res.getPlayers().getOnline();
+				ret.slots = res.getPlayers().getMax();
+				ret.time = res.getTime();
+				ret.protocol = res.getVersion().getProtocol();
+				ret.version = res.getVersion().getName();
+			}
+		} else {
+			StatusResponse_110 res = (StatusResponse_110) this.gson.fromJson(json, StatusResponse_110.class);
+			ret.description = res.getDescription();
+			ret.players = res.getPlayers().getOnline();
+			ret.slots = res.getPlayers().getMax();
+			ret.time = res.getTime();
+			ret.protocol = res.getVersion().getProtocol();
+			ret.version = res.getVersion().getName();
+		}
 
 		dataOutputStream.close();
 		outputStream.close();
@@ -155,7 +210,17 @@ public class ServerPing {
 		inputStream.close();
 		socket.close();
 
-		return response;
+		return ret;
+	}
+
+	public class SResponse {
+		public String version;
+		public String protocol;
+		public String favicon;
+		public String description;
+		public int players;
+		public int slots;
+		public int time;
 	}
 
 	public class StatusResponse {

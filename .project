@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>src/hu/montlikadani/TeleportSigns/AnnounceThread.class</name>
-			<type>1</type>
-			<locationURI>PARENT-2-WORKSPACE_LOC/BLACK_~1/AppData/Local/Temp/Rar$DRa0.711/main/AnnounceThread.class</locationURI>
-		</link>
-	</linkedResources>
 </projectDescription>

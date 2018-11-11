@@ -12,13 +12,10 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.material.Directional;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
 
 public class TeleportSign {
 
-	private TeleportSigns plugin = JavaPlugin.getPlugin(TeleportSigns.class);
+	private TeleportSigns plugin = TeleportSigns.getPlugin(TeleportSigns.class);
 
 	private String world;
 	private int x;
@@ -108,12 +105,12 @@ public class TeleportSign {
 		return layout;
 	}
 
-	public boolean isBroken()  {
+	public boolean isBroken() {
 		return broken;
 	}
 
 	public void updateSign() {
-		Configuration c = plugin.getConfigData().getConfig(ConfigType.CONFIG);
+		Configuration c = plugin.getMainConf();
 		if (!isBroken()) {
 			Location location = getLocation();
 
@@ -127,45 +124,36 @@ public class TeleportSign {
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, (String) lines.get(i));
 								if (c.getBoolean("options.background.enable")) {
-									// Making full background and editable in config
-									/*if (server.getPlayerCount() == server.getMaxPlayers()) {
-										if (sign.getType().equals(Material.WALL_SIGN)) {
-											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
-												updateBackground(Material.WOOL,
-														c.getInt("options.background.block-colors.full.wool"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
-												updateBackground(Material.STAINED_GLASS,
-														c.getInt("options.background.block-colors.full.glass"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
-												updateBackground(Material.STAINED_CLAY,
-														c.getInt("options.background.block-colors.full.clay"));
-											}
-										}
-									}*/
 									if (server.isOnline()) {
-										if (sign.getType().equals(Material.WALL_SIGN)) {
-											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
-												updateBackground(Material.WOOL,
-														c.getInt("options.background.block-colors.online.wool"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
-												updateBackground(Material.STAINED_GLASS,
-														c.getInt("options.background.block-colors.online.glass"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
-												updateBackground(Material.STAINED_CLAY,
-														c.getInt("options.background.block-colors.online.clay"));
+										if (server.getPlayerCount() == server.getMaxPlayers()) {
+											if (b.getType() == Material.WALL_SIGN) {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+												} else if (plugin.getBackgroundType().equals("clay")) {
+													updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
+												}
+											}
+											return;
+										}
+										if (b.getType() == Material.WALL_SIGN) {
+											if (plugin.getBackgroundType().equals("wool")) {
+												updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+											} else if (plugin.getBackgroundType().equals("glass")) {
+												updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+											} else if (plugin.getBackgroundType().equals("clay")) {
+												updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
 											}
 										}
 									} else {
-										if (sign.getType().equals(Material.WALL_SIGN)) {
-											if (c.getString("options.background.type").equalsIgnoreCase("wool")) {
-												updateBackground(Material.WOOL,
-														c.getInt("options.background.block-colors.offline.wool"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("glass")) {
-												updateBackground(Material.STAINED_GLASS,
-														c.getInt("options.background.block-colors.offline.glass"));
-											} else if (c.getString("options.background.type").equalsIgnoreCase("clay")) {
-												updateBackground(Material.STAINED_CLAY,
-														c.getInt("options.background.block-colors.offline.clay"));
+										if (b.getType() == Material.WALL_SIGN) {
+											if (plugin.getBackgroundType().equals("wool")) {
+												updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+											} else if (plugin.getBackgroundType().equals("glass")) {
+												updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+											} else if (plugin.getBackgroundType().equals("clay")) {
+												updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
 											}
 										}
 									}

@@ -1,3 +1,20 @@
+# v2.0
+Added:
+    Added /ts listservers command. - To list the specified servers what is in the config.
+	Added 1.9-1.13 version support.
+    Added full layout sign message. - When the server is full send a message.
+    Added full background. - When the server is full.
+    Added a message for /ts connect command, when the server is offline.
+Fixes:
+    Fixed Exception errors when the plugin has disabled.
+    Fixed NullPointerException problems.
+    Fixed file creation problems.
+    Fixed some permission not work correctly.
+    Fix tab-complete problems.
+Removed:
+    Removed plugin update permission.
+    Removed connect-timeout integer.
+
 # v1.9
 Added:
     Added /ts editsign command. - To edit the sign at the look.

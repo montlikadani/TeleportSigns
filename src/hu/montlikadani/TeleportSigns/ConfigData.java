@@ -30,8 +30,8 @@ public class ConfigData {
 	private long signUpdates;
 	private int pingTimeout;
 	private int pingInterval;
-	private int cver = 2;
-	private int lyver = 1;
+	private int cver = 3;
+	private int lyver = 2;
 
 	private File config_file;
 	private File layout_file;
@@ -152,8 +152,11 @@ public class ConfigData {
 			String offlineInt = cs.getString("offline-int");
 			String offlineMotd = cs.getString("offline-motd");
 			String offlineMessage = cs.getString("offline-message");
+			String fullMessage = cs.getString("full-message");
 			String cooldownMessage = cs.getString("cooldown-message");
-			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt, offlineMotd, offlineMessage, cooldownMessage);
+			String full = cs.getString("full");
+			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt,
+					offlineMotd, offlineMessage, fullMessage, cooldownMessage, full);
 			this.layouts.put(layout, signLayout);
 		}
 	}
@@ -161,32 +164,32 @@ public class ConfigData {
 	private void loadSigns() {
 		if (this.sign.getStringList("signs").isEmpty()) {
 			plugin.logConsole(Level.WARNING, "No saved sign was found.");
-			return;
-		}
-		for (String sign : this.sign.getStringList("signs")) {
-			try {
-				Location location = LocationSerialiser.stringToLocationSign(sign);
-				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
-				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
-
+		} else {
+			for (String sign : this.sign.getStringList("signs")) {
 				try {
-					// It does not work when the server starts and the saved sign in the database.
-					Block b = location.getBlock();
-					if (b.getState() instanceof Sign) {
-						TeleportSign tsign = new TeleportSign(server, location, layout);
-						this.signs.add(tsign);
-						this.blocks.add(b);
-					}
-				} catch (NullPointerException e) {}
-			} catch (Exception e) {
-				e.printStackTrace();
-				plugin.throwMsg();
+					Location location = LocationSerialiser.stringToLocationSign(sign);
+					ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
+					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
+
+					try {
+						// It does not work when the sign is in the database but can not find and throw the bug
+						Block b = location.getBlock();
+						if (b.getState() instanceof Sign) {
+							TeleportSign tsign = new TeleportSign(server, location, layout);
+							this.signs.add(tsign);
+							this.blocks.add(b);
+						}
+					} catch (NullPointerException e) {}
+				} catch (Exception e) {
+					e.printStackTrace();
+					plugin.throwMsg();
+				}
 			}
 		}
 	}
 
 	public SignLayout getLayout(String layout) {
-		return this.layouts.get(layout);
+		return layouts.get(layout);
 	}
 
 	public ServerInfo getServer(String server) {
@@ -204,7 +207,7 @@ public class ConfigData {
 	}
 
 	public void setCooldown(int seconds) {
-		this.cooldown = seconds * 1000;
+		cooldown = seconds * 1000;
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {

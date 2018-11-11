@@ -3,15 +3,15 @@ package hu.montlikadani.TeleportSigns;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import hu.montlikadani.TeleportSigns.ServerPing.StatusResponse;
+import hu.montlikadani.TeleportSigns.ServerPing.SResponse;
 
 public class ServerPingResponseEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	private ServerInfo server;
 	private ServerPing ping;
-	private StatusResponse response;
+	private SResponse response;
 
-	public ServerPingResponseEvent(ServerInfo server, ServerPing ping, StatusResponse response) {
+	public ServerPingResponseEvent(ServerInfo server, ServerPing ping, SResponse response) {
 		this.server = server;
 		this.ping = ping;
 		this.response = response;
@@ -34,7 +34,7 @@ public class ServerPingResponseEvent extends Event {
 		return ping;
 	}
 
-	public StatusResponse getResponse() {
+	public SResponse getResponse() {
 		return response;
 	}
 }

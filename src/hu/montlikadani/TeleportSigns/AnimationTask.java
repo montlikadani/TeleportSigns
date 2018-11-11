@@ -5,8 +5,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
-import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
-
 public class AnimationTask {
 
 	private TeleportSigns plugin;
@@ -34,18 +32,13 @@ public class AnimationTask {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(line, lines[line]);
 						sign.update(true);
-						if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getBoolean("options.background.enable")) {
-							if (sign.getType().equals(Material.WALL_SIGN)) {
-								if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("wool")) {
-									s.updateBackground(Material.WOOL,
-											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.wool"));
-								} else if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("glass")) {
-									s.updateBackground(Material.STAINED_GLASS,
-											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.glass"));
-								} else if (plugin.getConfigData().getConfig(ConfigType.CONFIG).getString("options.background.type").equalsIgnoreCase("clay")) {
-									s.updateBackground(Material.STAINED_CLAY,
-											plugin.getConfigData().getConfig(ConfigType.CONFIG).getInt("options.background.block-colors.loading.clay"));
-								}
+						if (plugin.getMainConf().getBoolean("options.background.enable") && s.getLocation().getBlock().getType() == Material.WALL_SIGN) {
+							if (plugin.getBackgroundType().equals("wool")) {
+								s.updateBackground(Material.WOOL, plugin.getMainConf().getInt("options.background.block-colors.loading.wool"));
+							} else if (plugin.getBackgroundType().equals("glass")) {
+								s.updateBackground(Material.STAINED_GLASS, plugin.getMainConf().getInt("options.background.block-colors.loading.glass"));
+							} else if (plugin.getBackgroundType().equals("clay")) {
+								s.updateBackground(Material.STAINED_CLAY, plugin.getMainConf().getInt("options.background.block-colors.loading.clay"));
 							}
 						}
 					}

@@ -70,6 +70,11 @@ options:
         wool: 3
         glass: 11
         clay: 3
+      # When the server is full of players.
+      full:
+        wool: 9
+        glass: 9
+        clay: 9
 
 # The servers that players join.
 servers:
@@ -104,9 +109,5 @@ log-to-file: true
 plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${version}&a!'
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
-# The default is allowed to see the plugin information.
-# Permission: teleportsigns.plugininfo
-default-can-see-plugin-information: false
-
 # DO NOT CHANGE THIS!
-config-version: 2
+config-version: 3

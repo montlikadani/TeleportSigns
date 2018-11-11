@@ -10,7 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 
-import hu.montlikadani.TeleportSigns.ServerPing.StatusResponse;
+import hu.montlikadani.TeleportSigns.ServerPing.SResponse;
 
 public class PingScheduler implements Runnable, Listener {
 	private final TeleportSigns plugin;
@@ -69,12 +69,12 @@ public class PingScheduler implements Runnable, Listener {
 
 					try {
 						final String status = server.getMotd();
-						StatusResponse response = ping.fetchData();
-						server.setVersion(formatVersion(response.getVersion().getName()));
-						server.setProtocol(response.getVersion().getProtocol());
-						server.setMotd(response.getDescription());
-						server.setPlayerCount(response.getPlayers().getOnline());
-						server.setMaxPlayers(response.getPlayers().getMax());
+						SResponse response = ping.fetchData();
+						server.setVersion(formatVersion(response.version));
+						server.setProtocol(response.protocol);
+						server.setMotd(response.description);
+						server.setPlayerCount(response.players);
+						server.setMaxPlayers(response.slots);
 						server.setPingStart(pingStartTime);
 						server.setOnline(true);
 
