@@ -33,7 +33,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 			if (cmd.getName().equalsIgnoreCase("teleportsigns")) {
 				if (args.length == 0) {
 					if (!sender.hasPermission(Perm.PINFO.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.plugininfo")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.PINFO.getPerm())));
 						return true;
 					}
 					sender.sendMessage(plugin.replaceColor("&6&l[&2&lTeleport&e&lSigns&b&l Info&e&l]"));
@@ -43,7 +43,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					sender.sendMessage(plugin.replaceColor("&4If you find a bug, send issue here:&e &nhttps://github.com/montlikadani/TeleportSigns/issues"));
 				} else if (args[0].equalsIgnoreCase("help")) {
 					if (!sender.hasPermission(Perm.HELP.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.help")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.HELP.getPerm())));
 						return true;
 					}
 					if (args.length > 1) {
@@ -55,7 +55,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					}
 				} else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
 					if (!sender.hasPermission(Perm.RELOAD.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.reload")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.RELOAD.getPerm())));
 						return true;
 					}
 					if (args.length > 1) {
@@ -66,7 +66,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("reload-config")));
 				} else if (args[0].equalsIgnoreCase("disable")) {
 					if (!(sender.hasPermission(Perm.PDISABLE.getPerm()) && sender.isOp())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.disable + op")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.PDISABLE.getPerm() + " op")));
 						return true;
 					}
 					if (args.length > 1) {
@@ -76,7 +76,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					plugin.getServer().getPluginManager().disablePlugin(plugin);
 				} else if (args[0].equalsIgnoreCase("listlayouts")) {
 					if (!sender.hasPermission(Perm.LISTLAYOUT.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.listlayouts")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.LISTLAYOUT.getPerm())));
 						return true;
 					}
 					if (args.length > 1) {
@@ -91,7 +91,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("list-layouts", "%layouts%", layouts.toString().replace("[", "").replace("]", ""))));
 				} else if (args[0].equalsIgnoreCase("listservers")) {
 					if (!sender.hasPermission(Perm.LISTSERVER.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.listservers")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.LISTSERVER.getPerm())));
 						return true;
 					}
 					if (args.length > 1) {
@@ -106,7 +106,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("list-servers", "%servers%", servers.toString().replace("[", "").replace("]", ""))));
 				} else if (args[0].equalsIgnoreCase("connect")) {
 					if (!sender.hasPermission(Perm.CONNECT.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.connect")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.CONNECT.getPerm())));
 						return true;
 					}
 					if (!(sender instanceof Player)) {
@@ -135,7 +135,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 					}
 				} else if (args[0].equalsIgnoreCase("editsign")) {
 					if (!sender.hasPermission(Perm.EDITSIGN.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", "teleportsigns.editsign")));
+						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.EDITSIGN.getPerm())));
 						return true;
 					}
 					if (!(sender instanceof Player)) {

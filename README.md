@@ -1,18 +1,16 @@
-# TeleportSigns
+# TeleportSigns [![GitHub release](https://img.shields.io/github/release/montlikadani/TeleportSigns.svg)](https://github.com/montlikadani/TeleportSigns/releases) [![Github All Releases](https://img.shields.io/github/downloads/montlikadani/TeleportSigns/total.svg)](https://github.com/montlikadani/TeleportSigns/releases) [![GitHub issues](https://img.shields.io/github/issues/montlikadani/TeleportSigns.svg)](https://github.com/montlikadani/TeleportSigns/issues)
 
-[![bStats](https://img.shields.io/badge/bStats-1.1-brightgreen.svg)](https://bstats.org/plugin/bukkit/TeleportSigns)
+[![bStats](https://img.shields.io/badge/bStats-1.4-brightgreen.svg)](https://bstats.org/plugin/bukkit/TeleportSigns)
+
+Teleport to the server with sign!
+**
 
 ## Link
-* [Spigot](https://www.spigotmc.org/resources/teleport-signs.37446/)
+* [Spigot](https://www.spigotmc.org/resources/37446/)
 
 ### Other
 If you find a bug, please write here: https://github.com/montlikadani/TeleportSigns/issues
 
-__Pull Request can be anybody with any function. (Except source code)__ [PR](https://github.com/montlikadani/TeleportSigns/pulls)
-
 Wiki: https://github.com/montlikadani/TeleportSigns/wiki
 
 Changelog: https://github.com/montlikadani/TeleportSigns/blob/master/Changelog.txt
-
-### Download
-https://github.com/montlikadani/TeleportSigns/releases
