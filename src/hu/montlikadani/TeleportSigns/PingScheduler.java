@@ -85,7 +85,7 @@ public class PingScheduler implements Runnable, Listener {
 							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
 							plugin.callSyncEvent(sevent);
 						}
-					} catch (Exception e) {
+					} catch (Throwable e) {
 						server.setOnline(false);
 						if (!(e instanceof ConnectException)) {
 							plugin.logConsole(Level.WARNING, "Error fetching data from server '" + String.valueOf(server.getAddress().getAddress().getHostAddress().toString())

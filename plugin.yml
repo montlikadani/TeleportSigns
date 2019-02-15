@@ -24,9 +24,8 @@ permissions:
        teleportsigns.connect: true
        telepoortsigs.editsign: true
        teleportsigns.reload: true
-       teleportsigns.plugindisable: true
+       teleportsigns.disable: true
        teleportsigns.help: true
-       teleportsigns.cmd.tabcomplete: true
   teleportsigns.use:
     description: Allows player to use the sign.
     default: true
@@ -56,10 +55,7 @@ permissions:
     default: false
   teleportsigns.reload:
     description: Reload the config files.
-    default: op
-  teleportsigns.plugindisable:
+    default: false
+  teleportsigns.disable:
     description: Allow to player to disable plugin.
     default: op
-  teleportsigns.cmd.tabcomplete:
-    description: You can use [TAB] in commands.
-    default: false

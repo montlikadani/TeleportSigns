@@ -18,15 +18,12 @@
 # - If the string is empty does not send the message.               #
 #-----------------------------OOO-----------------------------------#
 
-#=========================================#
-#                Settings                 #
-#=========================================#
-# Options.
+# Options
 options:
   # Log plugin messages into console.
   logconsole: true
 
-  # Sign usage time. (Permission: teleportsigns.use.nocooldown)
+  # Sign usage time. (Bypass permission: teleportsigns.use.nocooldown)
   use-cooldown: 5
 
   # Sign updates in ticks. 20 ticks = 1 second.
@@ -34,16 +31,20 @@ options:
 
   # How much time do you start the server pinging? (In ticks)
   ping-interval: 30
-  # Important! If you do not want the pinging to end ping-timeout to be smaller than one and take the ping interval by one more.
+  # Important! If you do not want the pinging to end ping-timeout to be smaller than one and
+  # take the ping interval by one more.
   # How much time does the server pinging down? (In ticks)
   ping-timeout: 29
 
   # When you break the sign or not find the layout on the sign, drop a sign?
   drop-sign: false
 
+  # Ignoring the player sneaking when clicking on the sign.
+  ignore-player-sneaking: true
+
   # Server connection message.
   # Use %newline%, %prefix%, %server% placeholder.
-  enter-message: '&6You entered the server&7 %server%&6!'
+  enter-message: "&6You entered the server&7 %server%&6!"
 
   # Defines a background of the sign.
   background:
@@ -80,14 +81,14 @@ options:
 servers:
   pvp:
     # Server IP address and port.
-    address: '127.0.0.1:25566'
+    address: "222.0.0.1:25566"
     # Display name that are on the sign.
-    displayname: '&6[&cPvP&6]'
+    displayname: "&6[&cPvP&6]"
   survival:
     # Server IP address and port.
-    address: '127.0.0.1:25567'
+    address: "222.0.0.1:25567"
     # Display name that are on the sign.
-    displayname: '&e[&aSurvival&e]'
+    displayname: "&e[&aSurvival&e]"
 
 #=========================================#
 #             Plugin Settings             #
@@ -110,4 +111,4 @@ plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${version}&a!'
 plugin-disable: '%prefix%&c The plugin successfully disabled!'
 
 # DO NOT CHANGE THIS!
-config-version: 3
+config-version: 4

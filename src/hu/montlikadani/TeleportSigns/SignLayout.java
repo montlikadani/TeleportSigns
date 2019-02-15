@@ -85,16 +85,15 @@ public class SignLayout {
 			line = line.replaceAll("%name%", server.getName());
 			line = line.replaceAll("%displayname%", server.getDisplayname());
 			line = line.replaceAll("%address%", server.getAddress().getHostName());
-			line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
+			line = line.replaceAll("%port%", Integer.toString(server.getAddress().getPort()));
 			line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 
 			if (server.isOnline()) {
-				line = line.replaceAll("%numpl%", String.valueOf(server.getPlayerCount()));
-				line = line.replaceAll("%maxpl%", String.valueOf(server.getMaxPlayers()));
+				line = line.replaceAll("%numpl%", Integer.toString(server.getPlayerCount()));
+				line = line.replaceAll("%maxpl%", Integer.toString(server.getMaxPlayers()));
 				line = line.replaceAll("%motd%", formatDescription(server.getMotd()));
 				line = line.replaceAll("%version%", server.getVersion());
 
-				// Bug: doesn't load the texts in signs when the server is full
 				if (server.getPlayerCount() == server.getMaxPlayers()) {
 					line = line.replaceAll("%isonline%", full);
 				} else if (server.getPlayerCount() != server.getMaxPlayers()) {
@@ -102,8 +101,8 @@ public class SignLayout {
 				}
 			} else {
 				line = line.replaceAll("%isonline%", offline);
-				line = line.replaceAll("%numpl%", String.valueOf(offlineInt));
-				line = line.replaceAll("%maxpl%", String.valueOf(offlineInt));
+				line = line.replaceAll("%numpl%", offlineInt);
+				line = line.replaceAll("%maxpl%", offlineInt);
 				line = line.replaceAll("%motd%", offlineMotd);
 				line = line.replaceAll("%version%", "");
 			}
@@ -133,8 +132,8 @@ public class SignLayout {
 		line = line.replaceAll("%displayname%", server.getDisplayname());
 		line = line.replaceAll("%address%", server.getAddress().getHostName());
 		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
-		line = line.replaceAll("%numpl%", String.valueOf(server.getPlayerCount()));
-		line = line.replaceAll("%maxpl%", String.valueOf(server.getMaxPlayers()));
+		line = line.replaceAll("%numpl%", Integer.toString(server.getPlayerCount()));
+		line = line.replaceAll("%maxpl%", Integer.toString(server.getMaxPlayers()));
 		line = textValues(line);
 
 		return line;
@@ -190,7 +189,7 @@ public class SignLayout {
 		line = line.replaceAll("&o", ChatColor.ITALIC.toString());
 		line = line.replaceAll("&r", ChatColor.RESET.toString());
 		line = line.replaceAll("&&", "&");
-		line = line.replaceAll("%s", "ß");
+		line = line.replaceAll("%s", "\u00df");
 
 		return line;
 	}

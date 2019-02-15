@@ -122,47 +122,48 @@ public class TeleportSign {
 						if (layout != null) {
 							List<String> lines = layout.parseLayout(server);
 							for (int i = 0; i < 4; i++) {
-								sign.setLine(i, (String) lines.get(i));
+								sign.setLine(i, lines.get(i).toString());
 								if (c.getBoolean("options.background.enable")) {
+									String path = "options.background.block-colors.";
 									if (server.isOnline()) {
 										if (server.getPlayerCount() == server.getMaxPlayers()) {
 											if (b.getType() == Material.WALL_SIGN) {
 												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+													updateBackground(Material.WOOL, c.getInt(path + "full.wool"));
 												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+													updateBackground(Material.STAINED_GLASS, c.getInt(path + "full.glass"));
 												} else if (plugin.getBackgroundType().equals("clay")) {
-													updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
+													updateBackground(Material.STAINED_CLAY, c.getInt(path + "full.clay"));
 												}
 											}
 											return;
 										}
 										if (b.getType() == Material.WALL_SIGN) {
 											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+												updateBackground(Material.WOOL, c.getInt(path + "online.wool"));
 											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+												updateBackground(Material.STAINED_GLASS, c.getInt(path + "online.glass"));
 											} else if (plugin.getBackgroundType().equals("clay")) {
-												updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
+												updateBackground(Material.STAINED_CLAY, c.getInt(path + "online.clay"));
 											}
 										}
 									} else {
 										if (b.getType() == Material.WALL_SIGN) {
 											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.WOOL, c.getInt("options.background.block-colors.offline.wool"));
+												updateBackground(Material.WOOL, c.getInt(path + "offline.wool"));
 											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.STAINED_GLASS, c.getInt("options.background.block-colors.offline.glass"));
+												updateBackground(Material.STAINED_GLASS, c.getInt(path + "offline.glass"));
 											} else if (plugin.getBackgroundType().equals("clay")) {
-												updateBackground(Material.STAINED_CLAY, c.getInt("options.background.block-colors.offline.clay"));
+												updateBackground(Material.STAINED_CLAY, c.getInt(path + "offline.clay"));
 											}
 										}
 									}
 								}
 							}
-							sign.update(true);
+							sign.update();
 						} else {
 							plugin.logConsole(Level.WARNING, "Can't find layout '" + layout + "'.");
-							String[] error = { "§4ERROR:", "§6Layout", "§e" + layout.getName(), "§6not found!" };
+							String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a7e" + layout.getName(), "\u00a76not found!" };
 							signError(sign, error);
 							if (c.getBoolean("options.drop-sign")) {
 								sign.getLocation().getBlock().breakNaturally();
@@ -171,7 +172,7 @@ public class TeleportSign {
 						}
 					} else {
 						plugin.logConsole(Level.WARNING, "Can't find server '" + server + "'.");
-						String[] error = { "§4ERROR:", "§6Server", "§e" + server.getName(), "§6not found!" };
+						String[] error = { "\u00a74ERROR:", "\u00a76Server", "\u00a7e" + server.getName(), "\u00a76not found!" };
 						signError(sign, error);
 						if (c.getBoolean("options.drop-sign")) {
 							sign.getLocation().getBlock().breakNaturally();

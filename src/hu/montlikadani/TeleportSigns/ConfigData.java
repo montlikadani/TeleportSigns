@@ -19,23 +19,17 @@ public class ConfigData {
 
 	private TeleportSigns plugin;
 
-	private FileConfiguration config;
-	private FileConfiguration layout;
-	private FileConfiguration sign;
+	private FileConfiguration config, layout, sign;
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
 	private Map<String, SignLayout> layouts = new HashMap<>();
-	private long cooldown;
-	private long signUpdates;
-	private int pingTimeout;
-	private int pingInterval;
-	private int cver = 3;
+	private long cooldown, signUpdates;
+	private int pingTimeout, pingInterval;
+	private int cver = 4;
 	private int lyver = 2;
 
-	private File config_file;
-	private File layout_file;
-	private File sign_file;
+	private File config_file, layout_file, sign_file;
 
 	public enum ConfigType {
 		CONFIG,
@@ -46,25 +40,22 @@ public class ConfigData {
 	public ConfigData(TeleportSigns plugin) {
 		this.plugin = plugin;
 
-		config_file = new File(plugin.getDataFolder(), "config.yml");
-		layout_file = new File(plugin.getDataFolder(), "layout.yml");
-		sign_file = new File(plugin.getDataFolder(), "signs.yml");
+		config_file = new File(getFolder(), "config.yml");
+		layout_file = new File(getFolder(), "layout.yml");
+		sign_file = new File(getFolder(), "signs.yml");
 	}
 
 	public void loadConfig() {
 		unloadConfig();
 
 		try {
-			if (!plugin.getDataFolder().exists()) {
-				plugin.getDataFolder().mkdirs();
-			}
 			if (config_file.exists()) {
 				config = YamlConfiguration.loadConfiguration(config_file);
 				config.load(config_file);
 				plugin.reloadConfig();
 				plugin.saveDefaultConfig();
 				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getString("config-version") + " | Newest version: " + cver + ")");
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getInt("config-version") + " | Newest version: " + cver + ")");
 				}
 			} else {
 				plugin.saveResource("config.yml", false);
@@ -78,7 +69,7 @@ public class ConfigData {
 				layout = YamlConfiguration.loadConfiguration(layout_file);
 				layout.load(layout_file);
 				if (!layout.isSet("config-version") || !layout.get("config-version").equals(lyver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: " + layout.getString("config-version") + " | Newest version: " + lyver + ")");
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: " + layout.getInt("config-version") + " | Newest version: " + lyver + ")");
 				}
 			} else {
 				plugin.saveResource("layout.yml", false);
@@ -95,7 +86,7 @@ public class ConfigData {
 				sign = YamlConfiguration.loadConfiguration(sign_file);
 				plugin.logConsole(Level.INFO, "The 'signs.yml' file successfully created!");
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 			plugin.throwMsg();
 		}
@@ -104,6 +95,14 @@ public class ConfigData {
 		loadServers();
 		loadLayouts();
 		loadSigns();
+	}
+
+	public File getFolder() {
+		File dataFolder = plugin.getDataFolder();
+		if (!dataFolder.exists()) {
+			dataFolder.mkdirs();
+		}
+		return dataFolder;
 	}
 
 	public void unloadConfig() {
@@ -171,16 +170,13 @@ public class ConfigData {
 					ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
 					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
-					try {
-						// It does not work when the sign is in the database but can not find and throw the bug
-						Block b = location.getBlock();
-						if (b.getState() instanceof Sign) {
-							TeleportSign tsign = new TeleportSign(server, location, layout);
-							this.signs.add(tsign);
-							this.blocks.add(b);
-						}
-					} catch (NullPointerException e) {}
-				} catch (Exception e) {
+					Block b = location.getBlock() == null ? null : location.getBlock();
+					if (b.getState() instanceof Sign) {
+						TeleportSign tsign = new TeleportSign(server, location, layout);
+						this.signs.add(tsign);
+						this.blocks.add(b);
+					}
+				} catch (Throwable e) {
 					e.printStackTrace();
 					plugin.throwMsg();
 				}
@@ -212,11 +208,11 @@ public class ConfigData {
 
 	public FileConfiguration getConfig(ConfigType type) {
 		if (type.equals(ConfigType.CONFIG)) {
-			return this.config;
+			return config;
 		} else if (type.equals(ConfigType.LAYOUTS)) {
-			return this.layout;
+			return layout;
 		} else if (type.equals(ConfigType.SIGNS)) {
-			return this.sign;
+			return sign;
 		}
 
 		return null;
@@ -315,13 +311,13 @@ public class ConfigData {
 	public void removeSign(Location location) {
 		for (TeleportSign sign : signs) {
 			if (location.equals(sign.getLocation())) {
-				try {
-					String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(), sign.getLayout().getName());
-					List<String> list = this.sign.getStringList("signs");
+				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(), sign.getLayout().getName());
+				List<String> list = this.sign.getStringList("signs");
+				if (list != null && !list.isEmpty()) {
 					list.remove(index);
 					this.sign.set("signs", list);
-				} catch (NullPointerException e) {
-					plugin.logConsole(Level.WARNING, "Can not find the sign with this name: " + sign.getServer().getName());
+				} else {
+					this.sign.set("signs", "");
 				}
 				try {
 					this.sign.save(sign_file);
