@@ -6,13 +6,16 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.scheduler.BukkitTask;
+
+import hu.montlikadani.TeleportSigns.api.TeleportSignsUpdateEvent;
 
 public class SignScheduler implements Runnable, Listener {
 	private final TeleportSigns plugin;
+	public BukkitTask task;
 
 	public SignScheduler(TeleportSigns plugin) {
 		this.plugin = plugin;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@Override
@@ -20,7 +23,7 @@ public class SignScheduler implements Runnable, Listener {
 		final List<TeleportSign> signs = plugin.getConfigData().getSigns();
 		TeleportSignsUpdateEvent event = new TeleportSignsUpdateEvent(signs);
 		Bukkit.getPluginManager().callEvent(event);
-		Bukkit.getScheduler().runTaskLater(plugin, this, plugin.getConfigData().getUpdateInterval());
+		task = Bukkit.getScheduler().runTaskLater(plugin, this, plugin.getConfigData().getUpdateInterval());
 	}
 
 	@EventHandler

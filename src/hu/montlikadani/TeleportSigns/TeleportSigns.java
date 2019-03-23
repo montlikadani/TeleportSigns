@@ -1,12 +1,13 @@
 package hu.montlikadani.TeleportSigns;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Scanner;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
@@ -40,7 +41,15 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	@Override
 	public void onEnable() {
+		instance = this;
+
 		try {
+			if (instance == null) {
+				getLogger().log(Level.SEVERE, "Plugin instance is null. Disabling...");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+
 			data = new ConfigData(this);
 			data.loadConfig();
 			if (!getMainConf().getBoolean("enabled")) {
@@ -52,9 +61,12 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				org.spigotmc.SpigotConfig.config.set("settings.bungeecord", true);
 				org.spigotmc.SpigotConfig.config.save(spigotFile);
 			}
-			instance = this;
 			ping = new PingScheduler(this);
+			getServer().getPluginManager().registerEvents(ping, this);
+
 			sign = new SignScheduler(this);
+			getServer().getPluginManager().registerEvents(sign, this);
+
 			anim = new AnimationTask(this);
 			anim.resetAnimation();
 			anim.startAnimation();
@@ -77,7 +89,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			}
 			if (getMainConf().getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
-				Boolean backgr = getMainConf().getBoolean("options.background.enable");
 				metrics.addCustomChart(new Metrics.SimplePie("background_type", new Callable<String>() {
 					@Override
 					public String call() throws Exception {
@@ -87,7 +98,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				metrics.addCustomChart(new Metrics.SimplePie("using_background", new Callable<String>() {
 					@Override
 					public String call() throws Exception {
-						return backgr.toString();
+						return getMainConf().getString("options.background.enable");
 					}
 				}));
 				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", new Callable<Integer>() {
@@ -115,6 +126,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	@Override
 	public void onDisable() {
+		if (instance == null) return;
+
 		try {
 			if (anim != null) {
 				anim.resetAnimation();
@@ -164,10 +177,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		try {
 			URL githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
 			lineWithVersion = "";
-			@SuppressWarnings("resource")
-			Scanner websiteScanner = new Scanner(githubUrl.openStream());
-			while (websiteScanner.hasNextLine()) {
-				String line = websiteScanner.nextLine();
+			BufferedReader br = new BufferedReader(new InputStreamReader(githubUrl.openStream()));
+			String s;
+			while ((s = br.readLine()) != null) {
+				String line = s;
 				if (line.toLowerCase().contains("version")) {
 					lineWithVersion = line;
 					break;
@@ -250,23 +263,29 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 	public void reload() {
 		data.loadConfig();
+
+		Bukkit.getScheduler().cancelTask(ping.task.getTaskId());
+		Bukkit.getScheduler().cancelTask(ping.pingTask.getTaskId());
 		ping = null;
+
+		Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
 		sign = null;
-		anim = null;
+
 		ping = new PingScheduler(this);
 		sign = new SignScheduler(this);
-		anim = new AnimationTask(this);
-		if (anim != null) {
-			anim.resetAnimation();
-			anim.stopAnimation();
-		}
+
+		anim.resetAnimation();
+		anim.stopAnimation();
 		anim.startAnimation();
+
 		Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
 		Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
 	}
 
 	public String getMsg(String key, Object... placeholders) {
 		String msg = "";
+
+		if (!messages.contains(key) || messages.getString(key).equals("")) return msg;
 
 		msg = colorMsg(messages.getString(key));
 

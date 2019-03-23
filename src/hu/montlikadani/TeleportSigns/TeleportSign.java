@@ -121,6 +121,11 @@ public class TeleportSign {
 					if (server != null) {
 						if (layout != null) {
 							List<String> lines = layout.parseLayout(server);
+							if (lines.size() >= 5 || lines.size() <= 3) {
+								plugin.logConsole(Level.INFO, "In the configuration the signs lines not more/less than 4.");
+								return;
+							}
+
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, lines.get(i).toString());
 								if (c.getBoolean("options.background.enable")) {
@@ -188,13 +193,11 @@ public class TeleportSign {
 	public void updateBackground(Material mat, int color) {
 		Location loc3 = getLocation();
 		BlockState s = (Sign) loc3.getBlock().getState();
-		if (s.getType() == Material.WALL_SIGN) {
-			BlockFace bf = ((Directional) s.getData()).getFacing();
-			Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
-			Block wall = loc2.getBlock();
-			wall.setType(mat);
-			wall.setData((byte) color);
-		}
+		BlockFace bf = ((Directional) s.getData()).getFacing();
+		Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
+		Block wall = loc2.getBlock();
+		wall.setType(mat);
+		wall.setData((byte) color);
 	}
 
 	private void signError(Sign sign, String[] exception) {

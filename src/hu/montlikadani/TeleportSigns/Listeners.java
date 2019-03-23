@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import hu.montlikadani.TeleportSigns.Permissions.Perm;
+import hu.montlikadani.TeleportSigns.api.TeleportSignsInteractEvent;
 
 public class Listeners implements Listener {
 
@@ -33,7 +34,7 @@ public class Listeners implements Listener {
 
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
-		if (event.getLine(0).equalsIgnoreCase("[tsigns]") || event.getLine(0).equalsIgnoreCase("[teleportsigns]")) {
+		if (event.getLine(0).contains("[tsigns]") || event.getLine(0).contains("[teleportsigns]")) {
 			if (!p.hasPermission(Perm.CREATE.getPerm())) {
 				plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-create-sign", "%perm%", Perm.CREATE.getPerm())));
 				if (plugin.getMainConf().getBoolean("drop-sign")) {
@@ -44,7 +45,8 @@ public class Listeners implements Listener {
 
 			String sname = event.getLine(1);
 			String lname = event.getLine(2);
-			if (lname.equalsIgnoreCase("")) lname = "default";
+			if (lname.equalsIgnoreCase(""))
+				lname = "default";
 
 			Location location = b.getLocation();
 			ServerInfo server = plugin.getConfigData().getServer(sname);

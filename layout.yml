@@ -29,7 +29,7 @@ layouts:
     - "---"
     - "&c%numpl%&7/&c%maxpl%"
     - "%isonline%"
-    online: "&a¤ Online ¤"
+    online: "&a\u00a4 Online \u00a4"
     offline: "&cOffline"
     offline-int: --
     offline-motd: "&cOffline"

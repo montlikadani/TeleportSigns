@@ -9,15 +9,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
+import org.bukkit.scheduler.BukkitTask;
 
 import hu.montlikadani.TeleportSigns.ServerPing.SResponse;
+import hu.montlikadani.TeleportSigns.api.ServerChangeStatusEvent;
+import hu.montlikadani.TeleportSigns.api.ServerPingResponseEvent;
+import hu.montlikadani.TeleportSigns.api.TeleportSignsPingEvent;
 
 public class PingScheduler implements Runnable, Listener {
 	private final TeleportSigns plugin;
+	public BukkitTask pingTask;
+	public BukkitTask task;
 
 	public PingScheduler(TeleportSigns plugin) {
 		this.plugin = plugin;
-		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@Override
@@ -25,7 +30,7 @@ public class PingScheduler implements Runnable, Listener {
 		final List<ServerInfo> servers = plugin.getConfigData().getServers();
 		TeleportSignsPingEvent event = new TeleportSignsPingEvent(servers);
 		Bukkit.getPluginManager().callEvent(event);
-		Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
+		task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
 	}
 
 	@EventHandler
@@ -59,7 +64,7 @@ public class PingScheduler implements Runnable, Listener {
 	private void pingAsync(final ServerInfo server) {
 		final ServerPing ping = server.getPing();
 		if (!ping.isFetching()) {
-			Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 				@Override
 				public void run() {
 					long pingStartTime = System.currentTimeMillis();

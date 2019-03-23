@@ -214,7 +214,7 @@ public class AnimationTask {
 
 	public void stopAnimation() {
 		if (task != null) {
-			task.cancel();
+			Bukkit.getScheduler().cancelTask(task.getTaskId());
 		}
 	}
 }

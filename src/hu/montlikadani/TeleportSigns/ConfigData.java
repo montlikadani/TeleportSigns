@@ -82,7 +82,7 @@ public class ConfigData {
 				sign.load(sign_file);
 				sign.save(sign_file);
 			} else {
-				plugin.saveResource("signs.yml", false);
+				sign_file.createNewFile();
 				sign = YamlConfiguration.loadConfiguration(sign_file);
 				plugin.logConsole(Level.INFO, "The 'signs.yml' file successfully created!");
 			}

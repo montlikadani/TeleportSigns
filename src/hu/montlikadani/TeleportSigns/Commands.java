@@ -186,19 +186,22 @@ public class Commands implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		List<String> completionList = new ArrayList<>();
+		String partOfCommand = "";
 		if (cmd.getName().equalsIgnoreCase("teleportsigns") || cmd.getName().equalsIgnoreCase("ts")) {
 			List<String> cmds = new ArrayList<>();
 			if (args.length < 2) {
+				partOfCommand = args[0];
+
 				for (String com : getCmds(sender)) {
 					cmds.add(com);
 				}
-			}
-			if (args.length < 3 && args[0].equalsIgnoreCase("connect")) {
+			} else if (args.length < 3 && args[0].equalsIgnoreCase("connect")) {
 				for (ServerInfo com : plugin.getConfigData().getServers()) {
 					cmds.add(com.getName());
 				}
+				partOfCommand = args[1];
 			}
-			StringUtil.copyPartialMatches(args[0], cmds, completionList);
+			StringUtil.copyPartialMatches(partOfCommand, cmds, completionList);
 		}
 		Collections.sort(completionList);
 		return completionList;
