@@ -2,9 +2,6 @@
 
 [![bStats](https://img.shields.io/badge/bStats-1.4-brightgreen.svg)](https://bstats.org/plugin/bukkit/TeleportSigns)
 
-Teleport to the server with sign!
-**
-
 ## Link
 * [Spigot](https://www.spigotmc.org/resources/37446/)
 

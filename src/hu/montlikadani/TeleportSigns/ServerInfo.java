@@ -168,16 +168,19 @@ public class ServerInfo {
 		try {
 			out.writeUTF("Connect");
 			out.writeUTF(name);
-		} catch (IOException io) {
-			io.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
-		if (TeleportSigns.getInstance().getMainConf().contains("options.enter-message") &&
-				!TeleportSigns.getInstance().getMainConf().getString("options.enter-message").equals("")) {
-			p.sendMessage(TeleportSigns.getInstance().defaults(TeleportSigns.getInstance().getMainConf().getString("options.enter-message")
-					.replace("%server%", name)));
-			return;
+
+		try {
+			b.close();
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		TeleportSigns.getInstance().sendMsg(p, TeleportSigns.getInstance().getMsg("enter-message", "%server%", name));
 	}
 }

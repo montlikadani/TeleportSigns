@@ -36,9 +36,6 @@ public class StatusResponse_19 {
 	public class Description {
 		private String text;
 
-		public Description() {
-		}
-
 		public String getText() {
 			return text;
 		}
@@ -48,9 +45,6 @@ public class StatusResponse_19 {
 		private int max;
 		private int online;
 		private List<StatusResponse_19.Player> sample;
-
-		public Players() {
-		}
 
 		public int getMax() {
 			return max;
@@ -69,9 +63,6 @@ public class StatusResponse_19 {
 		private String name;
 		private String id;
 
-		public Player() {
-		}
-
 		public String getName() {
 			return name;
 		}
@@ -84,9 +75,6 @@ public class StatusResponse_19 {
 	public class Version {
 		private String name;
 		private String protocol;
-
-		public Version() {
-		}
 
 		public String getName() {
 			return name;

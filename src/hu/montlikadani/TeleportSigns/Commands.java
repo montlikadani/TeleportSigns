@@ -121,7 +121,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("connect-usage", "%command%", commandLabel)));
 						return true;
 					}
-					final String serverGroup = args[1];
+					String serverGroup = args[1];
 					Player p = (Player) sender;
 					if (plugin.getConfigData().getServer(serverGroup) != null) {
 						ServerInfo server = plugin.getConfigData().getServer(serverGroup);

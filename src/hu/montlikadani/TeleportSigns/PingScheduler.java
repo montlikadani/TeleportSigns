@@ -41,9 +41,9 @@ public class PingScheduler implements Runnable, Listener {
 					pingAsync(server);
 				} else {
 					final String status = server.getMotd();
-					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(), 
+					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(),
 							server.getAddress().getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
-					Bukkit.getPluginManager().callEvent(ping);
+					plugin.callSyncEvent(ping);
 					server.setProtocol(getBukkitVersion());
 					server.setMotd(ping.getMotd());
 					server.setMaxPlayers(ping.getMaxPlayers());
@@ -96,8 +96,7 @@ public class PingScheduler implements Runnable, Listener {
 							plugin.logConsole(Level.WARNING, "Error fetching data from server '" + String.valueOf(server.getAddress().getAddress().getHostAddress().toString())
 							+ ":" + server.getAddress().getPort() + "'. - Check the config file!");
 						}
-					}
-					finally {
+					} finally {
 						ping.setFetching(false);
 						server.setPingEnd(System.currentTimeMillis());
 					}

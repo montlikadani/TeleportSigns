@@ -87,7 +87,7 @@ public class TeleportSign {
 	}
 
 	public Location getLocation() {
-		return new Location(Bukkit.getWorld(getWorld()), getX(), getY(), getZ());
+		return new Location(Bukkit.getWorld(world), x, y, z);
 	}
 
 	public void setLocation(Location loc) {

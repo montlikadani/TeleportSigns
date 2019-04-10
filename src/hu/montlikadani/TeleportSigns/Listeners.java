@@ -2,7 +2,6 @@ package hu.montlikadani.TeleportSigns;
 
 import java.util.HashMap;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -72,22 +71,21 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onRemoveTeleportSign(BlockBreakEvent event) {
-		if (!event.isCancelled()) {
-			Player p = event.getPlayer();
-			Block b = event.getBlock();
-			if (b.getState() instanceof Sign) {
-				if (plugin.getConfigData().containsSign(b)) {
-					if (p.hasPermission(Perm.DESTROY.getPerm())) {
-						plugin.getConfigData().removeSign(b.getLocation());
-						plugin.sendMsg(p, plugin.defaults(plugin.getMsg("sign-destroyed")));
-					} else {
-						plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-sign-destroy", "%perm%", Perm.DESTROY.getPerm())));
-						event.setCancelled(true);
-					}
+		if (event.isCancelled()) return;
+
+		Player p = event.getPlayer();
+		Block b = event.getBlock();
+
+		if (b.getState() instanceof Sign) {
+			if (plugin.getConfigData().containsSign(b)) {
+				if (p.hasPermission(Perm.DESTROY.getPerm())) {
+					plugin.getConfigData().removeSign(b.getLocation());
+					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("sign-destroyed")));
+				} else {
+					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-sign-destroy", "%perm%", Perm.DESTROY.getPerm())));
+					event.setCancelled(true);
 				}
 			}
-		} else {
-			event.setCancelled(true);
 		}
 	}
 
@@ -96,6 +94,7 @@ public class Listeners implements Listener {
 		if (event.isCancelled()) return;
 
 		Player p = event.getPlayer();
+
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			if (event.getClickedBlock().getState() instanceof Sign) {
 				if (plugin.getConfigData().getBlocks().contains(event.getClickedBlock())) {
@@ -109,7 +108,7 @@ public class Listeners implements Listener {
 										return;
 									}
 									TeleportSignsInteractEvent e = new TeleportSignsInteractEvent(p, sign, server);
-									Bukkit.getPluginManager().callEvent(e);
+									plugin.callSyncEvent(e);
 									event.setCancelled(true);
 								}
 							}
@@ -131,6 +130,7 @@ public class Listeners implements Listener {
 		Player p = event.getPlayer();
 		ServerInfo server = event.getServer();
 		SignLayout layout = event.getSign().getLayout();
+
 		if (layout.isTeleport()) {
 			if (server.isOnline()) {
 				if (!hasCooldown(p)) {

@@ -19,6 +19,7 @@ public class ConfigData {
 
 	private TeleportSigns plugin;
 
+	private File config_file, layout_file, sign_file;
 	private FileConfiguration config, layout, sign;
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
@@ -28,8 +29,6 @@ public class ConfigData {
 	private int pingTimeout, pingInterval;
 	private int cver = 4;
 	private int lyver = 2;
-
-	private File config_file, layout_file, sign_file;
 
 	public enum ConfigType {
 		CONFIG,
@@ -161,10 +160,11 @@ public class ConfigData {
 	}
 
 	private void loadSigns() {
-		if (this.sign.getStringList("signs").isEmpty()) {
+		List<String> list = this.sign.getStringList("signs");
+		if (list == null || list.isEmpty()) {
 			plugin.logConsole(Level.WARNING, "No saved sign was found.");
 		} else {
-			for (String sign : this.sign.getStringList("signs")) {
+			for (String sign : list) {
 				try {
 					Location location = LocationSerialiser.stringToLocationSign(sign);
 					ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
@@ -317,7 +317,7 @@ public class ConfigData {
 					list.remove(index);
 					this.sign.set("signs", list);
 				} else {
-					this.sign.set("signs", "");
+					this.sign.set("signs", null);
 				}
 				try {
 					this.sign.save(sign_file);

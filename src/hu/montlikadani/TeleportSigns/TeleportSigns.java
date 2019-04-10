@@ -33,7 +33,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	FileConfiguration messages;
 	private File messages_file;
 
-	private int msver = 3;
+	private int msver = 4;
 	private PingScheduler ping;
 	private SignScheduler sign;
 	private AnimationTask anim;
@@ -56,11 +56,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
-			File spigotFile = new File("spigot.yml");
-			if (spigotFile.exists()) {
-				org.spigotmc.SpigotConfig.config.set("settings.bungeecord", true);
-				org.spigotmc.SpigotConfig.config.save(spigotFile);
-			}
+
 			ping = new PingScheduler(this);
 			getServer().getPluginManager().registerEvents(ping, this);
 
@@ -82,8 +78,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 					Bukkit.getServer().getMessenger().registerIncomingPluginChannel(instance, "BungeeCord", instance);
 				}
 			}, time);
+
 			getCommand("teleportsigns").setExecutor(new Commands(this));
 			getCommand("teleportsigns").setTabCompleter(new Commands(this));
+
 			if (getMainConf().getBoolean("check-update")) {
 				logConsole(Level.INFO, checkVersion("console"));
 			}
@@ -216,12 +214,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	}
 
 	public void callSyncEvent(final Event event) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() {
-				getServer().getPluginManager().callEvent(event);
-			}
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
 	}
 
 	public void logConsole(Level level, String error) {
@@ -266,9 +259,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 
 		Bukkit.getScheduler().cancelTask(ping.task.getTaskId());
 		Bukkit.getScheduler().cancelTask(ping.pingTask.getTaskId());
-		ping = null;
-
 		Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
+		ping = null;
 		sign = null;
 
 		ping = new PingScheduler(this);
@@ -278,8 +270,8 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		anim.stopAnimation();
 		anim.startAnimation();
 
-		Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
-		Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
+		Bukkit.getScheduler().runTaskLater(this, sign, 40L);
+		Bukkit.getScheduler().runTaskLaterAsynchronously(this, ping, 5L);
 	}
 
 	public String getMsg(String key, Object... placeholders) {

@@ -23,7 +23,8 @@ options:
   # Log plugin messages into console.
   logconsole: true
 
-  # Sign usage time. (Bypass permission: teleportsigns.use.nocooldown)
+  # Sign usage time.
+  # This ignoring with this permission: teleportsigns.use.nocooldown
   use-cooldown: 5
 
   # Sign updates in ticks. 20 ticks = 1 second.
@@ -42,14 +43,10 @@ options:
   # Ignoring the player sneaking when clicking on the sign.
   ignore-player-sneaking: true
 
-  # Server connection message.
-  # Use %newline%, %prefix%, %server% placeholder.
-  enter-message: "&6You entered the server&7 %server%&6!"
-
   # Defines a background of the sign.
   background:
     enable: false
-    # Possible types: glass, wool, clay.
+    # Possible types: glass, wool, clay
     type: glass
     # Block id colors:
     # Glass: https://minecraft.gamepedia.com/Glass#Data_values

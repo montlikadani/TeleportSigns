@@ -20,9 +20,6 @@ public class StatusResponse_113 {
 	public class Description {
 		private String text;
 
-		Description() {
-		}
-
 		public String getText() {
 			return text;
 		}
@@ -31,9 +28,6 @@ public class StatusResponse_113 {
 	public class Players {
 		private int max;
 		private int online;
-
-		Players() {
-		}
 
 		public int getMax() {
 			return max;
@@ -47,9 +41,6 @@ public class StatusResponse_113 {
 	public class Version {
 		private String name;
 		private String protocol;
-
-		Version() {
-		}
 
 		public String getName() {
 			return name;

@@ -15,6 +15,7 @@ permissions:
   teleportsigns.*:
      description: Gives access to all TeleportSigns permissions.
      children:
+       teleportsigns.plugininfo: true
        teleportsigns.use: true
        teleportsigns.use.nocooldown: true
        teleportsigns.create: true
@@ -26,6 +27,9 @@ permissions:
        teleportsigns.reload: true
        teleportsigns.disable: true
        teleportsigns.help: true
+  teleportsigns.plugininfo:
+    description: Main plugin info for TeleportSigns.
+    default: false
   teleportsigns.use:
     description: Allows player to use the sign.
     default: true
