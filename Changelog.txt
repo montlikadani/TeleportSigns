@@ -1,3 +1,14 @@
+﻿# v2.1
+Added:
+  Added an option to ignore player sneaking when wants to teleport.
+Fixes:
+  Fixed bad background path set in code so the backround not working fully.
+  Fixed when the plugin checked the version, for some reason the scanner was not recognized by any version of Java so it caused a problem.
+  Fix NPE, in the messages file if a string not specified then throws an error.
+  Fixed tab-complete if argument is not specified and press tab, throws an error.
+  Fix NPE when the sign lines specified more or less in the string list and throws error.
+  Fixed issue with disabling the plugin.
+
 # v2.0
 Added:
     Added /ts listservers command. - To list the specified servers what is in the config.
