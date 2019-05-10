@@ -141,7 +141,7 @@ public class SignLayout {
 
 	public String parseCooldownMessage(int seconds) {
 		String line = cooldownMessage;
-		line = line.replaceAll("%cooldown%", String.valueOf(seconds));
+		line = line.replaceAll("%cooldown%", Integer.toString(seconds));
 		line = textValues(line);
 
 		return line;

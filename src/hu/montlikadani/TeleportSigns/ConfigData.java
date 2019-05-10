@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigData {
@@ -20,7 +19,7 @@ public class ConfigData {
 	private TeleportSigns plugin;
 
 	private File config_file, layout_file, sign_file;
-	private FileConfiguration config, layout, sign;
+	private YamlConfiguration config, layout, sign;
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
@@ -59,7 +58,7 @@ public class ConfigData {
 			} else {
 				plugin.saveResource("config.yml", false);
 				config = YamlConfiguration.loadConfiguration(config_file);
-				plugin.logConsole(Level.INFO, "The 'config.yml' file successfully created!");
+				plugin.logConsole("The 'config.yml' file successfully created!");
 			}
 
 			plugin.createMsgFile();
@@ -73,7 +72,7 @@ public class ConfigData {
 			} else {
 				plugin.saveResource("layout.yml", false);
 				layout = YamlConfiguration.loadConfiguration(layout_file);
-				plugin.logConsole(Level.INFO, "The 'layout.yml' file successfully created!");
+				plugin.logConsole("The 'layout.yml' file successfully created!");
 			}
 
 			if (sign_file.exists()) {
@@ -83,7 +82,7 @@ public class ConfigData {
 			} else {
 				sign_file.createNewFile();
 				sign = YamlConfiguration.loadConfiguration(sign_file);
-				plugin.logConsole(Level.INFO, "The 'signs.yml' file successfully created!");
+				plugin.logConsole("The 'signs.yml' file successfully created!");
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -170,7 +169,11 @@ public class ConfigData {
 					ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
 					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
-					Block b = location.getBlock() == null ? null : location.getBlock();
+					if (location == null) {
+						return;
+					}
+
+					Block b = location.getBlock();
 					if (b.getState() instanceof Sign) {
 						TeleportSign tsign = new TeleportSign(server, location, layout);
 						this.signs.add(tsign);
@@ -206,7 +209,7 @@ public class ConfigData {
 		cooldown = seconds * 1000;
 	}
 
-	public FileConfiguration getConfig(ConfigType type) {
+	public YamlConfiguration getConfig(ConfigType type) {
 		if (type.equals(ConfigType.CONFIG)) {
 			return config;
 		} else if (type.equals(ConfigType.LAYOUTS)) {
@@ -327,9 +330,6 @@ public class ConfigData {
 				}
 				blocks.remove(location.getBlock());
 				signs.remove(sign);
-				if (config.getBoolean("options.drop-sign")) {
-					sign.getLocation().getBlock().breakNaturally();
-				}
 				break;
 			}
 		}

@@ -8,29 +8,23 @@ import java.io.PrintWriter;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.messaging.Messenger;
-import org.bukkit.plugin.messaging.PluginMessageListener;
 
-import com.google.common.io.ByteArrayDataInput;
-import com.google.common.io.ByteStreams;
+import com.google.common.base.StandardSystemProperty;
 
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
 
-public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
+public class TeleportSigns extends JavaPlugin {
 
 	private static TeleportSigns instance;
 
-	FileConfiguration messages;
+	YamlConfiguration messages;
 	private File messages_file;
 
 	private int msver = 4;
@@ -46,6 +40,17 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		try {
 			if (instance == null) {
 				getLogger().log(Level.SEVERE, "Plugin instance is null. Disabling...");
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+
+			if (!checkJavaVersion()) {
+				getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
+
+			if (Bukkit.getVersion().contains("1.7")) {
+				getLogger().log(Level.SEVERE, "Your server version does not supported by this plugin! Please use 1.8+ or higher versions!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
@@ -67,51 +72,34 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			anim.resetAnimation();
 			anim.startAnimation();
 			long time = (long) (10.3*20L);
+
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				@Override
 				public void run() {
 					Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
 					Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
-					Bukkit.getPluginManager().registerEvents(new Listeners(instance), instance);
 
 					Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(instance, "BungeeCord");
-					Bukkit.getServer().getMessenger().registerIncomingPluginChannel(instance, "BungeeCord", instance);
 				}
 			}, time);
+
+			Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
 
 			getCommand("teleportsigns").setExecutor(new Commands(this));
 			getCommand("teleportsigns").setTabCompleter(new Commands(this));
 
 			if (getMainConf().getBoolean("check-update")) {
-				logConsole(Level.INFO, checkVersion("console"));
+				logConsole(checkVersion("console"));
 			}
 			if (getMainConf().getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
-				metrics.addCustomChart(new Metrics.SimplePie("background_type", new Callable<String>() {
-					@Override
-					public String call() throws Exception {
-						return getMainConf().getString("options.background.type");
-					}
-				}));
-				metrics.addCustomChart(new Metrics.SimplePie("using_background", new Callable<String>() {
-					@Override
-					public String call() throws Exception {
-						return getMainConf().getString("options.background.enable");
-					}
-				}));
-				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", new Callable<Integer>() {
-					@Override
-					public Integer call() throws Exception {
-						return data.getSigns().size();
-					}
-				}));
-				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", new Callable<Integer>() {
-					@Override
-					public Integer call() throws Exception {
-						return data.getServers().size();
-					}
-				}));
-				logConsole(Level.INFO, "Metrics enabled.");
+				metrics.addCustomChart(new Metrics.SimplePie("background_type",
+						() -> getMainConf().getString("options.background.type")));
+				metrics.addCustomChart(new Metrics.SimplePie("using_background",
+						() -> getMainConf().getString("options.background.enable")));
+				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", () -> data.getSigns().size()));
+				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", () -> data.getServers().size()));
+				logConsole("Metrics enabled.");
 			}
 			if (getMainConf().contains("plugin-enable") && !getMainConf().getString("plugin-enable").equals("")) {
 				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-enable")));
@@ -132,10 +120,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				anim.stopAnimation();
 			}
 			anim = null;
-			Messenger messenger = Bukkit.getServer().getMessenger();
-			messenger.unregisterOutgoingPluginChannel(instance, "BungeeCord");
-			messenger.unregisterIncomingPluginChannel(instance, "BungeeCord", instance);
-			messenger = null;
+			Bukkit.getServer().getMessenger().unregisterOutgoingPluginChannel(instance, "BungeeCord");
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
 			if (getMainConf().contains("plugin-disable") && !getMainConf().getString("plugin-disable").equals("")) {
@@ -160,7 +145,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 			} else {
 				saveResource("messages.yml", false);
 				messages = YamlConfiguration.loadConfiguration(messages_file);
-				logConsole(Level.INFO, "The 'messages.yml' file successfully created!");
+				logConsole("The 'messages.yml' file successfully created!");
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -217,6 +202,10 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
 	}
 
+	public void logConsole(String error) {
+		logConsole(Level.INFO, error);
+	}
+
 	public void logConsole(Level level, String error) {
 		if (getMainConf().getBoolean("options.logconsole")) {
 			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
@@ -239,18 +228,6 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 				e.printStackTrace();
 				throwMsg();
 			}
-		}
-	}
-
-	@Override
-	public void onPluginMessageReceived(String channel, Player player, byte[] msg) {
-		if (!channel.equals("BungeeCord")) {
-			return;
-		}
-
-		ByteArrayDataInput in = ByteStreams.newDataInput(msg);
-		String subchannel = in.readUTF();
-		if (subchannel.equals("NULL")) {
 		}
 	}
 
@@ -309,7 +286,7 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 		return data;
 	}
 
-	public FileConfiguration getMainConf() {
+	public YamlConfiguration getMainConf() {
 		return data.getConfig(ConfigType.CONFIG);
 	}
 
@@ -334,5 +311,18 @@ public class TeleportSigns extends JavaPlugin implements PluginMessageListener {
 	public void throwMsg() {
 		logConsole(Level.WARNING, "There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		return;
+	}
+
+	private boolean checkJavaVersion() {
+		try {
+			if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
+				getLogger().log(Level.WARNING, "You are using an older Java that is not supported. Please use 1.8 or higher versions!");
+				return false;
+			}
+		} catch (NumberFormatException e) {
+			getLogger().log(Level.WARNING, "Failed to detect Java version.");
+			return false;
+		}
+		return true;
 	}
 }

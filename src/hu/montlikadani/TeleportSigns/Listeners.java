@@ -29,16 +29,11 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onCreateTeleportSign(SignChangeEvent event) {
-		if (event.isCancelled()) return;
-
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
 		if (event.getLine(0).contains("[tsigns]") || event.getLine(0).contains("[teleportsigns]")) {
 			if (!p.hasPermission(Perm.CREATE.getPerm())) {
 				plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-create-sign", "%perm%", Perm.CREATE.getPerm())));
-				if (plugin.getMainConf().getBoolean("drop-sign")) {
-					b.breakNaturally();
-				}
 				return;
 			}
 
@@ -56,23 +51,15 @@ public class Listeners implements Listener {
 					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("sign-created", "%server%", sname, "%layout%", lname)));
 				} else {
 					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-layout", "%layout%", lname)));
-					if (plugin.getMainConf().getBoolean("drop-sign")) {
-						b.breakNaturally();
-					}
 				}
 			} else {
 				plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-server", "%server%", sname)));
-				if (plugin.getMainConf().getBoolean("drop-sign")) {
-					b.breakNaturally();
-				}
 			}
 		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onRemoveTeleportSign(BlockBreakEvent event) {
-		if (event.isCancelled()) return;
-
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
 
@@ -89,14 +76,12 @@ public class Listeners implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if (event.isCancelled()) return;
-
 		Player p = event.getPlayer();
 
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (event.getClickedBlock().getState() instanceof Sign) {
+			if (event.getClickedBlock() != null && event.getClickedBlock().getState() instanceof Sign) {
 				if (plugin.getConfigData().getBlocks().contains(event.getClickedBlock())) {
 					if (p.hasPermission(Perm.USE.getPerm())) {
 						for (TeleportSign sign : plugin.getConfigData().getSigns()) {
@@ -125,8 +110,6 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onTeleportSignInteract(TeleportSignsInteractEvent event) {
-		if (event.isCancelled()) return;
-
 		Player p = event.getPlayer();
 		ServerInfo server = event.getServer();
 		SignLayout layout = event.getSign().getLayout();
@@ -156,6 +139,14 @@ public class Listeners implements Listener {
 					plugin.sendMsg(p, layout.parseOfflineMessage(server));
 				}
 			}
+		}
+	}
+
+	@EventHandler
+	public void onPlayerJoin(PlayerJoinEvent e) {
+		Player p = e.getPlayer();
+		if (plugin.getMainConf().getBoolean("check-update") && p.isOp()) {
+			p.sendMessage(plugin.checkVersion("player"));
 		}
 	}
 
@@ -205,13 +196,5 @@ public class Listeners implements Listener {
 			}
 		}
 		return 0;
-	}
-
-	@EventHandler
-	public void onPlayerJoin(PlayerJoinEvent e) {
-		Player p = e.getPlayer();
-		if (plugin.getMainConf().getBoolean("check-update") && p.isOp()) {
-			p.sendMessage(plugin.checkVersion("player"));
-		}
 	}
 }

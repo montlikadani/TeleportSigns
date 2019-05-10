@@ -122,46 +122,102 @@ public class TeleportSign {
 						if (layout != null) {
 							List<String> lines = layout.parseLayout(server);
 							if (lines.size() >= 5 || lines.size() <= 3) {
-								plugin.logConsole(Level.INFO, "In the configuration the signs lines not more/less than 4.");
+								plugin.logConsole("In the configuration the signs lines not more/less than 4.");
 								return;
 							}
 
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, lines.get(i).toString());
+
+								String ver = Bukkit.getVersion();
+
 								if (c.getBoolean("options.background.enable")) {
-									String path = "options.background.block-colors.";
-									if (server.isOnline()) {
-										if (server.getPlayerCount() == server.getMaxPlayers()) {
-											if (b.getType() == Material.WALL_SIGN) {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.WOOL, c.getInt(path + "full.wool"));
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.STAINED_GLASS, c.getInt(path + "full.glass"));
-												} else if (plugin.getBackgroundType().equals("clay")) {
-													updateBackground(Material.STAINED_CLAY, c.getInt(path + "full.clay"));
+									if (ver.contains("1.14") && org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())
+											|| !ver.contains("1.14") && b.getType() == Material.getMaterial("WALL_SIGN")) {
+										//String path = "options.background.block-colors.";
+										if (server.isOnline()) {
+											if (server.getPlayerCount() == server.getMaxPlayers()) {
+												if (!ver.contains("1.8")) {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.BLUE_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.BLUE_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("clay")) {
+														updateBackground(Material.BLUE_TERRACOTTA);
+													}
+												} else {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.valueOf("WOOL"));
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.valueOf("STAINED_GLASS"));
+													} else if (plugin.getBackgroundType().equals("clay")) {
+														updateBackground(Material.valueOf("STAINED_CLAY"));
+													}
+												}
+											} else {
+												if (!ver.contains("1.8")) {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.LIME_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.LIME_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("terracotta")) {
+														updateBackground(Material.LIME_TERRACOTTA);
+													}
+												} else {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.getMaterial("WOOL"));
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.getMaterial("STAINED_GLASS"));
+													} else if (plugin.getBackgroundType().equals("clay")) {
+														updateBackground(Material.getMaterial("STAINED_CLAY"));
+													}
 												}
 											}
-											return;
-										}
-										if (b.getType() == Material.WALL_SIGN) {
-											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.WOOL, c.getInt(path + "online.wool"));
-											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.STAINED_GLASS, c.getInt(path + "online.glass"));
-											} else if (plugin.getBackgroundType().equals("clay")) {
-												updateBackground(Material.STAINED_CLAY, c.getInt(path + "online.clay"));
+										} else {
+											if (!ver.contains("1.8")) {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.RED_WOOL);
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.RED_STAINED_GLASS);
+												} else if (plugin.getBackgroundType().equals("terracotta")) {
+													updateBackground(Material.RED_TERRACOTTA);
+												}
+											} else {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.getMaterial("WOOL"));
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.getMaterial("STAINED_GLASS"));
+												} else if (plugin.getBackgroundType().equals("clay")) {
+													updateBackground(Material.getMaterial("STAINED_CLAY"));
+												}
 											}
 										}
-									} else {
-										if (b.getType() == Material.WALL_SIGN) {
-											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.WOOL, c.getInt(path + "offline.wool"));
-											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.STAINED_GLASS, c.getInt(path + "offline.glass"));
-											} else if (plugin.getBackgroundType().equals("clay")) {
-												updateBackground(Material.STAINED_CLAY, c.getInt(path + "offline.clay"));
+											/*if (server.getPlayerCount() == server.getMaxPlayers()) {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.valueOf("WOOL"), c.getInt(path + "full.wool"));
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "full.glass"));
+												} else if (plugin.getBackgroundType().equals("clay")) {
+													updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "full.clay"));
+												}
+											} else if (server.getPlayerCount() != server.getMaxPlayers()) {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.valueOf("WOOL"), c.getInt(path + "online.wool"));
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "online.glass"));
+												} else if (plugin.getBackgroundType().equals("clay")) {
+													updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "online.clay"));
+												}
 											}
-										}
+										} else {
+											if (plugin.getBackgroundType().equals("wool")) {
+												updateBackground(Material.valueOf("WOOL"), c.getInt(path + "offline.wool"));
+											} else if (plugin.getBackgroundType().equals("glass")) {
+												updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "offline.glass"));
+											} else if (plugin.getBackgroundType().equals("clay")) {
+												updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "offline.clay"));
+											}
+										}*/
 									}
 								}
 							}
@@ -170,18 +226,12 @@ public class TeleportSign {
 							plugin.logConsole(Level.WARNING, "Can't find layout '" + layout + "'.");
 							String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a7e" + layout.getName(), "\u00a76not found!" };
 							signError(sign, error);
-							if (c.getBoolean("options.drop-sign")) {
-								sign.getLocation().getBlock().breakNaturally();
-							}
 							broken = true;
 						}
 					} else {
 						plugin.logConsole(Level.WARNING, "Can't find server '" + server + "'.");
 						String[] error = { "\u00a74ERROR:", "\u00a76Server", "\u00a7e" + server.getName(), "\u00a76not found!" };
 						signError(sign, error);
-						if (c.getBoolean("options.drop-sign")) {
-							sign.getLocation().getBlock().breakNaturally();
-						}
 						broken = true;
 					}
 				}
@@ -189,15 +239,22 @@ public class TeleportSign {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
-	public void updateBackground(Material mat, int color) {
-		Location loc3 = getLocation();
-		BlockState s = (Sign) loc3.getBlock().getState();
-		BlockFace bf = ((Directional) s.getData()).getFacing();
-		Location loc2 = new Location(loc3.getWorld(), loc3.getBlockX() - bf.getModX(), loc3.getBlockY() - bf.getModY(), loc3.getBlockZ() - bf.getModZ());
+	public void updateBackground(Material mat/*, int color*/) {
+		Location loc = getLocation();
+		BlockState s = (Sign) loc.getBlock().getState();
+		BlockFace bf = null;
+		try {
+			bf = ((Directional) s.getData()).getFacing();
+		} catch (ClassCastException e) {
+			org.bukkit.block.data.type.WallSign data = (org.bukkit.block.data.type.WallSign) s.getBlockData();
+			bf = data.getFacing();
+		}
+		Location loc2 = new Location(loc.getWorld(), loc.getBlockX() - bf.getModX(), loc.getBlockY() - bf.getModY(),
+				loc.getBlockZ() - bf.getModZ());
 		Block wall = loc2.getBlock();
 		wall.setType(mat);
-		wall.setData((byte) color);
+		// In 1.8 this works
+		//wall.setData((byte) color);
 	}
 
 	private void signError(Sign sign, String[] exception) {

@@ -2,6 +2,7 @@ package hu.montlikadani.TeleportSigns;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -32,7 +33,30 @@ public class AnimationTask {
 						Sign sign = (Sign) s.getLocation().getBlock().getState();
 						sign.setLine(line, lines[line]);
 						sign.update(true);
-						if (plugin.getMainConf().getBoolean("options.background.enable") && s.getLocation().getBlock().getType() == Material.WALL_SIGN) {
+
+						if (plugin.getMainConf().getBoolean("options.background.enable")) {
+							if (Bukkit.getVersion().contains("1.14")
+									&& Tag.WALL_SIGNS.isTagged(s.getLocation().getBlock().getType())) {
+								if (plugin.getBackgroundType().equals("wool")) {
+									s.updateBackground(Material.LIGHT_BLUE_WOOL);
+								} else if (plugin.getBackgroundType().equals("glass")) {
+									s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
+								} else if (plugin.getBackgroundType().equals("clay")) {
+									s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
+								}
+							}
+
+							if (!Bukkit.getVersion().contains("1.14") && s.getLocation().getBlock().getType() == Material.valueOf("WALL_SIGN")) {
+								if (plugin.getBackgroundType().equals("wool")) {
+									s.updateBackground(Material.getMaterial("WOOL"));
+								} else if (plugin.getBackgroundType().equals("glass")) {
+									s.updateBackground(Material.getMaterial("STAINED_GLASS"));
+								} else if (plugin.getBackgroundType().equals("clay")) {
+									s.updateBackground(Material.getMaterial("STAINED_CLAY"));
+								}
+							}
+						}
+						/*if (plugin.getMainConf().getBoolean("options.background.enable") && s.getLocation().getBlock().getType() == Material.WALL_SIGN) {
 							if (plugin.getBackgroundType().equals("wool")) {
 								s.updateBackground(Material.WOOL, plugin.getMainConf().getInt("options.background.block-colors.loading.wool"));
 							} else if (plugin.getBackgroundType().equals("glass")) {
@@ -40,7 +64,7 @@ public class AnimationTask {
 							} else if (plugin.getBackgroundType().equals("clay")) {
 								s.updateBackground(Material.STAINED_CLAY, plugin.getMainConf().getInt("options.background.block-colors.loading.clay"));
 							}
-						}
+						}*/
 					}
 				}
 				line++;

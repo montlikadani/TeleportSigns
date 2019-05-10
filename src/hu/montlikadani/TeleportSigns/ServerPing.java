@@ -173,7 +173,7 @@ public class ServerPing {
 			ret.protocol = res.getVersion().getProtocol();
 			ret.version = res.getVersion().getName();
 		} else if (!version.contains("1.10") && !version.contains("1.11") && !version.contains("1.12")) {
-			if (version.contains("1.13")) {
+			if (version.contains("1.13") || version.contains("1.14")) {
 				StatusResponse_113 res = (StatusResponse_113) this.gson.fromJson(json, StatusResponse_113.class);
 				ret.description = res.getDescription().getText();
 				ret.players = res.getPlayers().getOnline();

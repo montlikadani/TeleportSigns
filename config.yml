@@ -37,9 +37,6 @@ options:
   # How much time does the server pinging down? (In ticks)
   ping-timeout: 29
 
-  # When you break the sign or not find the layout on the sign, drop a sign?
-  drop-sign: false
-
   # Ignoring the player sneaking when clicking on the sign.
   ignore-player-sneaking: true
 
@@ -48,31 +45,6 @@ options:
     enable: false
     # Possible types: glass, wool, clay
     type: glass
-    # Block id colors:
-    # Glass: https://minecraft.gamepedia.com/Glass#Data_values
-    # Wool: https://minecraft.gamepedia.com/Wool#Data_values
-    # Clay (Terracotta): https://minecraft.gamepedia.com/Terracotta#Data_values
-    block-colors:
-      # When the server is online.
-      online:
-        wool: 5
-        glass: 5
-        clay: 5
-      # When the server is offline.
-      offline:
-        wool: 14
-        glass: 14
-        clay: 14
-      # When the server loading.
-      loading:
-        wool: 3
-        glass: 11
-        clay: 3
-      # When the server is full of players.
-      full:
-        wool: 9
-        glass: 9
-        clay: 9
 
 # The servers that players join.
 servers:
