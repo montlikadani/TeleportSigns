@@ -132,92 +132,88 @@ public class TeleportSign {
 								String ver = Bukkit.getVersion();
 
 								if (c.getBoolean("options.background.enable")) {
-									if (ver.contains("1.14") && org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())
-											|| !ver.contains("1.14") && b.getType() == Material.getMaterial("WALL_SIGN")) {
-										//String path = "options.background.block-colors.";
-										if (server.isOnline()) {
-											if (server.getPlayerCount() == server.getMaxPlayers()) {
-												if (!ver.contains("1.8")) {
+									if (ver.contains("1.14")) {
+										if (org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())) {
+											if (server.isOnline()) {
+												if (server.getPlayerCount() == 0) {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.WHITE_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.WHITE_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
+														updateBackground(Material.WHITE_TERRACOTTA);
+													}
+												} else if (server.getPlayerCount() == server.getMaxPlayers()) {
 													if (plugin.getBackgroundType().equals("wool")) {
 														updateBackground(Material.BLUE_WOOL);
 													} else if (plugin.getBackgroundType().equals("glass")) {
 														updateBackground(Material.BLUE_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")) {
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
 														updateBackground(Material.BLUE_TERRACOTTA);
 													}
 												} else {
 													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.valueOf("WOOL"));
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.valueOf("STAINED_GLASS"));
-													} else if (plugin.getBackgroundType().equals("clay")) {
-														updateBackground(Material.valueOf("STAINED_CLAY"));
-													}
-												}
-											} else {
-												if (!ver.contains("1.8")) {
-													if (plugin.getBackgroundType().equals("wool")) {
 														updateBackground(Material.LIME_WOOL);
 													} else if (plugin.getBackgroundType().equals("glass")) {
 														updateBackground(Material.LIME_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("terracotta")) {
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
 														updateBackground(Material.LIME_TERRACOTTA);
 													}
-												} else {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.getMaterial("WOOL"));
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.getMaterial("STAINED_GLASS"));
-													} else if (plugin.getBackgroundType().equals("clay")) {
-														updateBackground(Material.getMaterial("STAINED_CLAY"));
-													}
 												}
-											}
-										} else {
-											if (!ver.contains("1.8")) {
+											} else {
 												if (plugin.getBackgroundType().equals("wool")) {
 													updateBackground(Material.RED_WOOL);
 												} else if (plugin.getBackgroundType().equals("glass")) {
 													updateBackground(Material.RED_STAINED_GLASS);
-												} else if (plugin.getBackgroundType().equals("terracotta")) {
+												} else if (plugin.getBackgroundType().equals("clay")
+														|| plugin.getBackgroundType().equals("terracotta")) {
 													updateBackground(Material.RED_TERRACOTTA);
-												}
-											} else {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.getMaterial("WOOL"));
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.getMaterial("STAINED_GLASS"));
-												} else if (plugin.getBackgroundType().equals("clay")) {
-													updateBackground(Material.getMaterial("STAINED_CLAY"));
 												}
 											}
 										}
-											/*if (server.getPlayerCount() == server.getMaxPlayers()) {
+									} else if (b.getType() == Material.getMaterial("WALL_SIGN")) {
+										if (server.isOnline()) {
+											if (server.getPlayerCount() == 0) {
 												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.valueOf("WOOL"), c.getInt(path + "full.wool"));
+													updateBackground(Material.getMaterial("WOOL"), 0);
 												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "full.glass"));
-												} else if (plugin.getBackgroundType().equals("clay")) {
-													updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "full.clay"));
+													updateBackground(Material.getMaterial("STAINED_GLASS"), 0);
+												} else if (plugin.getBackgroundType().equals("clay")
+														|| plugin.getBackgroundType().equals("terracotta")) {
+													updateBackground(Material.getMaterial("STAINED_CLAY"), 0);
 												}
-											} else if (server.getPlayerCount() != server.getMaxPlayers()) {
+											} else if (server.getPlayerCount() == server.getMaxPlayers()) {
 												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.valueOf("WOOL"), c.getInt(path + "online.wool"));
+													updateBackground(Material.getMaterial("WOOL"), 11);
 												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "online.glass"));
-												} else if (plugin.getBackgroundType().equals("clay")) {
-													updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "online.clay"));
+													updateBackground(Material.getMaterial("STAINED_GLASS"), 11);
+												} else if (plugin.getBackgroundType().equals("clay")
+														|| plugin.getBackgroundType().equals("terracotta")) {
+													updateBackground(Material.getMaterial("STAINED_CLAY"), 11);
+												}
+											} else {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.getMaterial("WOOL"), 5);
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.getMaterial("STAINED_GLASS"), 5);
+												} else if (plugin.getBackgroundType().equals("clay")
+														|| plugin.getBackgroundType().equals("terracotta")) {
+													updateBackground(Material.getMaterial("STAINED_CLAY"), 5);
 												}
 											}
 										} else {
 											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.valueOf("WOOL"), c.getInt(path + "offline.wool"));
+												updateBackground(Material.getMaterial("WOOL"), 14);
 											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.valueOf("STAINED_GLASS"), c.getInt(path + "offline.glass"));
-											} else if (plugin.getBackgroundType().equals("clay")) {
-												updateBackground(Material.valueOf("STAINED_CLAY"), c.getInt(path + "offline.clay"));
+												updateBackground(Material.getMaterial("STAINED_GLASS"), 14);
+											} else if (plugin.getBackgroundType().equals("clay")
+													|| plugin.getBackgroundType().equals("terracotta")) {
+												updateBackground(Material.getMaterial("STAINED_CLAY"), 14);
 											}
-										}*/
+										}
 									}
 								}
 							}
@@ -239,7 +235,11 @@ public class TeleportSign {
 		}
 	}
 
-	public void updateBackground(Material mat/*, int color*/) {
+	public void updateBackground(Material mat) {
+		updateBackground(mat, 0);
+	}
+
+	public void updateBackground(Material mat, int color) {
 		Location loc = getLocation();
 		BlockState s = (Sign) loc.getBlock().getState();
 		BlockFace bf = null;
@@ -253,8 +253,13 @@ public class TeleportSign {
 				loc.getBlockZ() - bf.getModZ());
 		Block wall = loc2.getBlock();
 		wall.setType(mat);
-		// In 1.8 this works
-		//wall.setData((byte) color);
+		if (!(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.14"))) {
+			try {
+				Block.class.getMethod("setData", byte.class).invoke(wall, (byte) color);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void signError(Sign sign, String[] exception) {
@@ -278,9 +283,14 @@ public class TeleportSign {
 				return text;
 			}
 		}
-
-		if (length > 16) {
-			text = text.substring(0, 16);
+		if (Bukkit.getVersion().contains("1.14")) {
+			if (length > 25) {
+				text = text.substring(0, 25);
+			}
+		} else {
+			if (length > 16) {
+				text = text.substring(0, 16);
+			}
 		}
 
 		return text;

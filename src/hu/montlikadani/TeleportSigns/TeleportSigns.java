@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.StandardSystemProperty;
@@ -28,22 +29,16 @@ public class TeleportSigns extends JavaPlugin {
 	private File messages_file;
 
 	private int msver = 4;
-	private PingScheduler ping;
-	private SignScheduler sign;
-	private AnimationTask anim;
-	private ConfigData data;
+	private PingScheduler ping = null;
+	private SignScheduler sign = null;
+	private AnimationTask anim = null;
+	private ConfigData data = null;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 
 		try {
-			if (instance == null) {
-				getLogger().log(Level.SEVERE, "Plugin instance is null. Disabling...");
-				getServer().getPluginManager().disablePlugin(this);
-				return;
-			}
-
 			if (!checkJavaVersion()) {
 				getServer().getPluginManager().disablePlugin(this);
 				return;
@@ -65,14 +60,14 @@ public class TeleportSigns extends JavaPlugin {
 			ping = new PingScheduler(this);
 			getServer().getPluginManager().registerEvents(ping, this);
 
-			sign = new SignScheduler(this);
-			getServer().getPluginManager().registerEvents(sign, this);
-
 			anim = new AnimationTask(this);
 			anim.resetAnimation();
 			anim.startAnimation();
-			long time = (long) (10.3*20L);
 
+			sign = new SignScheduler(this);
+			getServer().getPluginManager().registerEvents(sign, this);
+
+			long time = (long) (10.3*20L);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				@Override
 				public void run() {
@@ -121,6 +116,7 @@ public class TeleportSigns extends JavaPlugin {
 			}
 			anim = null;
 			Bukkit.getServer().getMessenger().unregisterOutgoingPluginChannel(instance, "BungeeCord");
+			HandlerList.unregisterAll(this);
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
 			if (getMainConf().contains("plugin-disable") && !getMainConf().getString("plugin-disable").equals("")) {
@@ -239,9 +235,14 @@ public class TeleportSigns extends JavaPlugin {
 		Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
 		ping = null;
 		sign = null;
+		HandlerList.unregisterAll(this);
 
 		ping = new PingScheduler(this);
 		sign = new SignScheduler(this);
+
+		Bukkit.getPluginManager().registerEvents(ping, this);
+		Bukkit.getPluginManager().registerEvents(sign, this);
+		Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
 
 		anim.resetAnimation();
 		anim.stopAnimation();
@@ -278,6 +279,11 @@ public class TeleportSigns extends JavaPlugin {
 		return s.replace("&", "\u00a7");
 	}
 
+	/**
+	 * Gets the plugin instance in this class
+	 * 
+	 * @return {@link #TeleportSigns()} instance
+	 */
 	public static TeleportSigns getInstance() {
 		return instance;
 	}

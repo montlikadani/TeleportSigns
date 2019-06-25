@@ -30,11 +30,11 @@ options:
   # Sign updates in ticks. 20 ticks = 1 second.
   sign-updates: 200
 
-  # How much time do you start the server pinging? (In ticks)
+  # How much time do you start the server pinging? (In seconds)
   ping-interval: 30
   # Important! If you do not want the pinging to end ping-timeout to be smaller than one and
   # take the ping interval by one more.
-  # How much time does the server pinging down? (In ticks)
+  # How much time does the server pinging down? (In seconds)
   ping-timeout: 29
 
   # Ignoring the player sneaking when clicking on the sign.

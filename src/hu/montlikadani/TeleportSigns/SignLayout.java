@@ -3,6 +3,7 @@ package hu.montlikadani.TeleportSigns;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 public class SignLayout {
@@ -86,9 +87,9 @@ public class SignLayout {
 			line = line.replaceAll("%displayname%", server.getDisplayname());
 			line = line.replaceAll("%address%", server.getAddress().getHostName());
 			line = line.replaceAll("%port%", Integer.toString(server.getAddress().getPort()));
-			line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 
 			if (server.isOnline()) {
+				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
 				line = line.replaceAll("%numpl%", Integer.toString(server.getPlayerCount()));
 				line = line.replaceAll("%maxpl%", Integer.toString(server.getMaxPlayers()));
 				line = line.replaceAll("%motd%", formatDescription(server.getMotd()));
@@ -100,6 +101,7 @@ public class SignLayout {
 					line = line.replaceAll("%isonline%", online);
 				}
 			} else {
+				line = line.replaceAll("%ping%", "0ms");
 				line = line.replaceAll("%isonline%", offline);
 				line = line.replaceAll("%numpl%", offlineInt);
 				line = line.replaceAll("%maxpl%", offlineInt);
@@ -197,8 +199,14 @@ public class SignLayout {
 	private String editText(String text) {
 		int length = text.length();
 
-		if (length > 16) {
-			text = text.substring(0, 16);
+		if (Bukkit.getVersion().contains("1.14")) {
+			if (length > 25) {
+				text = text.substring(0, 25);
+			}
+		} else {
+			if (length > 16) {
+				text = text.substring(0, 16);
+			}
 		}
 
 		return text;

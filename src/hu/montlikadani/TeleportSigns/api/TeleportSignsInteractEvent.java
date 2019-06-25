@@ -2,14 +2,11 @@ package hu.montlikadani.TeleportSigns.api;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import hu.montlikadani.TeleportSigns.ServerInfo;
 import hu.montlikadani.TeleportSigns.TeleportSign;
 
-public class TeleportSignsInteractEvent extends Event implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
+public class TeleportSignsInteractEvent extends BaseEvent implements Cancellable {
 	private Player player;
 	private TeleportSign sign;
 	private ServerInfo server;
@@ -19,15 +16,6 @@ public class TeleportSignsInteractEvent extends Event implements Cancellable {
 		this.player = player;
 		this.sign = sign;
 		this.server = server;
-	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 	public Player getPlayer() {

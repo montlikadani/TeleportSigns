@@ -1,5 +1,8 @@
 package hu.montlikadani.TeleportSigns;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -8,20 +11,20 @@ import org.bukkit.scheduler.BukkitTask;
 
 public class AnimationTask {
 
-	private TeleportSigns plugin;
+	private final TeleportSigns plugin;
+
+	private Map<TeleportSigns, BukkitTask> task = new HashMap<>();
 
 	public AnimationTask(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 
-	private BukkitTask task;
-
 	public void startAnimation() {
 		runFirstAnimation();
 	}
 
-	private void runFirstAnimation() {
-		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+	private synchronized void runFirstAnimation() {
+		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int line = 0;
 			String[] lines = { "---------------", "TeleportSigns", "Initialize...", "---------------" };
 			@Override
@@ -35,24 +38,24 @@ public class AnimationTask {
 						sign.update(true);
 
 						if (plugin.getMainConf().getBoolean("options.background.enable")) {
-							if (Bukkit.getVersion().contains("1.14")
-									&& Tag.WALL_SIGNS.isTagged(s.getLocation().getBlock().getType())) {
-								if (plugin.getBackgroundType().equals("wool")) {
-									s.updateBackground(Material.LIGHT_BLUE_WOOL);
-								} else if (plugin.getBackgroundType().equals("glass")) {
-									s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
-								} else if (plugin.getBackgroundType().equals("clay")) {
-									s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
+							if (Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.13")) {
+								if (Tag.WALL_SIGNS.isTagged(s.getLocation().getBlock().getType())) {
+									if (plugin.getBackgroundType().equals("wool")) {
+										s.updateBackground(Material.LIGHT_BLUE_WOOL);
+									} else if (plugin.getBackgroundType().equals("glass")) {
+										s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
+									} else if (plugin.getBackgroundType().equals("clay")) {
+										s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
+									}
 								}
-							}
-
-							if (!Bukkit.getVersion().contains("1.14") && s.getLocation().getBlock().getType() == Material.valueOf("WALL_SIGN")) {
+							} else if (s.getLocation().getBlock().getType() == Material.getMaterial("WALL_SIGN")) {
 								if (plugin.getBackgroundType().equals("wool")) {
-									s.updateBackground(Material.getMaterial("WOOL"));
+									s.updateBackground(Material.getMaterial("WOOL"), 3);
 								} else if (plugin.getBackgroundType().equals("glass")) {
-									s.updateBackground(Material.getMaterial("STAINED_GLASS"));
-								} else if (plugin.getBackgroundType().equals("clay")) {
-									s.updateBackground(Material.getMaterial("STAINED_CLAY"));
+									s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
+								} else if (plugin.getBackgroundType().equals("clay")
+										|| plugin.getBackgroundType().equals("terracotta")) {
+									s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
 								}
 							}
 						}
@@ -69,7 +72,7 @@ public class AnimationTask {
 				}
 				line++;
 			}
-		}, 0L, 10L);
+		}, 0L, 10L));
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
@@ -112,7 +115,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {
@@ -127,7 +130,7 @@ public class AnimationTask {
 				}
 				pnt++;
 			}
-		}, 5L, 5L);
+		}, 5L, 5L));
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
@@ -150,7 +153,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {
@@ -165,7 +168,7 @@ public class AnimationTask {
 				}
 				pnt++;
 			}
-		}, 5L, 5L);
+		}, 5L, 5L));
 
 		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
 			@Override
@@ -188,7 +191,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
-		task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
+		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 			@Override
 			public void run() {
@@ -220,7 +223,7 @@ public class AnimationTask {
 					pnt++;
 				}
 			}
-		}, 5L, 5L);
+		}, 5L, 5L));
 	}
 
 	public void resetAnimation() {
@@ -238,7 +241,7 @@ public class AnimationTask {
 
 	public void stopAnimation() {
 		if (task != null) {
-			Bukkit.getScheduler().cancelTask(task.getTaskId());
+			Bukkit.getScheduler().cancelTask(task.get(plugin).getTaskId());
 		}
 	}
 }

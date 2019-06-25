@@ -1,27 +1,14 @@
 package hu.montlikadani.TeleportSigns.api;
 
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
-
 import hu.montlikadani.TeleportSigns.ServerInfo;
 
-public class ServerChangeStatusEvent extends Event {
-	private static final HandlerList handlers = new HandlerList();
+public class ServerChangeStatusEvent extends BaseEvent {
 	private ServerInfo server;
 	private String status;
 
 	public ServerChangeStatusEvent(ServerInfo server, String status) {
 		this.server = server;
 		this.status = status;
-	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 	public ServerInfo getServer() {

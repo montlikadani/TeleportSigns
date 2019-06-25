@@ -6,7 +6,6 @@ public class Permissions {
 		PINFO("teleportsigns.plugininfo"),
 		HELP("teleportsigns.help"),
 		RELOAD("teleportsigns.reload"),
-		PDISABLE("teleportsigns.disable"),
 		DESTROY("teleportsigns.destroy"),
 		CREATE("teleportsigns.create"),
 		NOCOOLDOWN("teleportsigns.use.nocooldown"),

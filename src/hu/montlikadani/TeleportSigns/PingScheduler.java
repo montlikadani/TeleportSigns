@@ -26,7 +26,7 @@ public class PingScheduler implements Runnable, Listener {
 
 	@Override
 	public void run() {
-		final List<ServerInfo> servers = plugin.getConfigData().getServers();
+		List<ServerInfo> servers = plugin.getConfigData().getServers();
 		TeleportSignsPingEvent event = new TeleportSignsPingEvent(servers);
 		plugin.callSyncEvent(event);
 		task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
@@ -39,7 +39,7 @@ public class PingScheduler implements Runnable, Listener {
 				if (!server.isLocal()) {
 					pingAsync(server);
 				} else {
-					final String status = server.getMotd();
+					String status = server.getMotd();
 					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(),
 							server.getAddress().getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
 					plugin.callSyncEvent(ping);
@@ -70,7 +70,7 @@ public class PingScheduler implements Runnable, Listener {
 				ping.setFetching(true);
 
 				try {
-					final String status = server.getMotd();
+					String status = server.getMotd();
 					SResponse response = ping.fetchData();
 					server.setVersion(formatVersion(response.version));
 					server.setProtocol(response.protocol);

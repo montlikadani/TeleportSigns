@@ -3,27 +3,15 @@ package hu.montlikadani.TeleportSigns.api;
 import java.util.List;
 
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
-import org.bukkit.event.HandlerList;
 
 import hu.montlikadani.TeleportSigns.ServerInfo;
 
-public class TeleportSignsPingEvent extends Event implements Cancellable {
-	private static final HandlerList handlers = new HandlerList();
+public class TeleportSignsPingEvent extends BaseEvent implements Cancellable {
 	private List<ServerInfo> servers;
 	private boolean cancelled = false;
 
 	public TeleportSignsPingEvent(List<ServerInfo> servers) {
 		this.servers = servers;
-	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 	public List<ServerInfo> getServers() {

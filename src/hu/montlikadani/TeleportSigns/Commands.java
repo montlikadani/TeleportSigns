@@ -64,16 +64,6 @@ public class Commands implements CommandExecutor, TabCompleter {
 					}
 					plugin.reload();
 					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("reload-config")));
-				} else if (args[0].equalsIgnoreCase("disable")) {
-					if (!(sender.hasPermission(Perm.PDISABLE.getPerm()) && sender.isOp())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.PDISABLE.getPerm() + " + op")));
-						return true;
-					}
-					if (args.length > 1) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
-						return true;
-					}
-					plugin.getServer().getPluginManager().disablePlugin(plugin);
 				} else if (args[0].equalsIgnoreCase("listlayouts")) {
 					if (!sender.hasPermission(Perm.LISTLAYOUT.getPerm())) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.LISTLAYOUT.getPerm())));

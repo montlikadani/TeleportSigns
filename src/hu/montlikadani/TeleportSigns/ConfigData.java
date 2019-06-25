@@ -50,8 +50,6 @@ public class ConfigData {
 			if (config_file.exists()) {
 				config = YamlConfiguration.loadConfiguration(config_file);
 				config.load(config_file);
-				plugin.reloadConfig();
-				plugin.saveDefaultConfig();
 				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
 					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getInt("config-version") + " | Newest version: " + cver + ")");
 				}
