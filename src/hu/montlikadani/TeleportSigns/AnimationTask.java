@@ -59,15 +59,6 @@ public class AnimationTask {
 								}
 							}
 						}
-						/*if (plugin.getMainConf().getBoolean("options.background.enable") && s.getLocation().getBlock().getType() == Material.WALL_SIGN) {
-							if (plugin.getBackgroundType().equals("wool")) {
-								s.updateBackground(Material.WOOL, plugin.getMainConf().getInt("options.background.block-colors.loading.wool"));
-							} else if (plugin.getBackgroundType().equals("glass")) {
-								s.updateBackground(Material.STAINED_GLASS, plugin.getMainConf().getInt("options.background.block-colors.loading.glass"));
-							} else if (plugin.getBackgroundType().equals("clay")) {
-								s.updateBackground(Material.STAINED_CLAY, plugin.getMainConf().getInt("options.background.block-colors.loading.clay"));
-							}
-						}*/
 					}
 				}
 				line++;
