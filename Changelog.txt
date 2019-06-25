@@ -1,4 +1,14 @@
-﻿# v2.1
+﻿# v2.2
+Fixes:
+  Improved file generating problems.
+  Fixed issue when the reload command not loaded the plugin correctly
+  Fixed issue when used mc 1.8 version then does not changed the sign background.
+Removed:
+  Removed /ts disable command. - It will broke the plugin when disabled
+Other:
+  Plugin updated to 1.14
+
+# v2.1
 Added:
   Added an option to ignore player sneaking when wants to teleport.
 Fixes:
