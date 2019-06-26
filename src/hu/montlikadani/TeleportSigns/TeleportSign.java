@@ -129,133 +129,13 @@ public class TeleportSign {
 							for (int i = 0; i < 4; i++) {
 								sign.setLine(i, lines.get(i).toString());
 
-								String ver = Bukkit.getVersion();
-
 								if (c.getBoolean("options.background.enable")) {
-									if (ver.contains("1.13")) { // Paper does not support Tag.Wall_Signs
-										if (b.getType() == Material.getMaterial("WALL_SIGN")) {
-											if (server.isOnline()) {
-												if (server.getPlayerCount() == 0) {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.WHITE_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.WHITE_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.WHITE_TERRACOTTA);
-													}
-												} else if (server.getPlayerCount() == server.getMaxPlayers()) {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.BLUE_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.BLUE_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.BLUE_TERRACOTTA);
-													}
-												} else {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.LIME_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.LIME_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.LIME_TERRACOTTA);
-													}
-												}
-											} else {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.RED_WOOL);
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.RED_STAINED_GLASS);
-												} else if (plugin.getBackgroundType().equals("clay")
-														|| plugin.getBackgroundType().equals("terracotta")) {
-													updateBackground(Material.RED_TERRACOTTA);
-												}
-											}
-										}
-									} else if (ver.contains("1.14")) {
+									if (Bukkit.getVersion().contains("1.14")) {
 										if (org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())) {
-											if (server.isOnline()) {
-												if (server.getPlayerCount() == 0) {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.WHITE_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.WHITE_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.WHITE_TERRACOTTA);
-													}
-												} else if (server.getPlayerCount() == server.getMaxPlayers()) {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.BLUE_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.BLUE_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.BLUE_TERRACOTTA);
-													}
-												} else {
-													if (plugin.getBackgroundType().equals("wool")) {
-														updateBackground(Material.LIME_WOOL);
-													} else if (plugin.getBackgroundType().equals("glass")) {
-														updateBackground(Material.LIME_STAINED_GLASS);
-													} else if (plugin.getBackgroundType().equals("clay")
-															|| plugin.getBackgroundType().equals("terracotta")) {
-														updateBackground(Material.LIME_TERRACOTTA);
-													}
-												}
-											} else {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.RED_WOOL);
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.RED_STAINED_GLASS);
-												} else if (plugin.getBackgroundType().equals("clay")
-														|| plugin.getBackgroundType().equals("terracotta")) {
-													updateBackground(Material.RED_TERRACOTTA);
-												}
-											}
+											chooseFromType();
 										}
 									} else if (b.getType() == Material.getMaterial("WALL_SIGN")) {
-										if (server.isOnline()) {
-											if (server.getPlayerCount() == 0) {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.getMaterial("WOOL"), 0);
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.getMaterial("STAINED_GLASS"), 0);
-												} else if (plugin.getBackgroundType().equals("clay")
-														|| plugin.getBackgroundType().equals("terracotta")) {
-													updateBackground(Material.getMaterial("STAINED_CLAY"), 0);
-												}
-											} else if (server.getPlayerCount() == server.getMaxPlayers()) {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.getMaterial("WOOL"), 11);
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.getMaterial("STAINED_GLASS"), 11);
-												} else if (plugin.getBackgroundType().equals("clay")
-														|| plugin.getBackgroundType().equals("terracotta")) {
-													updateBackground(Material.getMaterial("STAINED_CLAY"), 11);
-												}
-											} else {
-												if (plugin.getBackgroundType().equals("wool")) {
-													updateBackground(Material.getMaterial("WOOL"), 5);
-												} else if (plugin.getBackgroundType().equals("glass")) {
-													updateBackground(Material.getMaterial("STAINED_GLASS"), 5);
-												} else if (plugin.getBackgroundType().equals("clay")
-														|| plugin.getBackgroundType().equals("terracotta")) {
-													updateBackground(Material.getMaterial("STAINED_CLAY"), 5);
-												}
-											}
-										} else {
-											if (plugin.getBackgroundType().equals("wool")) {
-												updateBackground(Material.getMaterial("WOOL"), 14);
-											} else if (plugin.getBackgroundType().equals("glass")) {
-												updateBackground(Material.getMaterial("STAINED_GLASS"), 14);
-											} else if (plugin.getBackgroundType().equals("clay")
-													|| plugin.getBackgroundType().equals("terracotta")) {
-												updateBackground(Material.getMaterial("STAINED_CLAY"), 14);
-											}
-										}
+										chooseFromType();
 									}
 								}
 							}
@@ -336,5 +216,89 @@ public class TeleportSign {
 		}
 
 		return text;
+	}
+
+	private void chooseFromType() {
+		if (Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.13")) {
+			if (server.isOnline()) {
+				if (server.getPlayerCount() == 0) {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.WHITE_WOOL);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.WHITE_STAINED_GLASS);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.WHITE_TERRACOTTA);
+					}
+				} else if (server.getPlayerCount() == server.getMaxPlayers()) {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.BLUE_WOOL);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.BLUE_STAINED_GLASS);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.BLUE_TERRACOTTA);
+					}
+				} else {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.LIME_WOOL);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.LIME_STAINED_GLASS);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.LIME_TERRACOTTA);
+					}
+				}
+			} else {
+				if (plugin.getBackgroundType().equals("wool")) {
+					updateBackground(Material.RED_WOOL);
+				} else if (plugin.getBackgroundType().equals("glass")) {
+					updateBackground(Material.RED_STAINED_GLASS);
+				} else if (plugin.getBackgroundType().equals("clay")
+						|| plugin.getBackgroundType().equals("terracotta")) {
+					updateBackground(Material.RED_TERRACOTTA);
+				}
+			}
+		} else {
+			if (server.isOnline()) {
+				if (server.getPlayerCount() == 0) {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.getMaterial("WOOL"), 0);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.getMaterial("STAINED_GLASS"), 0);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.getMaterial("STAINED_CLAY"), 0);
+					}
+				} else if (server.getPlayerCount() == server.getMaxPlayers()) {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.getMaterial("WOOL"), 11);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.getMaterial("STAINED_GLASS"), 11);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.getMaterial("STAINED_CLAY"), 11);
+					}
+				} else {
+					if (plugin.getBackgroundType().equals("wool")) {
+						updateBackground(Material.getMaterial("WOOL"), 5);
+					} else if (plugin.getBackgroundType().equals("glass")) {
+						updateBackground(Material.getMaterial("STAINED_GLASS"), 5);
+					} else if (plugin.getBackgroundType().equals("clay")
+							|| plugin.getBackgroundType().equals("terracotta")) {
+						updateBackground(Material.getMaterial("STAINED_CLAY"), 5);
+					}
+				}
+			} else {
+				if (plugin.getBackgroundType().equals("wool")) {
+					updateBackground(Material.getMaterial("WOOL"), 14);
+				} else if (plugin.getBackgroundType().equals("glass")) {
+					updateBackground(Material.getMaterial("STAINED_GLASS"), 14);
+				} else if (plugin.getBackgroundType().equals("clay")
+						|| plugin.getBackgroundType().equals("terracotta")) {
+					updateBackground(Material.getMaterial("STAINED_CLAY"), 14);
+				}
+			}
+		}
 	}
 }
