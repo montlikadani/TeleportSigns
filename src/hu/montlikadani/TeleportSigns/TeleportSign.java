@@ -132,7 +132,49 @@ public class TeleportSign {
 								String ver = Bukkit.getVersion();
 
 								if (c.getBoolean("options.background.enable")) {
-									if (ver.contains("1.14") || ver.contains("1.13")) {
+									if (ver.contains("1.13")) { // Paper does not support Tag.Wall_Signs
+										if (b.getType() == Material.getMaterial("WALL_SIGN")) {
+											if (server.isOnline()) {
+												if (server.getPlayerCount() == 0) {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.WHITE_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.WHITE_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
+														updateBackground(Material.WHITE_TERRACOTTA);
+													}
+												} else if (server.getPlayerCount() == server.getMaxPlayers()) {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.BLUE_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.BLUE_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
+														updateBackground(Material.BLUE_TERRACOTTA);
+													}
+												} else {
+													if (plugin.getBackgroundType().equals("wool")) {
+														updateBackground(Material.LIME_WOOL);
+													} else if (plugin.getBackgroundType().equals("glass")) {
+														updateBackground(Material.LIME_STAINED_GLASS);
+													} else if (plugin.getBackgroundType().equals("clay")
+															|| plugin.getBackgroundType().equals("terracotta")) {
+														updateBackground(Material.LIME_TERRACOTTA);
+													}
+												}
+											} else {
+												if (plugin.getBackgroundType().equals("wool")) {
+													updateBackground(Material.RED_WOOL);
+												} else if (plugin.getBackgroundType().equals("glass")) {
+													updateBackground(Material.RED_STAINED_GLASS);
+												} else if (plugin.getBackgroundType().equals("clay")
+														|| plugin.getBackgroundType().equals("terracotta")) {
+													updateBackground(Material.RED_TERRACOTTA);
+												}
+											}
+										}
+									} else if (ver.contains("1.14")) {
 										if (org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())) {
 											if (server.isOnline()) {
 												if (server.getPlayerCount() == 0) {
