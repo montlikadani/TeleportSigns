@@ -86,6 +86,7 @@ public class TeleportSigns extends JavaPlugin {
 			if (getMainConf().getBoolean("check-update")) {
 				logConsole(checkVersion("console"));
 			}
+
 			if (getMainConf().getBoolean("metrics")) {
 				Metrics metrics = new Metrics(this);
 				metrics.addCustomChart(new Metrics.SimplePie("background_type",
@@ -96,6 +97,7 @@ public class TeleportSigns extends JavaPlugin {
 				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", () -> data.getServers().size()));
 				logConsole("Metrics enabled.");
 			}
+
 			if (getMainConf().contains("plugin-enable") && !getMainConf().getString("plugin-enable").equals("")) {
 				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-enable")));
 			}

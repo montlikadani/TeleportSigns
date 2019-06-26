@@ -132,7 +132,7 @@ public class TeleportSign {
 								String ver = Bukkit.getVersion();
 
 								if (c.getBoolean("options.background.enable")) {
-									if (ver.contains("1.14")) {
+									if (ver.contains("1.14") || ver.contains("1.13")) {
 										if (org.bukkit.Tag.WALL_SIGNS.isTagged(sign.getType())) {
 											if (server.isOnline()) {
 												if (server.getPlayerCount() == 0) {

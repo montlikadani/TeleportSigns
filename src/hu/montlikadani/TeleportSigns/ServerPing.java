@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
@@ -135,16 +139,31 @@ public class ServerPing {
 		dataInputStream.readFully(in);
 		String json = new String(in);
 
-		JsonObject jsonMother = new JsonObject();
+		String version = null;
+		if (org.bukkit.Bukkit.getVersion().contains("1.8")) {
+			JSONObject jsonMother = new JSONObject();
+			JSONParser parser = new JSONParser();
 
-		try {
-			jsonMother = gson.fromJson(json, JsonObject.class);
-		} catch (JsonSyntaxException e) {
-			Logger.getLogger(ServerPing.class.getName()).log(Level.SEVERE, (String) null, e);
+			try {
+				jsonMother = (JSONObject) parser.parse(json);
+			} catch (ParseException e) {
+				Logger.getLogger(ServerPing.class.getName()).log(Level.SEVERE, (String) null, e);
+			}
+
+			JSONObject jsonVersion = (JSONObject) jsonMother.get("version");
+			version = (String) jsonVersion.get("name");
+		} else {
+			JsonObject jsonMother = new JsonObject();
+
+			try {
+				jsonMother = gson.fromJson(json, JsonObject.class);
+			} catch (JsonSyntaxException e) {
+				Logger.getLogger(ServerPing.class.getName()).log(Level.SEVERE, (String) null, e);
+			}
+
+			JsonObject jsonVersion = (JsonObject) jsonMother.get("version");
+			version = jsonVersion.get("name").toString();
 		}
-
-		JsonObject jsonVersion = (JsonObject) jsonMother.get("version");
-		String version = jsonVersion.get("name").toString();
 		SResponse ret = new SResponse();
 
 		long now = System.currentTimeMillis();

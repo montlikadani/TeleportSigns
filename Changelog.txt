@@ -1,4 +1,9 @@
-﻿# v2.2
+﻿# v2.2.1
+Fixes:
+  Fixed IllegalArgumentException when tried to change the sign background.
+  Fixed issue when used 1.8 versions then the JsonObject is invalid.
+
+# v2.2
 Fixes:
   Improved file generating problems.
   Fixed issue when the reload command not loaded the plugin correctly
