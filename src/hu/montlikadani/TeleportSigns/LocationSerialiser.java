@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 public class LocationSerialiser {
+
 	public static String getServerFromSign(String raw) {
 		String[] splited = raw.split(",");
 		String returnServer = splited[4];
@@ -17,7 +18,8 @@ public class LocationSerialiser {
 	}
 
 	public static String locationSignToString(Location loc, String server, String layout) {
-		String returnString = loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + server + "," + layout;
+		String returnString = loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + ","
+				+ server + "," + layout;
 		return returnString;
 	}
 
@@ -28,7 +30,10 @@ public class LocationSerialiser {
 		double y = Double.parseDouble(splited[2]);
 		double z = Double.parseDouble(splited[3]);
 
-		Location returnLocation = new Location(Bukkit.getWorld(world), x, y, z);
+		Location returnLocation = null;
+		if (Bukkit.getWorld(world) != null) {
+			returnLocation = new Location(Bukkit.getWorld(world), x, y, z);
+		}
 
 		return returnLocation;
 	}

@@ -1,14 +1,12 @@
-prefix: "&6&l[&2&lTeleport&e&lSigns&6&l]&7&l >"
-
-# Use %prefix%, %newline% placeholder.
-reload-config: "%prefix%&a The plugin successfully reloaded!"
-sign-destroyed: "%prefix%&c The sign successfully destroyed!"
-no-layouts-found: "%prefix%&c There are no layouts in the layouts.yml file!"
-no-servers-found: "%prefix%&c There are no servers in the configuration file!"
+# Use %newline% placeholder.
+reload-config: "&aThe plugin successfully reloaded!"
+sign-destroyed: "&cThe sign successfully destroyed!"
+no-layouts-found: "&cThere are no layouts in the layouts.yml file!"
+no-servers-found: "&cThere are no servers in the configuration file!"
 player-sneaking: "&cNow you sneaking. Do not sneak when you want to click on the sign."
 
 # Use %subcmd% placeholder.
-unknown-sub-command: "%prefix%&c Unknown sub-command&7 %subcmd%&c."
+unknown-sub-command: "&cUnknown sub-command&7 %subcmd%&c."
 
 # Use %perm% placeholder.
 no-permission: "&cYou don't have permission for that!&7 (%perm%)"
@@ -16,29 +14,35 @@ no-create-sign: "&cYou have no permission to create a sign!&7 (%perm%)"
 no-sign-destroy: "&cYou have no permission to break the sign!&7 (%perm%)"
 
 # Use %command% placeholder.
-unknown-command: "%prefix%&c Unknown command.&7 Type '&f/%command% help&7' for help."
-no-console: "%prefix%&c This command '&7/%command% %args%&c' is not use in the console!"
-connect-usage: "%prefix%&c Use '&7/%command% connect <server>&c'."
+unknown-command: "&cUnknown command.&7 Type '&f/%command% help&7' for help."
+no-console: "&cThis command '&7/%command% %args%&c' is not use in the console!"
+connect-usage: "&cUse '&7/%command% connect <server>&c'."
 editsign:
   usage: '&cUsage:&7 /%command% editsign <servername> <layout>&c.'
-  created: '%prefix%&a The sign successfully created!&c Please wait, loading server...'
-  look-at-sign: '%prefix%&c Please look at a sign.'
+  created: '&aThe sign successfully created!&c Please wait, loading server...'
+  look-at-sign: '&cPlease look at a sign.'
 
 # Use %server% placeholder.
 server-offline: "&cThis server&e %server%&c is offline."
-unknown-server: "%prefix%&c Server&7 '%server%'&c not exist!"
-server-group-not-found: "%prefix%&c Server group&7 %server%&c does not exists."
+unknown-server: "&c Server&7 '%server%'&c not exist!"
+server-group-not-found: "&cServer group&7 %server%&c does not exists."
 enter-message: "&6You entered the server&7 %server%&6!"
 
 # Use %layout% placeholder.
-sign-created: "%prefix%&a The sign successfully created!%newline%&aServer:&7 %server%%newline%&aLayout:&7 %layout%"
-unknown-layout: "%prefix%&c Layout&7 '%layout%'&c not exist!"
+sign-created: "&aThe sign successfully created!%newline%&aServer:&7 %server%%newline%&aLayout:&7 %layout%"
+unknown-layout: "&cLayout&7 '%layout%'&c not exist!"
 
-# Use %layouts% placeholder.
-list-layouts: "%prefix%&a Layouts:&7 %layouts%"
+list-layouts:
+  header: "&aLayouts:"
+  # Use %layouts% placeholder.
+  list: "&7%layouts%"
 
-# Use %servers% placeholder.
-list-servers: "%prefix%&a Servers:&6 %servers%"
+list-servers:
+  header: "&aServers:"
+  # Use %servers% placeholder.
+  list: "&6%servers%&7 - %online%"
+  online: "&aYes"
+  offline: "&cNo"
 
 # This feature lists all the chat panel help.
 chat-messages:
@@ -49,7 +53,7 @@ chat-messages:
 - ""
 - "&8/&a%command%&b [+TAB]&5 -&6 Main plugin info."
 - "&8/&a%command% help&5 -&6 Help commands."
-- "&8/&a%command% connect&c <server>&5 -&6 Connect the server."
+- "&8/&a%command% connect&c <server>&5 -&6 Connect to the specified server."
 - "&8/&a%command% listlayouts&5 -&6 Listing available layouts that are on the layout file."
 - "&8/&a%command% listservers&5 -&6 Listing available servers that are on the config."
 - "&8/&a%command% editsign&c <servername> <layout>&5 -&6 Edit sign at the look."
@@ -57,4 +61,4 @@ chat-messages:
 - "&c&m----------------------------------------"
 
 # DO NOT CHANGE THIS!
-config-version: 4
+config-version: 5

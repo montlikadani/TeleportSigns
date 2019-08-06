@@ -3,7 +3,6 @@ package hu.montlikadani.TeleportSigns;
 public class Permissions {
 
 	public enum Perm {
-		PINFO("teleportsigns.plugininfo"),
 		HELP("teleportsigns.help"),
 		RELOAD("teleportsigns.reload"),
 		DESTROY("teleportsigns.destroy"),

@@ -21,7 +21,7 @@ public class Listeners implements Listener {
 
 	private TeleportSigns plugin;
 
-	public Listeners(TeleportSigns plugin) {
+	Listeners(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 
@@ -92,6 +92,7 @@ public class Listeners implements Listener {
 										plugin.sendMsg(p, plugin.defaults(plugin.getMsg("player-sneaking")));
 										return;
 									}
+
 									TeleportSignsInteractEvent e = new TeleportSignsInteractEvent(p, sign, server);
 									plugin.callSyncEvent(e);
 									event.setCancelled(true);
@@ -118,14 +119,17 @@ public class Listeners implements Listener {
 			if (server.isOnline()) {
 				if (!hasCooldown(p)) {
 					addCooldown(p);
+
 					if (server.getPlayerCount() == server.getMaxPlayers()) {
 						String msg = layout.getFullMessage();
 						if (msg != null && !msg.equals("")) {
 							plugin.sendMsg(p, plugin.defaults(layout.parseFullMessage(server)));
 						}
+
 						event.setCancelled(true);
 						return;
 					}
+
 					server.teleportPlayer(p);
 				} else {
 					String msg = layout.getCooldownMessage();

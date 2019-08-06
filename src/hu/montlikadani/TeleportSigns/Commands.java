@@ -23,7 +23,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 
 	private TeleportSigns plugin;
 
-	public Commands(TeleportSigns plugin) {
+	Commands(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 
@@ -32,10 +32,6 @@ public class Commands implements CommandExecutor, TabCompleter {
 		try {
 			if (cmd.getName().equalsIgnoreCase("teleportsigns")) {
 				if (args.length == 0) {
-					if (!sender.hasPermission(Perm.PINFO.getPerm())) {
-						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.PINFO.getPerm())));
-						return true;
-					}
 					sender.sendMessage(plugin.replaceColor("&6&l[&2&lTeleport&e&lSigns&b&l Info&e&l]"));
 					sender.sendMessage(plugin.replaceColor("&5Version:&a " + plugin.getDescription().getVersion()));
 					sender.sendMessage(plugin.replaceColor("&5Author, created by:&a montlikadani"));
@@ -46,22 +42,25 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.HELP.getPerm())));
 						return true;
 					}
+
 					if (args.length > 1) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
-					for (String msg : plugin.messages.getStringList("chat-messages")) {
-						sender.sendMessage(plugin.colorMsg(msg.replace("%command%", commandLabel).replace("%prefix%", plugin.getMsg("prefix"))));
-					}
+
+					plugin.messages.getStringList("chat-messages").forEach(
+							msg -> sender.sendMessage(plugin.colorMsg(msg.replace("%command%", commandLabel))));
 				} else if (args[0].equalsIgnoreCase("reload") || args[0].equalsIgnoreCase("rl")) {
 					if (!sender.hasPermission(Perm.RELOAD.getPerm())) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.RELOAD.getPerm())));
 						return true;
 					}
+
 					if (args.length > 1) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
+
 					plugin.reload();
 					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("reload-config")));
 				} else if (args[0].equalsIgnoreCase("listlayouts")) {
@@ -69,48 +68,76 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.LISTLAYOUT.getPerm())));
 						return true;
 					}
+
 					if (args.length > 1) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
-					Set<String> layouts = plugin.getConfigData().getConfig(ConfigType.LAYOUTS).getConfigurationSection("layouts").getKeys(false);
+
+					List<String> list = new ArrayList<>();
+					Set<String> layouts = plugin.getConfigData().getConfig(ConfigType.LAYOUTS)
+							.getConfigurationSection("layouts").getKeys(false);
+
 					if (layouts == null || layouts.isEmpty()) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-layouts-found")));
 						return true;
 					}
-					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("list-layouts", "%layouts%", layouts.toString().replace("[", "").replace("]", ""))));
+
+					list.addAll(layouts);
+
+					plugin.sendMsg(sender, plugin.getMsg("list-layouts.header"));
+					list.forEach(s -> plugin.sendMsg(sender,
+							plugin.defaults(plugin.getMsg("list-layouts.list", "%layouts%", s))));
 				} else if (args[0].equalsIgnoreCase("listservers")) {
 					if (!sender.hasPermission(Perm.LISTSERVER.getPerm())) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.LISTSERVER.getPerm())));
 						return true;
 					}
+
 					if (args.length > 1) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
+
+					List<String> list = new ArrayList<>();
 					Set<String> servers = plugin.getMainConf().getConfigurationSection("servers").getKeys(false);
+
 					if (servers == null || servers.isEmpty()) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-servers-found")));
 						return true;
 					}
-					plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("list-servers", "%servers%", servers.toString().replace("[", "").replace("]", ""))));
+
+					list.addAll(servers);
+
+					plugin.sendMsg(sender, plugin.getMsg("list-servers.header"));
+					for (String s : list) {
+						plugin.sendMsg(sender,
+								plugin.defaults(plugin.getMsg("list-servers.list", "%servers%", s, "%online%",
+										plugin.getConfigData().getServer(s).isOnline()
+												? plugin.getMsg("list-servers.online")
+												: plugin.getMsg("list-servers.offline"))));
+					}
 				} else if (args[0].equalsIgnoreCase("connect")) {
 					if (!sender.hasPermission(Perm.CONNECT.getPerm())) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.CONNECT.getPerm())));
 						return true;
 					}
+
 					if (!(sender instanceof Player)) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-console", "%command%", commandLabel, "%args%", args[0])));
 						return true;
 					}
+
 					if (args.length > 2) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
+
 					if (args.length != 2) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("connect-usage", "%command%", commandLabel)));
 						return true;
 					}
+
 					String serverGroup = args[1];
 					Player p = (Player) sender;
 					if (plugin.getConfigData().getServer(serverGroup) != null) {
@@ -119,6 +146,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 							plugin.sendMsg(p, plugin.defaults(plugin.getMsg("server-offline", "%server%", serverGroup)));
 							return true;
 						}
+
 						server.teleportPlayer(p);
 					} else {
 						plugin.sendMsg(p, plugin.defaults(plugin.getMsg("server-group-not-found", "%server%", serverGroup)));
@@ -128,18 +156,22 @@ public class Commands implements CommandExecutor, TabCompleter {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.EDITSIGN.getPerm())));
 						return true;
 					}
+
 					if (!(sender instanceof Player)) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("no-console", "%command%", commandLabel, "%args%", args[0])));
 						return true;
 					}
+
 					if (args.length != 3) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("editsign.usage", "%command%", commandLabel)));
 						return true;
 					}
+
 					if (args.length > 3) {
 						plugin.sendMsg(sender, plugin.defaults(plugin.getMsg("unknown-command", "%command%", commandLabel)));
 						return true;
 					}
+
 					Player p = (Player) sender;
 					HashSet<Material> mat = null;
 					Block b = p.getTargetBlock(mat, 100);
@@ -151,11 +183,13 @@ public class Commands implements CommandExecutor, TabCompleter {
 							plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-server", "%server%", sName)));
 							return true;
 						}
+
 						SignLayout layout = plugin.getConfigData().getLayout(lName);
 						if (layout == null) {
 							plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-layout", "%layout%", lName)));
 							return true;
 						}
+
 						plugin.getConfigData().addSign(b.getLocation(), server, layout);
 						plugin.sendMsg(p, plugin.defaults(plugin.getMsg("editsign.created")));
 					} else {
@@ -177,6 +211,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 		List<String> completionList = new ArrayList<>();
 		String partOfCommand = "";
+
 		if (cmd.getName().equalsIgnoreCase("teleportsigns") || cmd.getName().equalsIgnoreCase("ts")) {
 			List<String> cmds = new ArrayList<>();
 			if (args.length < 2) {
@@ -191,8 +226,10 @@ public class Commands implements CommandExecutor, TabCompleter {
 				}
 				partOfCommand = args[1];
 			}
+
 			StringUtil.copyPartialMatches(partOfCommand, cmds, completionList);
 		}
+
 		Collections.sort(completionList);
 		return completionList;
 	}
@@ -203,6 +240,7 @@ public class Commands implements CommandExecutor, TabCompleter {
 			if (!sender.hasPermission("teleportsigns." + cmds)) {
 				continue;
 			}
+
 			c.add(cmds);
 		}
 		return c;

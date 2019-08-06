@@ -12,6 +12,7 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -25,10 +26,10 @@ public class TeleportSigns extends JavaPlugin {
 
 	private static TeleportSigns instance;
 
-	YamlConfiguration messages;
+	FileConfiguration messages;
 	private File messages_file;
 
-	private int msver = 4;
+	private int msver = 5;
 	private PingScheduler ping = null;
 	private SignScheduler sign = null;
 	private AnimationTask anim = null;
@@ -52,10 +53,6 @@ public class TeleportSigns extends JavaPlugin {
 
 			data = new ConfigData(this);
 			data.loadConfig();
-			if (!getMainConf().getBoolean("enabled")) {
-				getServer().getPluginManager().disablePlugin(this);
-				return;
-			}
 
 			ping = new PingScheduler(this);
 			getServer().getPluginManager().registerEvents(ping, this);
@@ -80,8 +77,9 @@ public class TeleportSigns extends JavaPlugin {
 
 			Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
 
-			getCommand("teleportsigns").setExecutor(new Commands(this));
-			getCommand("teleportsigns").setTabCompleter(new Commands(this));
+			Commands cmds = new Commands(this);
+			getCommand("teleportsigns").setExecutor(cmds);
+			getCommand("teleportsigns").setTabCompleter(cmds);
 
 			if (getMainConf().getBoolean("check-update")) {
 				logConsole(checkVersion("console"));
@@ -93,8 +91,8 @@ public class TeleportSigns extends JavaPlugin {
 						() -> getMainConf().getString("options.background.type")));
 				metrics.addCustomChart(new Metrics.SimplePie("using_background",
 						() -> getMainConf().getString("options.background.enable")));
-				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", () -> data.getSigns().size()));
-				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", () -> data.getServers().size()));
+				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
+				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", data.getServers()::size));
 				logConsole("Metrics enabled.");
 			}
 
@@ -121,6 +119,7 @@ public class TeleportSigns extends JavaPlugin {
 			HandlerList.unregisterAll(this);
 			instance = null;
 			getServer().getScheduler().cancelTasks(this);
+
 			if (getMainConf().contains("plugin-disable") && !getMainConf().getString("plugin-disable").equals("")) {
 				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-disable")));
 			}
@@ -137,8 +136,10 @@ public class TeleportSigns extends JavaPlugin {
 			if (messages_file.exists()) {
 				messages = YamlConfiguration.loadConfiguration(messages_file);
 				messages.load(messages_file);
+
 				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
-					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " + messages.getInt("config-version") + " | Newest version: " + msver + ")");
+					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " +
+							messages.getInt("config-version") + " | Newest version: " + msver + ")");
 				}
 			} else {
 				saveResource("messages.yml", false);
@@ -151,10 +152,11 @@ public class TeleportSigns extends JavaPlugin {
 		}
 	}
 
-	public String checkVersion(String sender) {
+	String checkVersion(String sender) {
 		String[] nVersion;
 		String[] cVersion;
 		String lineWithVersion;
+		String msg = "";
 		try {
 			URL githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
 			lineWithVersion = "";
@@ -174,46 +176,50 @@ public class TeleportSigns extends JavaPlugin {
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 			if (newestVersionNumber > currentVersionNumber) {
 				if (sender.equals("console")) {
-					return "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/37446/";
+					msg = "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/37446/";
 				} else if (sender.equals("player")) {
-					return colorMsg("&8&m&l--------------------------------------------------\n" +
+					msg = colorMsg("&8&m&l--------------------------------------------------\n" +
 							getMsg("prefix") + "&a A new update is available!&4 Version:&7 " + versionString +
 							"\n&6Download:&c &nhttps://www.spigotmc.org/resources/37446/" +
 							"\n&8&m&l--------------------------------------------------");
 				}
 			} else {
 				if (sender.equals("console")) {
-					return "You're running the latest version.";
+					msg = "You're running the latest version.";
 				}
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
 			logConsole(Level.WARNING, "Failed to compare versions. " + e + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		}
-		if (sender.equals("console")) {
-			return "Failed to get newest version number.";
-		}
-		return "";
+
+		/*if (sender.equals("console")) {
+			msg = "Failed to get newest version number.";
+		}*/
+
+		return msg;
 	}
 
 	public void callSyncEvent(final Event event) {
 		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
 	}
 
-	public void logConsole(String error) {
+	void logConsole(String error) {
 		logConsole(Level.INFO, error);
 	}
 
-	public void logConsole(Level level, String error) {
+	void logConsole(Level level, String error) {
 		if (getMainConf().getBoolean("options.logconsole")) {
 			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
 		}
+
 		if (getMainConf().getBoolean("log-to-file")) {
 			try {
 				File saveTo = new File(data.getFolder(), "log.txt");
 				if (!saveTo.exists()) {
 					saveTo.createNewFile();
 				}
+
 				FileWriter fw = new FileWriter(saveTo, true);
 				PrintWriter pw = new PrintWriter(fw);
 				Date dt = new Date();
@@ -232,9 +238,15 @@ public class TeleportSigns extends JavaPlugin {
 	public void reload() {
 		data.loadConfig();
 
-		Bukkit.getScheduler().cancelTask(ping.task.getTaskId());
-		Bukkit.getScheduler().cancelTask(ping.pingTask.getTaskId());
-		Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
+		if (ping.task != null) {
+			Bukkit.getScheduler().cancelTask(ping.task.getTaskId());
+		}
+		if (ping.pingTask != null) {
+			Bukkit.getScheduler().cancelTask(ping.pingTask.getTaskId());
+		}
+		if (sign.task != null) {
+			Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
+		}
 		ping = null;
 		sign = null;
 		HandlerList.unregisterAll(this);
@@ -254,10 +266,11 @@ public class TeleportSigns extends JavaPlugin {
 		Bukkit.getScheduler().runTaskLaterAsynchronously(this, ping, 5L);
 	}
 
-	public String getMsg(String key, Object... placeholders) {
+	String getMsg(String key, Object... placeholders) {
 		String msg = "";
 
-		if (!messages.contains(key) || messages.getString(key).equals("")) return msg;
+		if (!messages.contains(key) || messages.getString(key).equals(""))
+			return msg;
 
 		msg = colorMsg(messages.getString(key));
 
@@ -272,9 +285,9 @@ public class TeleportSigns extends JavaPlugin {
 		return msg;
 	}
 
-	public String sendMsg(org.bukkit.command.CommandSender sender, String s) {
-		if (s != null && !s.equals("")) sender.sendMessage(s);
-		return s;
+	void sendMsg(org.bukkit.command.CommandSender sender, String s) {
+		if (s != null && !s.equals(""))
+			sender.sendMessage(s);
 	}
 
 	public String replaceColor(String s) {
@@ -283,7 +296,6 @@ public class TeleportSigns extends JavaPlugin {
 
 	/**
 	 * Gets the plugin instance in this class
-	 * 
 	 * @return {@link #TeleportSigns()} instance
 	 */
 	public static TeleportSigns getInstance() {
@@ -294,7 +306,7 @@ public class TeleportSigns extends JavaPlugin {
 		return data;
 	}
 
-	public YamlConfiguration getMainConf() {
+	public FileConfiguration getMainConf() {
 		return data.getConfig(ConfigType.CONFIG);
 	}
 
@@ -302,10 +314,7 @@ public class TeleportSigns extends JavaPlugin {
 		return getMainConf().getString("options.background.type");
 	}
 
-	public String defaults(String str) {
-		if (str.contains("%prefix%")) {
-			str = str.replace("%prefix%", getMsg("prefix"));
-		}
+	String defaults(String str) {
 		if (str.contains("%newline%")) {
 			str = str.replace("%newline%", "\n");
 		}
@@ -316,7 +325,7 @@ public class TeleportSigns extends JavaPlugin {
 		return ChatColor.translateAlternateColorCodes('&', msg);
 	}
 
-	public void throwMsg() {
+	void throwMsg() {
 		logConsole(Level.WARNING, "There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		return;
 	}

@@ -11,10 +11,11 @@ import org.bukkit.scheduler.BukkitTask;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsUpdateEvent;
 
 public class SignScheduler implements Runnable, Listener {
+
 	private final TeleportSigns plugin;
 	public BukkitTask task;
 
-	public SignScheduler(TeleportSigns plugin) {
+	SignScheduler(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 

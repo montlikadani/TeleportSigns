@@ -11,7 +11,8 @@ import org.bukkit.entity.Player;
 
 public class ServerInfo {
 
-	private ServerPing ping;
+	private ServerPingInternal internalPing;
+	private ServerPingExternal externalPing;
 	private InetSocketAddress address;
 
 	private boolean local;
@@ -31,7 +32,11 @@ public class ServerInfo {
 	private long pingEndTime;
 
 	public ServerInfo(String name, String displayname, String address, int port, int timeout) {
-		this.ping = new ServerPing();
+		if (TeleportSigns.getInstance().getConfigData().isExternal()) {
+			this.externalPing = new ServerPingExternal();
+		} else {
+			this.internalPing = new ServerPingInternal();
+		}
 		this.online = false;
 		this.name = name;
 		this.displayname = displayname;
@@ -45,12 +50,20 @@ public class ServerInfo {
 		}
 	}
 
-	public ServerPing getPing() {
-		return ping;
+	public ServerPingExternal getExternalPing() {
+		return externalPing;
 	}
 
-	public void setPing(ServerPing ping) {
-		this.ping = ping;
+	public void setExternalPing(ServerPingExternal externalPing) {
+		this.externalPing = externalPing;
+	}
+
+	public ServerPingInternal getInternalPing() {
+		return internalPing;
+	}
+
+	public void setInternalPing(ServerPingInternal internalPing) {
+		this.internalPing = internalPing;
 	}
 
 	public String getName() {

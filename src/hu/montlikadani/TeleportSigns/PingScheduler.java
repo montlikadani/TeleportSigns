@@ -10,17 +10,18 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.scheduler.BukkitTask;
 
-import hu.montlikadani.TeleportSigns.ServerPing.SResponse;
+import hu.montlikadani.TeleportSigns.ServerPingInternal.SResponse;
 import hu.montlikadani.TeleportSigns.api.ServerChangeStatusEvent;
 import hu.montlikadani.TeleportSigns.api.ServerPingResponseEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsPingEvent;
 
 public class PingScheduler implements Runnable, Listener {
+
 	private final TeleportSigns plugin;
 	public BukkitTask pingTask;
 	public BukkitTask task;
 
-	public PingScheduler(TeleportSigns plugin) {
+	PingScheduler(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 
@@ -40,9 +41,13 @@ public class PingScheduler implements Runnable, Listener {
 					pingAsync(server);
 				} else {
 					String status = server.getMotd();
-					ServerListPingEvent ping = new ServerListPingEvent(new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(),
-							server.getAddress().getPort()).getAddress(), Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
-					plugin.callSyncEvent(ping);
+					ServerListPingEvent ping = new ServerListPingEvent(
+							new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(),
+									server.getAddress().getPort()).getAddress(),
+							Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
+					// TODO: fix ServerListPingEvent firing from other plugins and causing error
+					Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Bukkit.getPluginManager().callEvent(ping));
+
 					server.setProtocol(getBukkitVersion());
 					server.setMotd(ping.getMotd());
 					server.setMaxPlayers(ping.getMaxPlayers());
@@ -61,44 +66,84 @@ public class PingScheduler implements Runnable, Listener {
 	}
 
 	private void pingAsync(final ServerInfo server) {
-		final ServerPing ping = server.getPing();
-		if (!ping.isFetching()) {
-			pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-				long pingStartTime = System.currentTimeMillis();
-				ping.setAddress(server.getAddress());
-				ping.setTimeout(server.getTimeout());
-				ping.setFetching(true);
+		if (plugin.getConfigData().isExternal()) {
+			final ServerPingExternal ping = server.getExternalPing();
+			if (!ping.isFetching()) {
+				pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					long pingStartTime = System.currentTimeMillis();
+					ping.setAddress(server.getAddress());
+					ping.setTimeout(server.getTimeout());
+					ping.setFetching(true);
 
-				try {
-					String status = server.getMotd();
-					SResponse response = ping.fetchData();
-					server.setVersion(formatVersion(response.version));
-					server.setProtocol(response.protocol);
-					server.setMotd(response.description);
-					server.setPlayerCount(response.players);
-					server.setMaxPlayers(response.slots);
-					server.setPingStart(pingStartTime);
-					server.setOnline(true);
+					try {
+						String status = server.getMotd();
+						hu.montlikadani.TeleportSigns.ServerPingExternal.SResponse response = ping.fetchData();
+						server.setMotd(response.description);
+						server.setPlayerCount(response.players);
+						server.setMaxPlayers(response.slots);
+						server.setPingStart(pingStartTime);
+						server.setOnline(true);
 
-					ServerPingResponseEvent revent = new ServerPingResponseEvent(server, ping, response);
-					plugin.callSyncEvent(revent);
+						ServerPingResponseEvent revent = new ServerPingResponseEvent(server, ping, response);
+						plugin.callSyncEvent(revent);
 
-					if (!server.getMotd().equals(status)) {
-						ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
-						plugin.callSyncEvent(sevent);
+						if (!server.getMotd().equals(status)) {
+							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
+							plugin.callSyncEvent(sevent);
+						}
+					} catch (Throwable e) {
+						server.setOnline(false);
+						if (!(e instanceof ConnectException)) {
+							plugin.logConsole(java.util.logging.Level.WARNING,
+									"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
+											+ ":" + server.getAddress().getPort() + "'");
+						}
+					} finally {
+						ping.setFetching(false);
+						server.setPingEnd(System.currentTimeMillis());
 					}
-				} catch (Throwable e) {
-					server.setOnline(false);
-					if (!(e instanceof ConnectException)) {
-						plugin.logConsole(java.util.logging.Level.WARNING,
-								"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
-										+ ":" + server.getAddress().getPort() + "'");
+				});
+			}
+		} else {
+			final ServerPingInternal ping = server.getInternalPing();
+			if (!ping.isFetching()) {
+				pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					long pingStartTime = System.currentTimeMillis();
+					ping.setAddress(server.getAddress());
+					ping.setTimeout(server.getTimeout());
+					ping.setFetching(true);
+
+					try {
+						String status = server.getMotd();
+						SResponse response = ping.fetchData();
+						server.setVersion(formatVersion(response.version));
+						server.setProtocol(response.protocol);
+						server.setMotd(response.description);
+						server.setPlayerCount(response.players);
+						server.setMaxPlayers(response.slots);
+						server.setPingStart(pingStartTime);
+						server.setOnline(true);
+
+						ServerPingResponseEvent revent = new ServerPingResponseEvent(server, ping, response);
+						plugin.callSyncEvent(revent);
+
+						if (!server.getMotd().equals(status)) {
+							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
+							plugin.callSyncEvent(sevent);
+						}
+					} catch (Throwable e) {
+						server.setOnline(false);
+						if (!(e instanceof ConnectException)) {
+							plugin.logConsole(java.util.logging.Level.WARNING,
+									"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
+											+ ":" + server.getAddress().getPort() + "'");
+						}
+					} finally {
+						ping.setFetching(false);
+						server.setPingEnd(System.currentTimeMillis());
 					}
-				} finally {
-					ping.setFetching(false);
-					server.setPingEnd(System.currentTimeMillis());
-				}
-			});
+				});
+			}
 		}
 	}
 

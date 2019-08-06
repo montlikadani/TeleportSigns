@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class ConfigData {
@@ -19,14 +20,15 @@ public class ConfigData {
 	private TeleportSigns plugin;
 
 	private File config_file, layout_file, sign_file;
-	private YamlConfiguration config, layout, sign;
+	private FileConfiguration config, layout, sign;
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
 	private Map<String, SignLayout> layouts = new HashMap<>();
 	private long cooldown, signUpdates;
 	private int pingTimeout, pingInterval;
-	private int cver = 4;
+	private boolean externalServer;
+	private int cver = 5;
 	private int lyver = 2;
 
 	public enum ConfigType {
@@ -46,17 +48,20 @@ public class ConfigData {
 	public void loadConfig() {
 		unloadConfig();
 
+		String resultMsg = "";
 		try {
 			if (config_file.exists()) {
 				config = YamlConfiguration.loadConfiguration(config_file);
 				config.load(config_file);
+
 				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: " + config.getInt("config-version") + " | Newest version: " + cver + ")");
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: "
+							+ config.getInt("config-version") + " | Newest version: " + cver + ")");
 				}
 			} else {
 				plugin.saveResource("config.yml", false);
 				config = YamlConfiguration.loadConfiguration(config_file);
-				plugin.logConsole("The 'config.yml' file successfully created!");
+				resultMsg += "The 'config.yml' file successfully created!";
 			}
 
 			plugin.createMsgFile();
@@ -65,12 +70,13 @@ public class ConfigData {
 				layout = YamlConfiguration.loadConfiguration(layout_file);
 				layout.load(layout_file);
 				if (!layout.isSet("config-version") || !layout.get("config-version").equals(lyver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: " + layout.getInt("config-version") + " | Newest version: " + lyver + ")");
+					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: "
+							+ layout.getInt("config-version") + " | Newest version: " + lyver + ")");
 				}
 			} else {
 				plugin.saveResource("layout.yml", false);
 				layout = YamlConfiguration.loadConfiguration(layout_file);
-				plugin.logConsole("The 'layout.yml' file successfully created!");
+				resultMsg += "The 'layout.yml' file successfully created!";
 			}
 
 			if (sign_file.exists()) {
@@ -80,7 +86,11 @@ public class ConfigData {
 			} else {
 				sign_file.createNewFile();
 				sign = YamlConfiguration.loadConfiguration(sign_file);
-				plugin.logConsole("The 'signs.yml' file successfully created!");
+				resultMsg += "The 'signs.yml' file successfully created!";
+			}
+
+			if (!resultMsg.isEmpty()) {
+				plugin.logConsole(resultMsg);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -113,6 +123,7 @@ public class ConfigData {
 	}
 
 	private void loadSomeSettings() {
+		this.externalServer = this.config.getBoolean("options.external-server");
 		this.cooldown = (this.config.getInt("options.use-cooldown") * 1000);
 		this.signUpdates = this.config.getInt("options.sign-updates");
 		this.pingInterval = this.config.getInt("options.ping-interval");
@@ -168,7 +179,9 @@ public class ConfigData {
 					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
 					if (location == null) {
-						return;
+						plugin.logConsole(Level.WARNING, "The location for the sign is null.");
+						plugin.logConsole("Probably world not exists or the sign was broken.");
+						break;
 					}
 
 					Block b = location.getBlock();
@@ -207,7 +220,7 @@ public class ConfigData {
 		cooldown = seconds * 1000;
 	}
 
-	public YamlConfiguration getConfig(ConfigType type) {
+	public FileConfiguration getConfig(ConfigType type) {
 		if (type.equals(ConfigType.CONFIG)) {
 			return config;
 		} else if (type.equals(ConfigType.LAYOUTS)) {
@@ -217,6 +230,10 @@ public class ConfigData {
 		}
 
 		return null;
+	}
+
+	public boolean isExternal() {
+		return externalServer;
 	}
 
 	public List<ServerInfo> getServers() {
@@ -288,22 +305,25 @@ public class ConfigData {
 	public boolean containsSign(Block b) {
 		if (blocks.contains(b)) {
 			return true;
-		} else {
-			return false;
 		}
+
+		return false;
 	}
 
 	public void addSign(Location location, ServerInfo server, SignLayout layout) {
 		String index = LocationSerialiser.locationSignToString(location, server.getName(), layout.getName());
 		List<String> list = sign.getStringList("signs");
+
 		list.add(index);
 		sign.set("signs", list);
+
 		try {
 			sign.save(sign_file);
 		} catch (IOException e) {
 			e.printStackTrace();
 			plugin.throwMsg();
 		}
+
 		blocks.add(location.getBlock());
 		TeleportSign tsign = new TeleportSign(server, location, layout);
 		signs.add(tsign);
@@ -312,20 +332,24 @@ public class ConfigData {
 	public void removeSign(Location location) {
 		for (TeleportSign sign : signs) {
 			if (location.equals(sign.getLocation())) {
-				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(), sign.getLayout().getName());
+				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(),
+						sign.getLayout().getName());
 				List<String> list = this.sign.getStringList("signs");
+
 				if (list != null && !list.isEmpty()) {
 					list.remove(index);
 					this.sign.set("signs", list);
 				} else {
 					this.sign.set("signs", null);
 				}
+
 				try {
 					this.sign.save(sign_file);
 				} catch (IOException e) {
 					e.printStackTrace();
 					plugin.throwMsg();
 				}
+
 				blocks.remove(location.getBlock());
 				signs.remove(sign);
 				break;

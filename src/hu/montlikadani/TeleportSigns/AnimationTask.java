@@ -27,6 +27,7 @@ public class AnimationTask {
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int line = 0;
 			String[] lines = { "---------------", "TeleportSigns", "Initialize...", "---------------" };
+
 			@Override
 			public void run() {
 				if (line >= 4) return;
@@ -77,12 +78,7 @@ public class AnimationTask {
 			}
 		}, 0L, 10L));
 
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				runSecondAnimation();
-			}
-		}, 5*20L);
+		Bukkit.getScheduler().runTaskLater(plugin, this::runSecondAnimation, 5*20L);
 	}
 
 	private void runSecondAnimation() {
@@ -97,12 +93,7 @@ public class AnimationTask {
 			}
 		}
 
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				runThirdAnimation();
-			}
-		}, 20L);
+		Bukkit.getScheduler().runTaskLater(plugin, this::runThirdAnimation, 20L);
 	}
 
 	private void runThirdAnimation() {
@@ -120,6 +111,7 @@ public class AnimationTask {
 		stopAnimation();
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
+
 			@Override
 			public void run() {
 				if (pnt >= 3) return;
@@ -135,12 +127,7 @@ public class AnimationTask {
 			}
 		}, 5L, 5L));
 
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				runFourthAnimation();
-			}
-		}, 20L);
+		Bukkit.getScheduler().runTaskLater(plugin, this::runFourthAnimation, 20L);
 	}
 
 	private void runFourthAnimation() {
@@ -158,6 +145,7 @@ public class AnimationTask {
 		stopAnimation();
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
+
 			@Override
 			public void run() {
 				if (pnt >= 3) return;
@@ -173,12 +161,7 @@ public class AnimationTask {
 			}
 		}, 5L, 5L));
 
-		Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
-			@Override
-			public void run() {
-				runFifthAnimation();
-			}
-		}, 20L);
+		Bukkit.getScheduler().runTaskLater(plugin, this::runFifthAnimation, 20L);
 	}
 
 	private void runFifthAnimation() {
@@ -196,6 +179,7 @@ public class AnimationTask {
 		stopAnimation();
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
+
 			@Override
 			public void run() {
 				if (pnt >= 3) {

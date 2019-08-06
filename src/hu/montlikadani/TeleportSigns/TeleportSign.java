@@ -147,8 +147,8 @@ public class TeleportSign {
 							broken = true;
 						}
 					} else {
-						plugin.logConsole(Level.WARNING, "Can't find server '" + server + "'.");
-						String[] error = { "\u00a74ERROR:", "\u00a76Server", "\u00a7e" + server.getName(), "\u00a76not found!" };
+						plugin.logConsole(Level.WARNING, "The server in the sign not found.");
+						String[] error = { "\u00a74ERROR:", "\u00a76The server", "\u00a7e can not be", "\u00a76 null!" };
 						signError(sign, error);
 						broken = true;
 					}

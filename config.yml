@@ -7,31 +7,31 @@
 # [Default configuration]                                           #
 # github.com/montlikadani/TeleportSigns/blob/master/config.yml      #
 #                                                                   #
-# [Placeholders]                                                    #
-# https://github.com/montlikadani/TeleportSigns/wiki/Placeholders   #
-#                                                                   #
 # [Tips]                                                            #
-# - Use color coding '&' character, on this page:                   #
-# http://minecraft.gamepedia.com/Formatting_codes                   #
 # - If you find a bug, send here:                                   #
 # https://github.com/montlikadani/TeleportSigns/issues              #
-# - If the string is empty does not send the message.               #
 #-----------------------------OOO-----------------------------------#
 
 # Options
 options:
+  # Use external server as a hosted server?
+  # If false then using internal server.
+  external-server: true
+
   # Log plugin messages into console.
   logconsole: true
 
-  # Sign usage time.
-  # This ignoring with this permission: teleportsigns.use.nocooldown
+  # Sign usage time to prevent twice connect to that server.
+  # This will be ignored with this permission: teleportsigns.use.nocooldown
   use-cooldown: 5
 
-  # Sign updates in ticks. 20 ticks = 1 second.
+  # Sign updates time in ticks.
+  # Example: 20 ticks = 1 second
   sign-updates: 200
 
-  # How much time do you start the server pinging? (In seconds)
+  # How much time start the server pinging? (In seconds)
   ping-interval: 30
+
   # Important! If you do not want the pinging to end ping-timeout to be smaller than one and
   # take the ping interval by one more.
   # How much time does the server pinging down? (In seconds)
@@ -43,6 +43,7 @@ options:
   # Defines a background of the sign.
   background:
     enable: false
+
     # Possible types: glass, wool, clay
     type: glass
 
@@ -51,20 +52,19 @@ servers:
   pvp:
     # Server IP address and port.
     address: "222.0.0.1:25566"
+
     # Display name that are on the sign.
     displayname: "&6[&cPvP&6]"
   survival:
     # Server IP address and port.
     address: "222.0.0.1:25567"
+
     # Display name that are on the sign.
     displayname: "&e[&aSurvival&e]"
 
 #=========================================#
 #             Plugin Settings             #
 #=========================================#
-# The TeleportSigns plugin is disabled (false) or enabled (true).
-enabled: true
-
 # bStats Metrics.
 metrics: true
 
@@ -75,9 +75,9 @@ check-update: true
 log-to-file: true
 
 # Plugin enable/disable messages in console.
-# Use %prefix%, %newline% placeholder.
-plugin-enable: '%prefix%&a The plugin successfully enabled&6 v${version}&a!'
-plugin-disable: '%prefix%&c The plugin successfully disabled!'
+# Use %newline% placeholder.
+plugin-enable: '&6[&2Teleport&eSigns&6]&7 >&a The plugin successfully enabled&6 v${version}&a!'
+plugin-disable: '&6[&2Teleport&eSigns&6]&7 >&c The plugin successfully disabled!'
 
 # DO NOT CHANGE THIS!
-config-version: 4
+config-version: 5
