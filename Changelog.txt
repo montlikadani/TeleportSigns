@@ -1,4 +1,19 @@
-﻿# v2.2.1
+# v2.3
+Added:
+  Added option to choose for external-server or internal-server.
+Different:
+- external-server: rent server from service provider
+- internal-server: it is only one server, which running in one computer
+Fixes:
+  Fixed issue when the signs not work correctly on 1.12 and under versions.
+Other:
+  Expanded API classes and methods.
+  listlayouts & listservers sub-command now more readable when executed.
+  Some plugin optimizations.
+  Config options will load correctly on plugin reload.
+  Metrics has been disabled under 1.8.5 versions due to important changes.
+
+# v2.2.1
 Fixes:
   Fixed IllegalArgumentException when tried to change the sign background.
   Fixed issue when used 1.8 versions then the JsonObject is invalid.
