@@ -15,6 +15,8 @@ import hu.montlikadani.TeleportSigns.api.ServerChangeStatusEvent;
 import hu.montlikadani.TeleportSigns.api.ServerPingResponseEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsPingEvent;
 
+import static hu.montlikadani.TeleportSigns.Messager.logConsole;
+
 public class PingScheduler implements Runnable, Listener {
 
 	private final TeleportSigns plugin;
@@ -29,7 +31,7 @@ public class PingScheduler implements Runnable, Listener {
 	public void run() {
 		List<ServerInfo> servers = plugin.getConfigData().getServers();
 		TeleportSignsPingEvent event = new TeleportSignsPingEvent(servers);
-		plugin.callSyncEvent(event);
+		plugin.callEvent(event);
 		task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
 	}
 
@@ -58,7 +60,7 @@ public class PingScheduler implements Runnable, Listener {
 
 					if (!server.getMotd().equals(status)) {
 						ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
-						plugin.callSyncEvent(sevent);
+						plugin.callEvent(sevent);
 					}
 				}
 			}
@@ -85,16 +87,16 @@ public class PingScheduler implements Runnable, Listener {
 						server.setOnline(true);
 
 						ServerPingResponseEvent revent = new ServerPingResponseEvent(server, ping, response);
-						plugin.callSyncEvent(revent);
+						plugin.callEvent(revent);
 
 						if (!server.getMotd().equals(status)) {
 							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
-							plugin.callSyncEvent(sevent);
+							plugin.callEvent(sevent);
 						}
 					} catch (Throwable e) {
 						server.setOnline(false);
 						if (!(e instanceof ConnectException)) {
-							plugin.logConsole(java.util.logging.Level.WARNING,
+							logConsole(java.util.logging.Level.WARNING,
 									"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
 											+ ":" + server.getAddress().getPort() + "'");
 						}
@@ -125,16 +127,16 @@ public class PingScheduler implements Runnable, Listener {
 						server.setOnline(true);
 
 						ServerPingResponseEvent revent = new ServerPingResponseEvent(server, ping, response);
-						plugin.callSyncEvent(revent);
+						plugin.callEvent(revent);
 
 						if (!server.getMotd().equals(status)) {
 							ServerChangeStatusEvent sevent = new ServerChangeStatusEvent(server, server.getMotd());
-							plugin.callSyncEvent(sevent);
+							plugin.callEvent(sevent);
 						}
 					} catch (Throwable e) {
 						server.setOnline(false);
 						if (!(e instanceof ConnectException)) {
-							plugin.logConsole(java.util.logging.Level.WARNING,
+							logConsole(java.util.logging.Level.WARNING,
 									"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
 											+ ":" + server.getAddress().getPort() + "'");
 						}

@@ -15,24 +15,33 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import static hu.montlikadani.TeleportSigns.Messager.logConsole;
+import static hu.montlikadani.TeleportSigns.Messager.throwMsg;
+
 public class ConfigData {
 
 	private TeleportSigns plugin;
 
-	private File config_file, layout_file, sign_file;
-	private FileConfiguration config, layout, sign;
+	private File config_file, messages_file, layout_file, sign_file;
+	private FileConfiguration config, messages, layout, sign;
+
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
 	private Map<String, SignLayout> layouts = new HashMap<>();
+
 	private long cooldown, signUpdates;
 	private int pingTimeout, pingInterval;
-	private boolean externalServer;
+	private boolean externalServer, logConsole, ignorePlayerSneaking, background;
+	private String bgType;
+
 	private int cver = 5;
+	private int msver = 5;
 	private int lyver = 2;
 
 	public enum ConfigType {
 		CONFIG,
+		MESSAGES,
 		LAYOUTS,
 		SIGNS;
 	}
@@ -41,6 +50,7 @@ public class ConfigData {
 		this.plugin = plugin;
 
 		config_file = new File(getFolder(), "config.yml");
+		messages_file = new File(getFolder(), "messages.yml");
 		layout_file = new File(getFolder(), "layout.yml");
 		sign_file = new File(getFolder(), "signs.yml");
 	}
@@ -48,59 +58,83 @@ public class ConfigData {
 	public void loadConfig() {
 		unloadConfig();
 
-		String resultMsg = "";
 		try {
 			if (config_file.exists()) {
-				config = YamlConfiguration.loadConfiguration(config_file);
+				if (config == null) {
+					config = YamlConfiguration.loadConfiguration(config_file);
+				}
 				config.load(config_file);
 
 				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: "
+					logConsole(Level.WARNING, "Found outdated configuration (config.yml)! (Your version: "
 							+ config.getInt("config-version") + " | Newest version: " + cver + ")");
 				}
 			} else {
-				plugin.saveResource("config.yml", false);
-				config = YamlConfiguration.loadConfiguration(config_file);
-				resultMsg += "The 'config.yml' file successfully created!";
+				createFile("config.yml", config_file, false);
 			}
 
-			plugin.createMsgFile();
+			if (messages_file.exists()) {
+				if (messages == null) {
+					messages = YamlConfiguration.loadConfiguration(messages_file);
+				}
+				messages.load(messages_file);
+
+				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
+					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " +
+							messages.getInt("config-version") + " | Newest version: " + msver + ")");
+				}
+			} else {
+				createFile("messages.yml", messages_file, false);
+			}
 
 			if (layout_file.exists()) {
-				layout = YamlConfiguration.loadConfiguration(layout_file);
+				if (layout == null) {
+					layout = YamlConfiguration.loadConfiguration(layout_file);
+				}
 				layout.load(layout_file);
+
 				if (!layout.isSet("config-version") || !layout.get("config-version").equals(lyver)) {
-					plugin.logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: "
+					logConsole(Level.WARNING, "Found outdated configuration (layout.yml)! (Your version: "
 							+ layout.getInt("config-version") + " | Newest version: " + lyver + ")");
 				}
 			} else {
-				plugin.saveResource("layout.yml", false);
-				layout = YamlConfiguration.loadConfiguration(layout_file);
-				resultMsg += "The 'layout.yml' file successfully created!";
+				createFile("layout.yml", layout_file, false);
 			}
 
 			if (sign_file.exists()) {
-				sign = YamlConfiguration.loadConfiguration(sign_file);
+				if (sign == null) {
+					sign = YamlConfiguration.loadConfiguration(sign_file);
+				}
 				sign.load(sign_file);
 				sign.save(sign_file);
 			} else {
-				sign_file.createNewFile();
-				sign = YamlConfiguration.loadConfiguration(sign_file);
-				resultMsg += "The 'signs.yml' file successfully created!";
-			}
-
-			if (!resultMsg.isEmpty()) {
-				plugin.logConsole(resultMsg);
+				createFile("signs.yml", sign_file, true);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
-			plugin.throwMsg();
+			throwMsg();
 		}
 
-		loadSomeSettings();
+		loadSettings();
 		loadServers();
 		loadLayouts();
 		loadSigns();
+	}
+
+	FileConfiguration createFile(String name, File file, boolean newFile) {
+		if (newFile) {
+			try {
+				sign_file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+				throwMsg();
+			}
+		} else {
+			plugin.saveResource(name, false);
+		}
+
+		logConsole("The '" + name + "' file successfully created!");
+		return YamlConfiguration.loadConfiguration(file);
 	}
 
 	public File getFolder() {
@@ -113,7 +147,7 @@ public class ConfigData {
 
 	public void unloadConfig() {
 		config = null;
-		plugin.messages = null;
+		messages = null;
 		layout = null;
 		sign = null;
 
@@ -122,12 +156,17 @@ public class ConfigData {
 		layouts.clear();
 	}
 
-	private void loadSomeSettings() {
+	private void loadSettings() {
 		this.externalServer = this.config.getBoolean("options.external-server");
+		this.logConsole = this.config.getBoolean("options.logConsole");
 		this.cooldown = (this.config.getInt("options.use-cooldown") * 1000);
 		this.signUpdates = this.config.getInt("options.sign-updates");
 		this.pingInterval = this.config.getInt("options.ping-interval");
 		this.pingTimeout = this.config.getInt("options.ping-timeout");
+		this.ignorePlayerSneaking = this.config.getBoolean("options.ignore-player-sneaking");
+
+		this.background = this.config.getBoolean("options.background.enable");
+		this.bgType = this.config.getString("options.background.type");
 	}
 
 	private void loadServers() {
@@ -170,7 +209,7 @@ public class ConfigData {
 	private void loadSigns() {
 		List<String> list = this.sign.getStringList("signs");
 		if (list == null || list.isEmpty()) {
-			plugin.logConsole(Level.WARNING, "No saved sign was found.");
+			logConsole(Level.WARNING, "No saved sign was found.");
 		} else {
 			for (String sign : list) {
 				try {
@@ -179,9 +218,9 @@ public class ConfigData {
 					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
 					if (location == null) {
-						plugin.logConsole(Level.WARNING, "The location for the sign is null.");
-						plugin.logConsole("Probably world not exists or the sign was broken.");
-						break;
+						logConsole(Level.WARNING, "The location for the sign is null.");
+						logConsole("Probably world not exists or the sign was broken.");
+						return;
 					}
 
 					Block b = location.getBlock();
@@ -192,7 +231,7 @@ public class ConfigData {
 					}
 				} catch (Throwable e) {
 					e.printStackTrace();
-					plugin.throwMsg();
+					throwMsg();
 				}
 			}
 		}
@@ -221,19 +260,38 @@ public class ConfigData {
 	}
 
 	public FileConfiguration getConfig(ConfigType type) {
-		if (type.equals(ConfigType.CONFIG)) {
+		switch (type) {
+		case CONFIG:
 			return config;
-		} else if (type.equals(ConfigType.LAYOUTS)) {
+		case MESSAGES:
+			return messages;
+		case LAYOUTS:
 			return layout;
-		} else if (type.equals(ConfigType.SIGNS)) {
+		case SIGNS:
 			return sign;
+		default:
+			return null;
 		}
-
-		return null;
 	}
 
 	public boolean isExternal() {
 		return externalServer;
+	}
+
+	public boolean isLogConsole() {
+		return logConsole;
+	}
+
+	public boolean isIgnoringSneak() {
+		return ignorePlayerSneaking;
+	}
+
+	public boolean isBackgroundEnabled() {
+		return background;
+	}
+
+	public String getBackgroundType() {
+		return bgType;
 	}
 
 	public List<ServerInfo> getServers() {
@@ -321,7 +379,7 @@ public class ConfigData {
 			sign.save(sign_file);
 		} catch (IOException e) {
 			e.printStackTrace();
-			plugin.throwMsg();
+			throwMsg();
 		}
 
 		blocks.add(location.getBlock());
@@ -347,7 +405,7 @@ public class ConfigData {
 					this.sign.save(sign_file);
 				} catch (IOException e) {
 					e.printStackTrace();
-					plugin.throwMsg();
+					throwMsg();
 				}
 
 				blocks.remove(location.getBlock());

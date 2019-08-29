@@ -3,8 +3,9 @@ package hu.montlikadani.TeleportSigns;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+
+import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class SignLayout {
 
@@ -109,7 +110,7 @@ public class SignLayout {
 				line = line.replaceAll("%version%", "");
 			}
 			line = textValues(line);
-			line = editText(line);
+			line = SignUtil.editText(line);
 
 			layout.add(line);
 		}
@@ -194,21 +195,5 @@ public class SignLayout {
 		line = line.replaceAll("%s", "\u00df");
 
 		return line;
-	}
-
-	private String editText(String text) {
-		int length = text.length();
-
-		if (Bukkit.getVersion().contains("1.14")) {
-			if (length > 25) {
-				text = text.substring(0, 25);
-			}
-		} else {
-			if (length > 16) {
-				text = text.substring(0, 16);
-			}
-		}
-
-		return text;
 	}
 }

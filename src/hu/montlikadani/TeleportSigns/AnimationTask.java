@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
+
+import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class AnimationTask {
 
@@ -38,35 +39,24 @@ public class AnimationTask {
 						sign.setLine(line, lines[line]);
 						sign.update(true);
 
-						if (plugin.getMainConf().getBoolean("options.background.enable")) {
-							if (Bukkit.getVersion().contains("1.14")) {
-								if (Tag.WALL_SIGNS.isTagged(s.getLocation().getBlock().getType())) {
-									if (plugin.getBackgroundType().equals("wool")) {
+						if (plugin.getConfigData().isBackgroundEnabled()) {
+							String type = plugin.getConfigData().getBackgroundType();
+
+							if (SignUtil.isWallSign(sign.getType())) {
+								if (plugin.isCurrentEqualOrHigher("1.13", "1.15")) {
+									if (type.equals("wool")) {
 										s.updateBackground(Material.LIGHT_BLUE_WOOL);
-									} else if (plugin.getBackgroundType().equals("glass")) {
+									} else if (type.equals("glass")) {
 										s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
-									} else if (plugin.getBackgroundType().equals("clay")
-											|| plugin.getBackgroundType().equals("terracotta")) {
-										s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
-									}
-								}
-							} else if (s.getLocation().getBlock().getType() == Material.getMaterial("WALL_SIGN")) {
-								if (Bukkit.getVersion().contains("1.13")) {
-									if (plugin.getBackgroundType().equals("wool")) {
-										s.updateBackground(Material.LIGHT_BLUE_WOOL);
-									} else if (plugin.getBackgroundType().equals("glass")) {
-										s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
-									} else if (plugin.getBackgroundType().equals("clay")
-											|| plugin.getBackgroundType().equals("terracotta")) {
+									} else if (type.equals("clay") || type.equals("terracotta")) {
 										s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
 									}
 								} else {
-									if (plugin.getBackgroundType().equals("wool")) {
+									if (type.equals("wool")) {
 										s.updateBackground(Material.getMaterial("WOOL"), 3);
-									} else if (plugin.getBackgroundType().equals("glass")) {
+									} else if (type.equals("glass")) {
 										s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
-									} else if (plugin.getBackgroundType().equals("clay")
-											|| plugin.getBackgroundType().equals("terracotta")) {
+									} else if (type.equals("clay") || type.equals("terracotta")) {
 										s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
 									}
 								}
@@ -229,6 +219,9 @@ public class AnimationTask {
 	public void stopAnimation() {
 		if (task != null) {
 			Bukkit.getScheduler().cancelTask(task.get(plugin).getTaskId());
+			if (task.containsKey(plugin)) {
+				task.remove(plugin);
+			}
 		}
 	}
 }

@@ -9,6 +9,9 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import static hu.montlikadani.TeleportSigns.Messager.sendMsg;
+import static hu.montlikadani.TeleportSigns.Messager.logConsole;
+
 public class ServerInfo {
 
 	private ServerPingInternal internalPing;
@@ -183,7 +186,7 @@ public class ServerInfo {
 			out.writeUTF(name);
 		} catch (IOException e) {
 			e.printStackTrace();
-			TeleportSigns.getInstance().logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
+			logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 
@@ -194,6 +197,6 @@ public class ServerInfo {
 			e.printStackTrace();
 		}
 
-		TeleportSigns.getInstance().sendMsg(p, TeleportSigns.getInstance().getMsg("enter-message", "%server%", name));
+		sendMsg(p, TeleportSigns.getInstance().getMsg("enter-message", "%server%", name));
 	}
 }

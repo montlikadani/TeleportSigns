@@ -15,7 +15,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import hu.montlikadani.TeleportSigns.Permissions.Perm;
+import hu.montlikadani.TeleportSigns.api.TeleportSignsBreakEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsInteractEvent;
+import hu.montlikadani.TeleportSigns.api.TeleportSignsPlaceEvent;
+
+import static hu.montlikadani.TeleportSigns.Messager.defaults;
+import static hu.montlikadani.TeleportSigns.Messager.sendMsg;
 
 public class Listeners implements Listener {
 
@@ -31,9 +36,10 @@ public class Listeners implements Listener {
 	public void onCreateTeleportSign(SignChangeEvent event) {
 		Player p = event.getPlayer();
 		Block b = event.getBlock();
+
 		if (event.getLine(0).contains("[tsigns]") || event.getLine(0).contains("[teleportsigns]")) {
 			if (!p.hasPermission(Perm.CREATE.getPerm())) {
-				plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-create-sign", "%perm%", Perm.CREATE.getPerm())));
+				sendMsg(p, defaults(plugin.getMsg("no-create-sign", "%perm%", Perm.CREATE.getPerm())));
 				return;
 			}
 
@@ -47,13 +53,16 @@ public class Listeners implements Listener {
 			SignLayout layout = plugin.getConfigData().getLayout(lname);
 			if (server != null) {
 				if (layout != null) {
+					TeleportSignsPlaceEvent e = new TeleportSignsPlaceEvent(p, b, server, layout);
+					plugin.callEvent(e);
+
 					plugin.getConfigData().addSign(location, server, layout);
-					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("sign-created", "%server%", sname, "%layout%", lname)));
+					sendMsg(p, defaults(plugin.getMsg("sign-created", "%server%", sname, "%layout%", lname)));
 				} else {
-					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-layout", "%layout%", lname)));
+					sendMsg(p, defaults(plugin.getMsg("unknown-layout", "%layout%", lname)));
 				}
 			} else {
-				plugin.sendMsg(p, plugin.defaults(plugin.getMsg("unknown-server", "%server%", sname)));
+				sendMsg(p, defaults(plugin.getMsg("unknown-server", "%server%", sname)));
 			}
 		}
 	}
@@ -66,10 +75,17 @@ public class Listeners implements Listener {
 		if (b.getState() instanceof Sign) {
 			if (plugin.getConfigData().containsSign(b)) {
 				if (p.hasPermission(Perm.DESTROY.getPerm())) {
+					TeleportSignsBreakEvent e = new TeleportSignsBreakEvent(p, b,
+							plugin.getConfigData().getSignFromLocation(b.getLocation()));
+					plugin.callEvent(e);
+					if (e.isCancelled()) {
+						return;
+					}
+
 					plugin.getConfigData().removeSign(b.getLocation());
-					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("sign-destroyed")));
+					sendMsg(p, defaults(plugin.getMsg("sign-destroyed")));
 				} else {
-					plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-sign-destroy", "%perm%", Perm.DESTROY.getPerm())));
+					sendMsg(p, defaults(plugin.getMsg("no-sign-destroy", "%perm%", Perm.DESTROY.getPerm())));
 					event.setCancelled(true);
 				}
 			}
@@ -88,19 +104,19 @@ public class Listeners implements Listener {
 							if (sign != null && !sign.isBroken() && sign.getLocation().equals(event.getClickedBlock().getLocation())) {
 								ServerInfo server = sign.getServer();
 								if (server != null) {
-									if (p.isSneaking() && !plugin.getMainConf().getBoolean("options.ignore-player-sneaking")) {
-										plugin.sendMsg(p, plugin.defaults(plugin.getMsg("player-sneaking")));
+									if (p.isSneaking() && !plugin.getConfigData().isIgnoringSneak()) {
+										sendMsg(p, defaults(plugin.getMsg("player-sneaking")));
 										return;
 									}
 
 									TeleportSignsInteractEvent e = new TeleportSignsInteractEvent(p, sign, server);
-									plugin.callSyncEvent(e);
+									plugin.callEvent(e);
 									event.setCancelled(true);
 								}
 							}
 						}
 					} else {
-						plugin.sendMsg(p, plugin.defaults(plugin.getMsg("no-permission", "%perm%", Perm.USE.getPerm())));
+						sendMsg(p, defaults(plugin.getMsg("no-permission", "%perm%", Perm.USE.getPerm())));
 						event.setCancelled(true);
 						return;
 					}
@@ -123,7 +139,7 @@ public class Listeners implements Listener {
 					if (server.getPlayerCount() == server.getMaxPlayers()) {
 						String msg = layout.getFullMessage();
 						if (msg != null && !msg.equals("")) {
-							plugin.sendMsg(p, plugin.defaults(layout.parseFullMessage(server)));
+							sendMsg(p, defaults(layout.parseFullMessage(server)));
 						}
 
 						event.setCancelled(true);
@@ -134,13 +150,13 @@ public class Listeners implements Listener {
 				} else {
 					String msg = layout.getCooldownMessage();
 					if (msg != null && !msg.equals("")) {
-						plugin.sendMsg(p, layout.parseCooldownMessage(getCooldown(p)));
+						sendMsg(p, layout.parseCooldownMessage(getCooldown(p)));
 					}
 				}
 			} else {
 				String msg = layout.getOfflineMessage();
 				if (msg != null && !msg.equals("")) {
-					plugin.sendMsg(p, layout.parseOfflineMessage(server));
+					sendMsg(p, layout.parseOfflineMessage(server));
 				}
 			}
 		}
@@ -155,7 +171,7 @@ public class Listeners implements Listener {
 	}
 
 	private boolean hasCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() != 0) {
+		if (plugin.getConfigData().getCooldown() > 0) {
 			if (!player.hasPermission(Perm.NOCOOLDOWN.getPerm())) {
 				if (cooldown.containsKey(player)) {
 					long time = System.currentTimeMillis();
@@ -176,7 +192,7 @@ public class Listeners implements Listener {
 	}
 
 	private void addCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() != 0) {
+		if (plugin.getConfigData().getCooldown() > 0) {
 			if (!player.hasPermission(Perm.NOCOOLDOWN.getPerm())) {
 				if (!cooldown.containsKey(player)) {
 					cooldown.put(player, System.currentTimeMillis());
@@ -186,7 +202,7 @@ public class Listeners implements Listener {
 	}
 
 	private int getCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() != 0) {
+		if (plugin.getConfigData().getCooldown() > 0) {
 			if (!player.hasPermission(Perm.NOCOOLDOWN.getPerm())) {
 				if (cooldown.containsKey(player)) {
 					long time = System.currentTimeMillis();

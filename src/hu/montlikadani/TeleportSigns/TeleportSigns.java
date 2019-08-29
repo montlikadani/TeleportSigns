@@ -1,19 +1,12 @@
 package hu.montlikadani.TeleportSigns;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -22,14 +15,14 @@ import com.google.common.base.StandardSystemProperty;
 
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
 
+import static hu.montlikadani.TeleportSigns.Messager.logConsole;
+import static hu.montlikadani.TeleportSigns.Messager.defaults;
+import static hu.montlikadani.TeleportSigns.Messager.colorMsg;
+
 public class TeleportSigns extends JavaPlugin {
 
 	private static TeleportSigns instance;
 
-	FileConfiguration messages;
-	private File messages_file;
-
-	private int msver = 5;
 	private PingScheduler ping = null;
 	private SignScheduler sign = null;
 	private AnimationTask anim = null;
@@ -45,7 +38,9 @@ public class TeleportSigns extends JavaPlugin {
 				return;
 			}
 
-			if (Bukkit.getVersion().contains("1.7")) {
+			// Just a version check
+			// hack we checking the version to mc 1.0, lol
+			if (isLower("1.7", "1.0")) {
 				getLogger().log(Level.SEVERE, "Your server version does not supported by this plugin! Please use 1.8+ or higher versions!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
@@ -64,7 +59,7 @@ public class TeleportSigns extends JavaPlugin {
 			sign = new SignScheduler(this);
 			getServer().getPluginManager().registerEvents(sign, this);
 
-			long time = (long) (10.3*20L);
+			long time = (long) (10.3 * 20L);
 			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				@Override
 				public void run() {
@@ -85,15 +80,16 @@ public class TeleportSigns extends JavaPlugin {
 				logConsole(checkVersion("console"));
 			}
 
-			if (getMainConf().getBoolean("metrics")) {
+			if (isHigher("1.8.6", "1.8.5")) {
 				Metrics metrics = new Metrics(this);
-				metrics.addCustomChart(new Metrics.SimplePie("background_type",
-						() -> getMainConf().getString("options.background.type")));
-				metrics.addCustomChart(new Metrics.SimplePie("using_background",
-						() -> getMainConf().getString("options.background.enable")));
-				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
-				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", data.getServers()::size));
-				logConsole("Metrics enabled.");
+				if (metrics.isEnabled()) {
+					metrics.addCustomChart(new Metrics.SimplePie("background_type", () -> data.getBackgroundType()));
+					metrics.addCustomChart(new Metrics.SimplePie("using_background",
+							() -> getMainConf().getString("options.background.enable")));
+					metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
+					metrics.addCustomChart(new Metrics.SingleLineChart("server_count", data.getServers()::size));
+					logConsole("Metrics enabled.");
+				}
 			}
 
 			if (getMainConf().contains("plugin-enable") && !getMainConf().getString("plugin-enable").equals("")) {
@@ -113,8 +109,8 @@ public class TeleportSigns extends JavaPlugin {
 			if (anim != null) {
 				anim.resetAnimation();
 				anim.stopAnimation();
+				anim = null;
 			}
-			anim = null;
 			Bukkit.getServer().getMessenger().unregisterOutgoingPluginChannel(instance, "BungeeCord");
 			HandlerList.unregisterAll(this);
 			instance = null;
@@ -127,28 +123,6 @@ public class TeleportSigns extends JavaPlugin {
 		} catch (Throwable e) {
 			e.printStackTrace();
 			getLogger().warning("There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
-		}
-	}
-
-	public void createMsgFile() {
-		try {
-			messages_file = new File(data.getFolder(), "messages.yml");
-			if (messages_file.exists()) {
-				messages = YamlConfiguration.loadConfiguration(messages_file);
-				messages.load(messages_file);
-
-				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
-					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " +
-							messages.getInt("config-version") + " | Newest version: " + msver + ")");
-				}
-			} else {
-				saveResource("messages.yml", false);
-				messages = YamlConfiguration.loadConfiguration(messages_file);
-				logConsole("The 'messages.yml' file successfully created!");
-			}
-		} catch (Throwable e) {
-			e.printStackTrace();
-			throwMsg();
 		}
 	}
 
@@ -200,38 +174,15 @@ public class TeleportSigns extends JavaPlugin {
 		return msg;
 	}
 
-	public void callSyncEvent(final Event event) {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
-	}
-
-	void logConsole(String error) {
-		logConsole(Level.INFO, error);
-	}
-
-	void logConsole(Level level, String error) {
-		if (getMainConf().getBoolean("options.logconsole")) {
-			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
-		}
-
-		if (getMainConf().getBoolean("log-to-file")) {
-			try {
-				File saveTo = new File(data.getFolder(), "log.txt");
-				if (!saveTo.exists()) {
-					saveTo.createNewFile();
-				}
-
-				FileWriter fw = new FileWriter(saveTo, true);
-				PrintWriter pw = new PrintWriter(fw);
-				Date dt = new Date();
-				SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
-				String time = df.format(dt);
-				pw.println(time + " - [" + level + "] " + error);
-				pw.flush();
-				pw.close();
-			} catch (Throwable e) {
-				e.printStackTrace();
-				throwMsg();
-			}
+	/**
+	 * Call an event with asynchronous or without.
+	 * @param event Event
+	 */
+	public void callEvent(final Event event) {
+		if (!event.isAsynchronous()) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
+		} else {
+			Bukkit.getPluginManager().callEvent(event);
 		}
 	}
 
@@ -247,6 +198,7 @@ public class TeleportSigns extends JavaPlugin {
 		if (sign.task != null) {
 			Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
 		}
+
 		ping = null;
 		sign = null;
 		HandlerList.unregisterAll(this);
@@ -269,10 +221,10 @@ public class TeleportSigns extends JavaPlugin {
 	String getMsg(String key, Object... placeholders) {
 		String msg = "";
 
-		if (!messages.contains(key) || messages.getString(key).equals(""))
+		if (!getMessages().contains(key) || getMessages().getString(key).equals(""))
 			return msg;
 
-		msg = colorMsg(messages.getString(key));
+		msg = colorMsg(getMessages().getString(key));
 
 		if (placeholders.length > 0) {
 			for (int i = 0; i < placeholders.length; i++) {
@@ -283,15 +235,6 @@ public class TeleportSigns extends JavaPlugin {
 			}
 		}
 		return msg;
-	}
-
-	void sendMsg(org.bukkit.command.CommandSender sender, String s) {
-		if (s != null && !s.equals(""))
-			sender.sendMessage(s);
-	}
-
-	public String replaceColor(String s) {
-		return s.replace("&", "\u00a7");
 	}
 
 	/**
@@ -310,24 +253,24 @@ public class TeleportSigns extends JavaPlugin {
 		return data.getConfig(ConfigType.CONFIG);
 	}
 
-	public String getBackgroundType() {
-		return getMainConf().getString("options.background.type");
+	public FileConfiguration getMessages() {
+		return data.getConfig(ConfigType.MESSAGES);
 	}
 
-	String defaults(String str) {
-		if (str.contains("%newline%")) {
-			str = str.replace("%newline%", "\n");
-		}
-		return colorMsg(str);
+	public boolean isHigher(String highest, String lowest) {
+		return convertVersion(highest) > convertVersion(lowest);
 	}
 
-	public String colorMsg(String msg) {
-		return ChatColor.translateAlternateColorCodes('&', msg);
+	public boolean isLower(String highest, String lowest) {
+		return convertVersion(highest) < convertVersion(lowest);
 	}
 
-	void throwMsg() {
-		logConsole(Level.WARNING, "There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
-		return;
+	public boolean isCurrentEqualOrHigher(String lowest, String highest) {
+		return convertVersion(highest) >= convertVersion(lowest);
+	}
+
+	public boolean isCurrentEqualOrLower(String highest, String lowest) {
+		return convertVersion(highest) <= convertVersion(lowest);
 	}
 
 	private boolean checkJavaVersion() {
@@ -341,5 +284,34 @@ public class TeleportSigns extends JavaPlugin {
 			return false;
 		}
 		return true;
+	}
+
+	private Integer convertVersion(String v) {
+		v = v.replaceAll("[^\\d.]", "");
+		Integer version = 0;
+
+		if (v.contains(".")) {
+			String lVersion = "";
+			for (String one : v.split("\\.")) {
+				String s = one;
+				if (s.length() == 1)
+					s = "0" + s;
+
+				lVersion += s;
+			}
+
+			try {
+				version = Integer.parseInt(lVersion);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		} else {
+			try {
+				version = Integer.parseInt(v);
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+			}
+		}
+		return version;
 	}
 }

@@ -1,8 +1,6 @@
 #-----------------------------OOO-----------------------------------#
 #                TeleportSigns Configuration File                   #
-#-----------------------------OOO-----------------------------------#
-# config.yml file. Plugin version: ${version}                       #
-# Author, created by: montlikadani                                  #
+#                Author, created by: montlikadani                   #
 #-----------------------------OOO-----------------------------------#
 # [Default configuration]                                           #
 # github.com/montlikadani/TeleportSigns/blob/master/config.yml      #
@@ -65,9 +63,6 @@ servers:
 #=========================================#
 #             Plugin Settings             #
 #=========================================#
-# bStats Metrics.
-metrics: true
-
 # Check for updates.
 check-update: true
 
