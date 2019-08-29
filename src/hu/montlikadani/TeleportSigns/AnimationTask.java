@@ -217,11 +217,9 @@ public class AnimationTask {
 	}
 
 	public void stopAnimation() {
-		if (task != null) {
+		if (task != null && task.containsKey(plugin)) {
 			Bukkit.getScheduler().cancelTask(task.get(plugin).getTaskId());
-			if (task.containsKey(plugin)) {
-				task.remove(plugin);
-			}
+			task.remove(plugin);
 		}
 	}
 }

@@ -70,7 +70,7 @@ public class ConfigData {
 							+ config.getInt("config-version") + " | Newest version: " + cver + ")");
 				}
 			} else {
-				createFile("config.yml", config_file, false);
+				config = createFile("config.yml", config_file, false);
 			}
 
 			if (messages_file.exists()) {
@@ -84,7 +84,7 @@ public class ConfigData {
 							messages.getInt("config-version") + " | Newest version: " + msver + ")");
 				}
 			} else {
-				createFile("messages.yml", messages_file, false);
+				messages = createFile("messages.yml", messages_file, false);
 			}
 
 			if (layout_file.exists()) {
@@ -98,7 +98,7 @@ public class ConfigData {
 							+ layout.getInt("config-version") + " | Newest version: " + lyver + ")");
 				}
 			} else {
-				createFile("layout.yml", layout_file, false);
+				layout = createFile("layout.yml", layout_file, false);
 			}
 
 			if (sign_file.exists()) {
@@ -108,7 +108,7 @@ public class ConfigData {
 				sign.load(sign_file);
 				sign.save(sign_file);
 			} else {
-				createFile("signs.yml", sign_file, true);
+				sign = createFile("signs.yml", sign_file, true);
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();

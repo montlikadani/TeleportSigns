@@ -48,7 +48,11 @@ public class PingScheduler implements Runnable, Listener {
 									server.getAddress().getPort()).getAddress(),
 							Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
 					// TODO: fix ServerListPingEvent firing from other plugins and causing error
-					Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> Bukkit.getPluginManager().callEvent(ping));
+					try {
+						Bukkit.getScheduler().runTaskAsynchronously(plugin,
+								() -> Bukkit.getPluginManager().callEvent(ping));
+					} catch (UnsupportedOperationException u) {
+					}
 
 					server.setProtocol(getBukkitVersion());
 					server.setMotd(ping.getMotd());
