@@ -1,6 +1,6 @@
 name: TeleportSigns
 main: hu.montlikadani.TeleportSigns.TeleportSigns
-version: 2.3
+version: 2.3.1
 author: montlikadani
 description: Teleport to the server with the sign.
 api-version: 1.13
