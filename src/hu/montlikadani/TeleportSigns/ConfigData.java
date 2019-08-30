@@ -55,14 +55,12 @@ public class ConfigData {
 		sign_file = new File(getFolder(), "signs.yml");
 	}
 
-	public void loadConfig() {
+	void loadConfig() {
 		unloadConfig();
 
 		try {
 			if (config_file.exists()) {
-				if (config == null) {
-					config = YamlConfiguration.loadConfiguration(config_file);
-				}
+				config = YamlConfiguration.loadConfiguration(config_file);
 				config.load(config_file);
 
 				if (!config.isSet("config-version") || !config.get("config-version").equals(cver)) {
@@ -74,9 +72,7 @@ public class ConfigData {
 			}
 
 			if (messages_file.exists()) {
-				if (messages == null) {
-					messages = YamlConfiguration.loadConfiguration(messages_file);
-				}
+				messages = YamlConfiguration.loadConfiguration(messages_file);
 				messages.load(messages_file);
 
 				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
@@ -88,9 +84,7 @@ public class ConfigData {
 			}
 
 			if (layout_file.exists()) {
-				if (layout == null) {
-					layout = YamlConfiguration.loadConfiguration(layout_file);
-				}
+				layout = YamlConfiguration.loadConfiguration(layout_file);
 				layout.load(layout_file);
 
 				if (!layout.isSet("config-version") || !layout.get("config-version").equals(lyver)) {
@@ -102,9 +96,7 @@ public class ConfigData {
 			}
 
 			if (sign_file.exists()) {
-				if (sign == null) {
-					sign = YamlConfiguration.loadConfiguration(sign_file);
-				}
+				sign = YamlConfiguration.loadConfiguration(sign_file);
 				sign.load(sign_file);
 				sign.save(sign_file);
 			} else {
@@ -145,7 +137,7 @@ public class ConfigData {
 		return dataFolder;
 	}
 
-	public void unloadConfig() {
+	void unloadConfig() {
 		config = null;
 		messages = null;
 		layout = null;
@@ -180,7 +172,6 @@ public class ConfigData {
 			String port = address[1];
 
 			ServerInfo serverping = new ServerInfo(server, displayname, ip, Integer.valueOf(port), this.pingTimeout);
-			serverping.resetPingDelay();
 			this.servers.add(serverping);
 		}
 	}
@@ -352,7 +343,7 @@ public class ConfigData {
 
 	public TeleportSign getSignFromLocation(Location l) {
 		for (TeleportSign sign : signs) {
-			if (l.equals(sign.getLocation())) {
+			if (sign.getLocation().equals(l)) {
 				return sign;
 			}
 		}
@@ -389,7 +380,7 @@ public class ConfigData {
 
 	public void removeSign(Location location) {
 		for (TeleportSign sign : signs) {
-			if (location.equals(sign.getLocation())) {
+			if (sign.getLocation().equals(location)) {
 				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(),
 						sign.getLayout().getName());
 				List<String> list = this.sign.getStringList("signs");

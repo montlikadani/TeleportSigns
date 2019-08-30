@@ -181,6 +181,7 @@ public class ServerInfo {
 	public void teleportPlayer(Player p) {
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream out = new DataOutputStream(b);
+
 		try {
 			out.writeUTF("Connect");
 			out.writeUTF(name);
@@ -188,6 +189,7 @@ public class ServerInfo {
 			e.printStackTrace();
 			logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
 		}
+
 		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
 
 		try {

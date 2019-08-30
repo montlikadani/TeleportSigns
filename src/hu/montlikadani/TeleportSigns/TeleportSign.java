@@ -14,6 +14,7 @@ import org.bukkit.configuration.Configuration;
 import org.bukkit.material.Directional;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 import static hu.montlikadani.TeleportSigns.Messager.logConsole;
@@ -161,7 +162,7 @@ public class TeleportSign {
 				loc.getBlockZ() - bf.getModZ());
 		Block wall = loc2.getBlock();
 		wall.setType(mat);
-		if (plugin.isLower("1.13", "1.8")) {
+		if (Version.isCurrentLower(Version.v1_13_R1)) {
 			try {
 				Block.class.getMethod("setData", byte.class).invoke(wall, (byte) color);
 			} catch (Exception e) {
@@ -183,7 +184,7 @@ public class TeleportSign {
 
 	private void chooseFromType() {
 		String type = plugin.getConfigData().getBackgroundType();
-		if (plugin.isCurrentEqualOrHigher("1.13", "1.15")) {
+		if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
 			if (server.isOnline()) {
 				if (server.getPlayerCount() == 0) {
 					if (type.equals("wool")) {

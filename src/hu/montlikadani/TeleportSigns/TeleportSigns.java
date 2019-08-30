@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.base.StandardSystemProperty;
 
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
+import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
 
 import static hu.montlikadani.TeleportSigns.Messager.logConsole;
 import static hu.montlikadani.TeleportSigns.Messager.defaults;
@@ -27,6 +28,7 @@ public class TeleportSigns extends JavaPlugin {
 	private SignScheduler sign = null;
 	private AnimationTask anim = null;
 	private ConfigData data = null;
+	private MinecraftVersion mcVersion = null;
 
 	@Override
 	public void onEnable() {
@@ -38,9 +40,9 @@ public class TeleportSigns extends JavaPlugin {
 				return;
 			}
 
-			// Just a version check
-			// hack we checking the version to mc 1.0, lol
-			if (isLower("1.7", "1.0")) {
+			mcVersion = new MinecraftVersion();
+
+			if (Version.isCurrentLower(Version.v1_8_R1)) {
 				getLogger().log(Level.SEVERE, "Your server version does not supported by this plugin! Please use 1.8+ or higher versions!");
 				getServer().getPluginManager().disablePlugin(this);
 				return;
@@ -80,10 +82,10 @@ public class TeleportSigns extends JavaPlugin {
 				logConsole(checkVersion("console"));
 			}
 
-			if (isHigher("1.8.6", "1.8.5")) {
+			if (Version.isCurrentHigher(Version.v1_8_R2)) {
 				Metrics metrics = new Metrics(this);
 				if (metrics.isEnabled()) {
-					metrics.addCustomChart(new Metrics.SimplePie("background_type", () -> data.getBackgroundType()));
+					metrics.addCustomChart(new Metrics.SimplePie("background_type", data::getBackgroundType));
 					metrics.addCustomChart(new Metrics.SimplePie("using_background",
 							() -> getMainConf().getString("options.background.enable")));
 					metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
@@ -249,28 +251,16 @@ public class TeleportSigns extends JavaPlugin {
 		return data;
 	}
 
+	MinecraftVersion getMCVersion() {
+		return mcVersion;
+	}
+
 	public FileConfiguration getMainConf() {
 		return data.getConfig(ConfigType.CONFIG);
 	}
 
 	public FileConfiguration getMessages() {
 		return data.getConfig(ConfigType.MESSAGES);
-	}
-
-	public boolean isHigher(String highest, String lowest) {
-		return convertVersion(highest) > convertVersion(lowest);
-	}
-
-	public boolean isLower(String highest, String lowest) {
-		return convertVersion(highest) < convertVersion(lowest);
-	}
-
-	public boolean isCurrentEqualOrHigher(String lowest, String highest) {
-		return convertVersion(highest) >= convertVersion(lowest);
-	}
-
-	public boolean isCurrentEqualOrLower(String highest, String lowest) {
-		return convertVersion(highest) <= convertVersion(lowest);
 	}
 
 	private boolean checkJavaVersion() {
@@ -284,34 +274,5 @@ public class TeleportSigns extends JavaPlugin {
 			return false;
 		}
 		return true;
-	}
-
-	private Integer convertVersion(String v) {
-		v = v.replaceAll("[^\\d.]", "");
-		Integer version = 0;
-
-		if (v.contains(".")) {
-			String lVersion = "";
-			for (String one : v.split("\\.")) {
-				String s = one;
-				if (s.length() == 1)
-					s = "0" + s;
-
-				lVersion += s;
-			}
-
-			try {
-				version = Integer.parseInt(lVersion);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		} else {
-			try {
-				version = Integer.parseInt(v);
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-		}
-		return version;
 	}
 }

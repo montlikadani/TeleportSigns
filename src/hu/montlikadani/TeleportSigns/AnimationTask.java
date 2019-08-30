@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
+import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class AnimationTask {
@@ -43,7 +44,7 @@ public class AnimationTask {
 							String type = plugin.getConfigData().getBackgroundType();
 
 							if (SignUtil.isWallSign(sign.getType())) {
-								if (plugin.isCurrentEqualOrHigher("1.13", "1.15")) {
+								if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
 									if (type.equals("wool")) {
 										s.updateBackground(Material.LIGHT_BLUE_WOOL);
 									} else if (type.equals("glass")) {

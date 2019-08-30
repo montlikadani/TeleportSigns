@@ -5,7 +5,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 
-import hu.montlikadani.TeleportSigns.TeleportSigns;
+import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
 
 public class SignUtil {
 
@@ -44,7 +44,7 @@ public class SignUtil {
 
 	public static String editText(String text) {
 		int length = text.length();
-		if (TeleportSigns.getInstance().isCurrentEqualOrHigher("1.14", "1.15") && length > 25) {
+		if (Version.isCurrentEqualOrHigher(Version.v1_14_R1) && length > 25) {
 			return text = text.substring(0, 25);
 		}
 
