@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 
-import hu.montlikadani.TeleportSigns.utils.SignUtil;
-
 public class SignLayout {
 
 	private String name;
@@ -22,7 +20,8 @@ public class SignLayout {
 	private String full;
 
 	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport,
-			String offlineInt, String offlineMotd, String offlineMessage, String fullMessage, String cooldownMessage, String full) {
+			String offlineInt, String offlineMotd, String offlineMessage, String fullMessage, String cooldownMessage,
+			String full) {
 		this.name = name;
 		this.online = online;
 		this.offline = offline;
@@ -84,34 +83,33 @@ public class SignLayout {
 		List<String> layout = new ArrayList<>();
 
 		for (String line : lines) {
-			line = line.replaceAll("%name%", server.getName());
-			line = line.replaceAll("%displayname%", server.getDisplayname());
-			line = line.replaceAll("%address%", server.getAddress().getHostName());
-			line = line.replaceAll("%port%", Integer.toString(server.getAddress().getPort()));
+			line = line.replace("%name%", server.getName());
+			line = line.replace("%displayname%", server.getDisplayname());
+			line = line.replace("%address%", server.getAddress().getHostName());
+			line = line.replace("%port%", Integer.toString(server.getAddress().getPort()));
 
 			if (server.isOnline()) {
-				line = line.replaceAll("%ping%", String.valueOf(server.getPingDelay()));
-				line = line.replaceAll("%numpl%", Integer.toString(server.getPlayerCount()));
-				line = line.replaceAll("%maxpl%", Integer.toString(server.getMaxPlayers()));
-				line = line.replaceAll("%motd%", formatDescription(server.getMotd()));
-				line = line.replaceAll("%version%", server.getVersion());
+				line = line.replace("%ping%", String.valueOf(server.getPingDelay()));
+				line = line.replace("%numpl%", Integer.toString(server.getPlayerCount()));
+				line = line.replace("%maxpl%", Integer.toString(server.getMaxPlayers()));
+				line = line.replace("%motd%", formatDescription(server.getMotd()));
+				line = line.replace("%version%", server.getVersion());
 
 				if (server.getPlayerCount() == server.getMaxPlayers()) {
-					line = line.replaceAll("%isonline%", full);
-				} else if (server.getPlayerCount() != server.getMaxPlayers()) {
-					line = line.replaceAll("%isonline%", online);
+					line = line.replace("%isonline%", full);
+				} else {
+					line = line.replace("%isonline%", online);
 				}
 			} else {
-				line = line.replaceAll("%ping%", "0ms");
-				line = line.replaceAll("%isonline%", offline);
-				line = line.replaceAll("%numpl%", offlineInt);
-				line = line.replaceAll("%maxpl%", offlineInt);
-				line = line.replaceAll("%motd%", offlineMotd);
-				line = line.replaceAll("%version%", "");
+				line = line.replace("%ping%", "0ms");
+				line = line.replace("%isonline%", offline);
+				line = line.replace("%numpl%", offlineInt);
+				line = line.replace("%maxpl%", offlineInt);
+				line = line.replace("%motd%", offlineMotd);
+				line = line.replace("%version%", "");
 			}
-			line = textValues(line);
-			line = SignUtil.editText(line);
 
+			line = textValues(line);
 			layout.add(line);
 		}
 
@@ -119,32 +117,44 @@ public class SignLayout {
 	}
 
 	public String parseOfflineMessage(ServerInfo server) {
+		if (offlineMessage == null || offlineMessage.isEmpty()) {
+			return "";
+		}
+
 		String line = offlineMessage;
-		line = line.replaceAll("%name%", server.getName());
-		line = line.replaceAll("%displayname%", server.getDisplayname());
-		line = line.replaceAll("%address%", server.getAddress().getHostName());
-		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
+		line = line.replace("%name%", server.getName());
+		line = line.replace("%displayname%", server.getDisplayname());
+		line = line.replace("%address%", server.getAddress().getHostName());
+		line = line.replace("%port%", String.valueOf(server.getAddress().getPort()));
 		line = textValues(line);
 
 		return line;
 	}
 
 	public String parseFullMessage(ServerInfo server) {
+		if (fullMessage == null || fullMessage.isEmpty()) {
+			return "";
+		}
+
 		String line = fullMessage;
-		line = line.replaceAll("%name%", server.getName());
-		line = line.replaceAll("%displayname%", server.getDisplayname());
-		line = line.replaceAll("%address%", server.getAddress().getHostName());
-		line = line.replaceAll("%port%", String.valueOf(server.getAddress().getPort()));
-		line = line.replaceAll("%numpl%", Integer.toString(server.getPlayerCount()));
-		line = line.replaceAll("%maxpl%", Integer.toString(server.getMaxPlayers()));
+		line = line.replace("%name%", server.getName());
+		line = line.replace("%displayname%", server.getDisplayname());
+		line = line.replace("%address%", server.getAddress().getHostName());
+		line = line.replace("%port%", String.valueOf(server.getAddress().getPort()));
+		line = line.replace("%numpl%", Integer.toString(server.getPlayerCount()));
+		line = line.replace("%maxpl%", Integer.toString(server.getMaxPlayers()));
 		line = textValues(line);
 
 		return line;
 	}
 
 	public String parseCooldownMessage(int seconds) {
+		if (cooldownMessage == null || cooldownMessage.isEmpty()) {
+			return "";
+		}
+
 		String line = cooldownMessage;
-		line = line.replaceAll("%cooldown%", Integer.toString(seconds));
+		line = line.replace("%cooldown%", Integer.toString(seconds));
 		line = textValues(line);
 
 		return line;

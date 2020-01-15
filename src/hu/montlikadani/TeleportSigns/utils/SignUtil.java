@@ -1,19 +1,17 @@
 package hu.montlikadani.TeleportSigns.utils;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
-
-import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
+import org.bukkit.block.Sign;
 
 public class SignUtil {
 
 	private static Set<Material> WALL_SIGNS = new HashSet<>();
 
 	static {
-		WALL_SIGNS.clear();
-
 		WALL_SIGNS.add(Material.getMaterial("WALL_SIGN"));
 
 		WALL_SIGNS.add(Material.getMaterial("ACACIA_WALL_SIGN"));
@@ -28,30 +26,21 @@ public class SignUtil {
 		return WALL_SIGNS.contains(mat);
 	}
 
-	public static String editLine(String text, int num) {
-		int length = text.length();
-
-		if (num == 2) {
-			if (length > 15) {
-				text = text.substring(0, 11);
-				text = text + "...";
-				return text;
-			}
+	public static void signLines(Sign sign) {
+		for (int i = 0; i < 4; i++) {
+			sign.setLine(i, "");
 		}
-
-		return editText(text);
 	}
 
-	public static String editText(String text) {
-		int length = text.length();
-		if (Version.isCurrentEqualOrHigher(Version.v1_14_R1) && length > 25) {
-			return text = text.substring(0, 25);
+	public static void signLines(Sign sign, List<String> lines) {
+		for (int i = 0; i < 4; i++) {
+			sign.setLine(i, lines.get(i));
 		}
+	}
 
-		if (length > 16) {
-			text = text.substring(0, 16);
+	public static void signLines(Sign sign, String[] lines) {
+		for (int i = 0; i < 4; i++) {
+			sign.setLine(i, lines[i]);
 		}
-
-		return text;
 	}
 }

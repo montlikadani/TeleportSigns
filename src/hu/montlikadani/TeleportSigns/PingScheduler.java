@@ -1,5 +1,7 @@
 package hu.montlikadani.TeleportSigns;
 
+import static hu.montlikadani.TeleportSigns.utils.Util.logConsole;
+
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.List;
@@ -8,20 +10,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerListPingEvent;
-import org.bukkit.scheduler.BukkitTask;
 
 import hu.montlikadani.TeleportSigns.ServerPingInternal.SResponse;
 import hu.montlikadani.TeleportSigns.api.ServerChangeStatusEvent;
 import hu.montlikadani.TeleportSigns.api.ServerPingResponseEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsPingEvent;
 
-import static hu.montlikadani.TeleportSigns.Messager.logConsole;
-
 public class PingScheduler implements Runnable, Listener {
 
 	private final TeleportSigns plugin;
-	public BukkitTask pingTask;
-	public BukkitTask task;
 
 	PingScheduler(TeleportSigns plugin) {
 		this.plugin = plugin;
@@ -32,29 +29,33 @@ public class PingScheduler implements Runnable, Listener {
 		List<ServerInfo> servers = plugin.getConfigData().getServers();
 		TeleportSignsPingEvent event = new TeleportSignsPingEvent(servers);
 		plugin.callEvent(event);
-		task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
+		Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
 	}
 
 	@EventHandler
 	public void onEvent(TeleportSignsPingEvent e) {
-		if (!e.isCancelled()) {
+		if (e.isCancelled()) {
+			return;
+		}
+
+		// maybe?
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
 			for (ServerInfo server : e.getServers()) {
 				if (!server.isLocal()) {
 					pingAsync(server);
 				} else {
 					String status = server.getMotd();
+					// TODO Fix ServerListPingEvent firing from other plugins and causing error
 					ServerListPingEvent ping = new ServerListPingEvent(
 							new InetSocketAddress(server.getAddress().getAddress().getHostAddress().toString(),
 									server.getAddress().getPort()).getAddress(),
 							Bukkit.getMotd(), Bukkit.getOnlinePlayers().size(), Bukkit.getMaxPlayers());
-					// TODO: fix ServerListPingEvent firing from other plugins and causing error
-					try {
-						Bukkit.getScheduler().runTaskAsynchronously(plugin,
-								() -> Bukkit.getPluginManager().callEvent(ping));
-					} catch (UnsupportedOperationException u) {
-					}
+
+					Bukkit.getScheduler().runTaskAsynchronously(plugin,
+							() -> Bukkit.getPluginManager().callEvent(ping));
 
 					server.setProtocol(getBukkitVersion());
+					server.setVersion(formatVersion(getBukkitVersion()));
 					server.setMotd(ping.getMotd());
 					server.setMaxPlayers(ping.getMaxPlayers());
 					server.setPlayerCount(ping.getNumPlayers());
@@ -68,14 +69,14 @@ public class PingScheduler implements Runnable, Listener {
 					}
 				}
 			}
-		}
+		}, 20);
 	}
 
 	private void pingAsync(final ServerInfo server) {
 		if (plugin.getConfigData().isExternal()) {
 			final ServerPingExternal ping = server.getExternalPing();
 			if (!ping.isFetching()) {
-				pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 					long pingStartTime = System.currentTimeMillis();
 					ping.setAddress(server.getAddress());
 					ping.setTimeout(server.getTimeout());
@@ -83,7 +84,7 @@ public class PingScheduler implements Runnable, Listener {
 
 					try {
 						String status = server.getMotd();
-						hu.montlikadani.TeleportSigns.ServerPingExternal.SResponse response = ping.fetchData();
+						ServerPingExternal.SResponse response = ping.fetchData();
 						server.setMotd(response.description);
 						server.setPlayerCount(response.players);
 						server.setMaxPlayers(response.slots);
@@ -102,7 +103,7 @@ public class PingScheduler implements Runnable, Listener {
 						if (!(e instanceof ConnectException)) {
 							logConsole(java.util.logging.Level.WARNING,
 									"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()
-											+ ":" + server.getAddress().getPort() + "'");
+											+ ":" + server.getAddress().getPort() + "'", false);
 						}
 					} finally {
 						ping.setFetching(false);
@@ -113,7 +114,7 @@ public class PingScheduler implements Runnable, Listener {
 		} else {
 			final ServerPingInternal ping = server.getInternalPing();
 			if (!ping.isFetching()) {
-				pingTask = Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 					long pingStartTime = System.currentTimeMillis();
 					ping.setAddress(server.getAddress());
 					ping.setTimeout(server.getTimeout());
@@ -172,6 +173,7 @@ public class PingScheduler implements Runnable, Listener {
 				}
 			}
 		}
+
 		return version;
 	}
 }

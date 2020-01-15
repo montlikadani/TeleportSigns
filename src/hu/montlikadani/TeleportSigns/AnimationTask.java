@@ -8,7 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
-import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
+import hu.montlikadani.TeleportSigns.ServerVersion.Version;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class AnimationTask {
@@ -19,6 +19,10 @@ public class AnimationTask {
 
 	public AnimationTask(TeleportSigns plugin) {
 		this.plugin = plugin;
+	}
+
+	public Map<TeleportSigns, BukkitTask> getTask() {
+		return task;
 	}
 
 	public void startAnimation() {
@@ -40,31 +44,29 @@ public class AnimationTask {
 						sign.setLine(line, lines[line]);
 						sign.update(true);
 
-						if (plugin.getConfigData().isBackgroundEnabled()) {
-							String type = plugin.getConfigData().getBackgroundType();
-
-							if (SignUtil.isWallSign(sign.getType())) {
-								if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-									if (type.equals("wool")) {
-										s.updateBackground(Material.LIGHT_BLUE_WOOL);
-									} else if (type.equals("glass")) {
-										s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
-									} else if (type.equals("clay") || type.equals("terracotta")) {
-										s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
-									}
-								} else {
-									if (type.equals("wool")) {
-										s.updateBackground(Material.getMaterial("WOOL"), 3);
-									} else if (type.equals("glass")) {
-										s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
-									} else if (type.equals("clay") || type.equals("terracotta")) {
-										s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
-									}
+						String type = plugin.getConfigData().getBackgroundType();
+						if (!type.equalsIgnoreCase("none") && SignUtil.isWallSign(sign.getType())) {
+							if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
+								if (type.equals("wool")) {
+									s.updateBackground(Material.LIGHT_BLUE_WOOL);
+								} else if (type.equals("glass")) {
+									s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
+								} else if (type.equals("clay") || type.equals("terracotta")) {
+									s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
+								}
+							} else {
+								if (type.equals("wool")) {
+									s.updateBackground(Material.getMaterial("WOOL"), 3);
+								} else if (type.equals("glass")) {
+									s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
+								} else if (type.equals("clay") || type.equals("terracotta")) {
+									s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
 								}
 							}
 						}
 					}
 				}
+
 				line++;
 			}
 		}, 0L, 10L));
@@ -100,6 +102,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
+
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 
@@ -134,6 +137,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
+
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 
@@ -168,6 +172,7 @@ public class AnimationTask {
 		}
 
 		stopAnimation();
+
 		task.put(plugin, Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
 			int pnt = 0;
 
@@ -208,18 +213,15 @@ public class AnimationTask {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
 			if (s.getLocation().getBlock().getState() instanceof Sign) {
 				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				sign.setLine(0, "");
-				sign.setLine(1, "");
-				sign.setLine(2, "");
-				sign.setLine(3, "");
+				SignUtil.signLines(sign);
 				sign.update(true);
 			}
 		}
 	}
 
 	public void stopAnimation() {
-		if (task != null && task.containsKey(plugin)) {
-			Bukkit.getScheduler().cancelTask(task.get(plugin).getTaskId());
+		if (task.containsKey(plugin)) {
+			task.get(plugin).cancel();
 			task.remove(plugin);
 		}
 	}

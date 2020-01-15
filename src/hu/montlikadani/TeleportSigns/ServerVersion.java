@@ -1,10 +1,8 @@
 package hu.montlikadani.TeleportSigns;
 
-import org.bukkit.Bukkit;
+public class ServerVersion {
 
-public class MinecraftVersion {
-
-	public MinecraftVersion() {
+	public ServerVersion() {
 	}
 
 	public Version getVersion() {
@@ -24,7 +22,10 @@ public class MinecraftVersion {
 		v1_13_R2,
 		v1_14_R1,
 		v1_14_R2,
-		v1_15_R1;
+		v1_15_R1,
+		v1_15_R2,
+		v1_16_R1,
+		v1_16_R2;
 
 		private Integer value;
 		private String shortVersion;
@@ -47,7 +48,7 @@ public class MinecraftVersion {
 			if (current != null)
 				return current;
 
-			String[] v = Bukkit.getServer().getClass().getPackage().getName().split("\\.");
+			String[] v = org.bukkit.Bukkit.getServer().getClass().getPackage().getName().split("\\.");
 			String vv = v[v.length - 1];
 			for (Version one : values()) {
 				if (one.name().equalsIgnoreCase(vv)) {
@@ -55,6 +56,7 @@ public class MinecraftVersion {
 					break;
 				}
 			}
+
 			return current;
 		}
 
@@ -67,7 +69,7 @@ public class MinecraftVersion {
 		}
 
 		public boolean isEqual(Version version) {
-			return getValue() == version.getValue();
+			return getValue().equals(version.getValue());
 		}
 
 		public boolean isEqualOrLower(Version version) {
@@ -95,7 +97,7 @@ public class MinecraftVersion {
 		}
 
 		public static boolean isCurrentEqual(Version v) {
-			return getCurrent().getValue() == v.getValue();
+			return getCurrent().getValue().equals(v.getValue());
 		}
 	}
 }

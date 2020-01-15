@@ -77,15 +77,16 @@ public class ServerPingExternal implements Server {
 
 			jsonString = response.toString();
 		} catch (IOException e) {
-			try {
-				throw new IOException(e);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
+			e.printStackTrace();
+			return null;
 		}
 
 		JsonParser parser = new JsonParser();
 		JsonObject json = parser.parse(jsonString).getAsJsonObject();
+
+		if (json.has("error")) {
+			return null;
+		}
 
 		SResponse ret = new SResponse();
 

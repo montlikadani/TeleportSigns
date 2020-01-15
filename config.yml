@@ -1,16 +1,3 @@
-#-----------------------------OOO-----------------------------------#
-#                TeleportSigns Configuration File                   #
-#                Author, created by: montlikadani                   #
-#-----------------------------OOO-----------------------------------#
-# [Default configuration]                                           #
-# github.com/montlikadani/TeleportSigns/blob/master/config.yml      #
-#                                                                   #
-# [Tips]                                                            #
-# - If you find a bug, send here:                                   #
-# https://github.com/montlikadani/TeleportSigns/issues              #
-#-----------------------------OOO-----------------------------------#
-
-# Options
 options:
   # Use external server as a hosted server?
   # If false then using internal server.
@@ -39,11 +26,8 @@ options:
   ignore-player-sneaking: true
 
   # Defines a background of the sign.
-  background:
-    enable: false
-
-    # Possible types: glass, wool, clay
-    type: glass
+  # Possible types: glass, wool, clay, none
+  background-type: none
 
 # The servers that players join.
 servers:

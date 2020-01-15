@@ -1,4 +1,4 @@
-package hu.montlikadani.TeleportSigns;
+package hu.montlikadani.TeleportSigns.utils;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,13 +10,28 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
-public class Messager {
+import hu.montlikadani.TeleportSigns.TeleportSigns;
 
-	static void logConsole(String error) {
-		logConsole(Level.INFO, error);
+public class Util {
+
+	public static void logConsole(String error) {
+		logConsole(Level.INFO, error, true);
 	}
 
-	static void logConsole(Level level, String error) {
+	public static void logConsole(String error, boolean loaded) {
+		logConsole(Level.INFO, error, loaded);
+	}
+
+	public static void logConsole(Level level, String error) {
+		logConsole(level, error, true);
+	}
+
+	public static void logConsole(Level level, String error, boolean loaded) {
+		if (!loaded) {
+			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
+			return;
+		}
+
 		if (TeleportSigns.getInstance().getMainConf().getBoolean("options.logconsole")) {
 			Bukkit.getLogger().log(level, "[TeleportSigns] " + error);
 		}
@@ -43,29 +58,23 @@ public class Messager {
 		}
 	}
 
-	static void sendMsg(org.bukkit.command.CommandSender sender, String s) {
-		if (s != null && !s.equals(""))
-			sender.sendMessage(s);
-	}
-
-	static String defaults(String str) {
-		if (str.contains("%newline%")) {
-			str = str.replace("%newline%", "\n");
+	public static void sendMsg(org.bukkit.command.CommandSender sender, String s) {
+		if (s != null && !s.isEmpty()) {
+			if (s.contains("\n")) {
+				for (String msg : s.split("\n")) {
+					sender.sendMessage(msg);
+				}
+			} else {
+				sender.sendMessage(s);
+			}
 		}
-
-		return colorMsg(str);
 	}
 
-	static void throwMsg() {
+	public static void throwMsg() {
 		logConsole(Level.WARNING, "There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
-		return;
 	}
 
 	public static String colorMsg(String msg) {
 		return ChatColor.translateAlternateColorCodes('&', msg);
-	}
-
-	public static String replaceColor(String s) {
-		return s.replace("&", "\u00a7");
 	}
 }

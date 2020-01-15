@@ -1,16 +1,11 @@
 package hu.montlikadani.TeleportSigns;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import static hu.montlikadani.TeleportSigns.utils.Util.sendMsg;
+
 import java.net.InetSocketAddress;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import static hu.montlikadani.TeleportSigns.Messager.sendMsg;
-import static hu.montlikadani.TeleportSigns.Messager.logConsole;
 
 public class ServerInfo {
 
@@ -179,26 +174,8 @@ public class ServerInfo {
 	}
 
 	public void teleportPlayer(Player p) {
-		ByteArrayOutputStream b = new ByteArrayOutputStream();
-		DataOutputStream out = new DataOutputStream(b);
-
-		try {
-			out.writeUTF("Connect");
-			out.writeUTF(name);
-		} catch (IOException e) {
-			e.printStackTrace();
-			logConsole(Level.WARNING, p.getName() + ": You'll never see me!");
+		if (ServerTeleporter.teleportPlayer(p, name)) {
+			sendMsg(p, TeleportSigns.getInstance().getMsg("enter-message", "%server%", name));
 		}
-
-		p.sendPluginMessage(TeleportSigns.getInstance(), "BungeeCord", b.toByteArray());
-
-		try {
-			b.close();
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		sendMsg(p, TeleportSigns.getInstance().getMsg("enter-message", "%server%", name));
 	}
 }

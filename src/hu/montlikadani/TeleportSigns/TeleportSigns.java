@@ -1,9 +1,14 @@
 package hu.montlikadani.TeleportSigns;
 
+import static hu.montlikadani.TeleportSigns.utils.Util.colorMsg;
+import static hu.montlikadani.TeleportSigns.utils.Util.logConsole;
+import static hu.montlikadani.TeleportSigns.utils.Util.sendMsg;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.logging.Level;
+import java.util.stream.Stream;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -14,21 +19,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.base.StandardSystemProperty;
 
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
-import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
-
-import static hu.montlikadani.TeleportSigns.Messager.logConsole;
-import static hu.montlikadani.TeleportSigns.Messager.defaults;
-import static hu.montlikadani.TeleportSigns.Messager.colorMsg;
+import hu.montlikadani.TeleportSigns.ServerVersion.Version;
 
 public class TeleportSigns extends JavaPlugin {
 
 	private static TeleportSigns instance;
+	private static ServerVersion serverVersion = null;
 
 	private PingScheduler ping = null;
 	private SignScheduler sign = null;
 	private AnimationTask anim = null;
 	private ConfigData data = null;
-	private MinecraftVersion mcVersion = null;
 
 	@Override
 	public void onEnable() {
@@ -40,10 +41,12 @@ public class TeleportSigns extends JavaPlugin {
 				return;
 			}
 
-			mcVersion = new MinecraftVersion();
+			serverVersion = new ServerVersion();
 
 			if (Version.isCurrentLower(Version.v1_8_R1)) {
-				getLogger().log(Level.SEVERE, "Your server version does not supported by this plugin! Please use 1.8+ or higher versions!");
+				logConsole(Level.SEVERE,
+						"Your server version does not supported by this plugin! Please use 1.8+ or higher versions!",
+						false);
 				getServer().getPluginManager().disablePlugin(this);
 				return;
 			}
@@ -52,27 +55,23 @@ public class TeleportSigns extends JavaPlugin {
 			data.loadConfig();
 
 			ping = new PingScheduler(this);
-			getServer().getPluginManager().registerEvents(ping, this);
-
 			anim = new AnimationTask(this);
+			sign = new SignScheduler(this);
+
 			anim.resetAnimation();
 			anim.startAnimation();
 
-			sign = new SignScheduler(this);
-			getServer().getPluginManager().registerEvents(sign, this);
-
 			long time = (long) (10.3 * 20L);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
 				@Override
 				public void run() {
 					Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
 					Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
-
-					Bukkit.getServer().getMessenger().registerOutgoingPluginChannel(instance, "BungeeCord");
 				}
 			}, time);
 
-			Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
+			Stream.of(sign, ping, new Listeners(this))
+					.forEach(l -> getServer().getPluginManager().registerEvents(l, this));
 
 			Commands cmds = new Commands(this);
 			getCommand("teleportsigns").setExecutor(cmds);
@@ -82,60 +81,55 @@ public class TeleportSigns extends JavaPlugin {
 				logConsole(checkVersion("console"));
 			}
 
-			if (Version.isCurrentHigher(Version.v1_8_R2)) {
-				Metrics metrics = new Metrics(this);
-				if (metrics.isEnabled()) {
-					metrics.addCustomChart(new Metrics.SimplePie("background_type", data::getBackgroundType));
-					metrics.addCustomChart(new Metrics.SimplePie("using_background",
-							() -> getMainConf().getString("options.background.enable")));
-					metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
-					metrics.addCustomChart(new Metrics.SingleLineChart("server_count", data.getServers()::size));
-					logConsole("Metrics enabled.");
-				}
+			Metrics metrics = new Metrics(this);
+			if (metrics.isEnabled()) {
+				metrics.addCustomChart(new Metrics.SimplePie("background_type", data::getBackgroundType));
+				metrics.addCustomChart(new Metrics.SimplePie("using_background",
+						() -> getMainConf().getString("options.background.enable")));
+				metrics.addCustomChart(new Metrics.SingleLineChart("sign_count", data.getSigns()::size));
+				metrics.addCustomChart(new Metrics.SingleLineChart("server_count", data.getServers()::size));
+				logConsole("Metrics enabled.");
 			}
 
-			if (getMainConf().contains("plugin-enable") && !getMainConf().getString("plugin-enable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-enable")));
+			if (!getMainConf().getString("plugin-enable", "").isEmpty()) {
+				sendMsg(getServer().getConsoleSender(), colorMsg(getMainConf().getString("plugin-enable")));
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
-			getLogger().warning("There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
+			logConsole(Level.WARNING,
+					"There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues",
+					false);
 		}
 	}
 
 	@Override
 	public void onDisable() {
-		if (instance == null) return;
+		if (instance == null)
+			return;
 
-		try {
-			if (anim != null) {
-				anim.resetAnimation();
-				anim.stopAnimation();
-				anim = null;
-			}
-			Bukkit.getServer().getMessenger().unregisterOutgoingPluginChannel(instance, "BungeeCord");
-			HandlerList.unregisterAll(this);
-			instance = null;
-			getServer().getScheduler().cancelTasks(this);
-
-			if (getMainConf().contains("plugin-disable") && !getMainConf().getString("plugin-disable").equals("")) {
-				getServer().getConsoleSender().sendMessage(defaults(getMainConf().getString("plugin-disable")));
-			}
-			data.unloadConfig();
-		} catch (Throwable e) {
-			e.printStackTrace();
-			getLogger().warning("There was an error. Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
+		if (anim != null) {
+			anim.resetAnimation();
+			anim.stopAnimation();
+			anim = null;
 		}
+		HandlerList.unregisterAll(this);
+		getServer().getScheduler().cancelTasks(this);
+
+		if (!getMainConf().getString("plugin-disable", "").isEmpty()) {
+			sendMsg(getServer().getConsoleSender(), colorMsg(getMainConf().getString("plugin-disable")));
+		}
+
+		data.unloadConfig();
+		instance = null;
 	}
 
 	String checkVersion(String sender) {
 		String[] nVersion;
 		String[] cVersion;
-		String lineWithVersion;
+		String lineWithVersion = "";
 		String msg = "";
 		try {
 			URL githubUrl = new URL("https://raw.githubusercontent.com/montlikadani/TeleportSigns/master/plugin.yml");
-			lineWithVersion = "";
 			BufferedReader br = new BufferedReader(new InputStreamReader(githubUrl.openStream()));
 			String s;
 			while ((s = br.readLine()) != null) {
@@ -145,19 +139,23 @@ public class TeleportSigns extends JavaPlugin {
 					break;
 				}
 			}
+
 			String versionString = lineWithVersion.split(": ")[1];
-			nVersion = versionString.split("\\.");
+			nVersion = versionString.replaceAll("[^0-9.]", "").split("\\.");
 			double newestVersionNumber = Double.parseDouble(nVersion[0] + "." + nVersion[1]);
-			cVersion = getDescription().getVersion().split("\\.");
+
+			cVersion = getDescription().getVersion().replaceAll("[^0-9.]", "").split("\\.");
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
+
 			if (newestVersionNumber > currentVersionNumber) {
 				if (sender.equals("console")) {
-					msg = "New version (" + versionString + ") is available at https://www.spigotmc.org/resources/37446/";
+					msg = "New version (" + versionString
+							+ ") is available at https://www.spigotmc.org/resources/37446/";
 				} else if (sender.equals("player")) {
-					msg = colorMsg("&8&m&l--------------------------------------------------\n" +
-							getMsg("prefix") + "&a A new update is available!&4 Version:&7 " + versionString +
-							"\n&6Download:&c &nhttps://www.spigotmc.org/resources/37446/" +
-							"\n&8&m&l--------------------------------------------------");
+					msg = colorMsg("&8&m&l--------------------------------------------------\n"
+							+ "&aA new update is available!&4 Version:&7 " + versionString
+							+ "\n&6Download:&c &nhttps://www.spigotmc.org/resources/37446/"
+							+ "\n&8&m&l--------------------------------------------------");
 				}
 			} else {
 				if (sender.equals("console")) {
@@ -166,12 +164,9 @@ public class TeleportSigns extends JavaPlugin {
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
-			logConsole(Level.WARNING, "Failed to compare versions. " + e + " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
+			logConsole(Level.WARNING, "Failed to compare versions. " + e
+					+ " Please report it here:\nhttps://github.com/montlikadani/TeleportSigns/issues");
 		}
-
-		/*if (sender.equals("console")) {
-			msg = "Failed to get newest version number.";
-		}*/
 
 		return msg;
 	}
@@ -182,48 +177,36 @@ public class TeleportSigns extends JavaPlugin {
 	 */
 	public void callEvent(final Event event) {
 		if (!event.isAsynchronous()) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> getServer().getPluginManager().callEvent(event));
+			getServer().getScheduler().scheduleSyncDelayedTask(this,
+					() -> getServer().getPluginManager().callEvent(event));
 		} else {
-			Bukkit.getPluginManager().callEvent(event);
+			getServer().getPluginManager().callEvent(event);
 		}
 	}
 
 	public void reload() {
 		data.loadConfig();
 
-		if (ping.task != null) {
-			Bukkit.getScheduler().cancelTask(ping.task.getTaskId());
-		}
-		if (ping.pingTask != null) {
-			Bukkit.getScheduler().cancelTask(ping.pingTask.getTaskId());
-		}
-		if (sign.task != null) {
-			Bukkit.getScheduler().cancelTask(sign.task.getTaskId());
-		}
-
-		ping = null;
-		sign = null;
+		getServer().getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
 
 		ping = new PingScheduler(this);
 		sign = new SignScheduler(this);
 
-		Bukkit.getPluginManager().registerEvents(ping, this);
-		Bukkit.getPluginManager().registerEvents(sign, this);
-		Bukkit.getPluginManager().registerEvents(new Listeners(this), this);
+		Stream.of(sign, ping, new Listeners(this)).forEach(l -> getServer().getPluginManager().registerEvents(l, this));
 
 		anim.resetAnimation();
 		anim.stopAnimation();
 		anim.startAnimation();
 
-		Bukkit.getScheduler().runTaskLater(this, sign, 40L);
-		Bukkit.getScheduler().runTaskLaterAsynchronously(this, ping, 5L);
+		getServer().getScheduler().runTaskLater(this, sign, 40L);
+		getServer().getScheduler().runTaskLaterAsynchronously(this, ping, 5L);
 	}
 
 	String getMsg(String key, Object... placeholders) {
 		String msg = "";
 
-		if (!getMessages().contains(key) || getMessages().getString(key).equals(""))
+		if (getMessages().getString(key, "").isEmpty())
 			return msg;
 
 		msg = colorMsg(getMessages().getString(key));
@@ -233,15 +216,17 @@ public class TeleportSigns extends JavaPlugin {
 				if (placeholders.length >= i + 2) {
 					msg = msg.replace(String.valueOf(placeholders[i]), String.valueOf(placeholders[i + 1]));
 				}
+
 				i++;
 			}
 		}
+
 		return msg;
 	}
 
 	/**
 	 * Gets the plugin instance in this class
-	 * @return {@link #TeleportSigns()} instance
+	 * @return {@link TeleportSigns} instance
 	 */
 	public static TeleportSigns getInstance() {
 		return instance;
@@ -251,8 +236,12 @@ public class TeleportSigns extends JavaPlugin {
 		return data;
 	}
 
-	MinecraftVersion getMCVersion() {
-		return mcVersion;
+	/**
+	 * Gets the server version
+	 * @return {@link ServerVersion}
+	 */
+	public static ServerVersion getServerVersion() {
+		return serverVersion;
 	}
 
 	public FileConfiguration getMainConf() {
@@ -266,13 +255,15 @@ public class TeleportSigns extends JavaPlugin {
 	private boolean checkJavaVersion() {
 		try {
 			if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
-				getLogger().log(Level.WARNING, "You are using an older Java that is not supported. Please use 1.8 or higher versions!");
+				logConsole(Level.WARNING,
+						"You are using an older Java that is not supported. Please use 1.8 or higher versions!", false);
 				return false;
 			}
 		} catch (NumberFormatException e) {
-			getLogger().log(Level.WARNING, "Failed to detect Java version.");
+			logConsole(Level.WARNING, "Failed to detect Java version.", false);
 			return false;
 		}
+
 		return true;
 	}
 }

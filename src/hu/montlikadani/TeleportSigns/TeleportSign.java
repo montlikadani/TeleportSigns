@@ -1,5 +1,7 @@
 package hu.montlikadani.TeleportSigns;
 
+import static hu.montlikadani.TeleportSigns.utils.Util.logConsole;
+
 import java.util.List;
 import java.util.logging.Level;
 
@@ -10,14 +12,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
-import org.bukkit.configuration.Configuration;
 import org.bukkit.material.Directional;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import hu.montlikadani.TeleportSigns.MinecraftVersion.Version;
+import hu.montlikadani.TeleportSigns.ServerVersion.Version;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
-
-import static hu.montlikadani.TeleportSigns.Messager.logConsole;
 
 public class TeleportSign {
 
@@ -31,7 +30,8 @@ public class TeleportSign {
 	private String id;
 	private ServerInfo server;
 	private SignLayout layout;
-	private boolean broken;
+
+	private boolean broken = false;
 
 	public TeleportSign(ServerInfo server, Location location, SignLayout layout) {
 		this.world = location.getWorld().getName();
@@ -41,7 +41,6 @@ public class TeleportSign {
 
 		this.server = server;
 		this.layout = layout;
-		this.broken = false;
 	}
 
 	public void setId(String id) {
@@ -100,46 +99,48 @@ public class TeleportSign {
 	}
 
 	public void updateSign() {
-		Configuration c = plugin.getMainConf();
-		if (!isBroken()) {
-			Location location = getLocation();
+		if (isBroken()) {
+			return;
+		}
 
+		Location location = getLocation();
+		synchronized (location) {
 			if (location.getWorld().getChunkAt(location).isLoaded()) {
 				Block b = location.getBlock();
-				if (b.getState() instanceof Sign) {
-					Sign sign = (Sign) b.getState();
-					if (server != null) {
-						if (layout != null) {
-							List<String> lines = layout.parseLayout(server);
-							if (lines.size() > 4 || lines.size() < 4) {
-								logConsole("In the configuration the signs lines is equal to 4.");
-								return;
-							}
+				if (!(b.getState() instanceof Sign)) {
+					return;
+				}
 
-							for (int i = 0; i < 4; i++) {
-								sign.setLine(i, lines.get(i));
+				Sign sign = (Sign) b.getState();
+				if (server != null) {
+					if (layout != null) {
+						List<String> lines = layout.parseLayout(server);
+						if (lines.size() > 4 || lines.size() < 4) {
+							logConsole("In the configuration the signs lines is equal to 4.");
+							return;
+						}
 
-								if (c.getBoolean("options.background.enable")) {
-									if (SignUtil.isWallSign(sign.getType())) {
-										chooseFromType();
-									}
-								}
-							}
+						SignUtil.signLines(sign, lines);
 
-							sign.update();
-						} else {
-							logConsole(Level.WARNING, "The layout in the sign not found.");
-							String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a74with that name", "\u00a76not found!" };
-							signError(sign, error);
-							broken = true;
+						if (plugin.getMainConf().getBoolean("options.background.enable")
+								&& SignUtil.isWallSign(sign.getType())) {
+							chooseFromType();
 						}
 					} else {
-						logConsole(Level.WARNING, "The server in the sign not found.");
-						String[] error = { "\u00a74ERROR:", "\u00a76The server", "\u00a7e can not be", "\u00a76 null!" };
-						signError(sign, error);
+						logConsole(Level.WARNING, "The layout in the sign not found.");
+						String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a74with that name",
+								"\u00a76not found!" };
+						SignUtil.signLines(sign, error);
 						broken = true;
 					}
+				} else {
+					logConsole(Level.WARNING, "The server in the sign not found.");
+					String[] error = { "\u00a74ERROR:", "\u00a76The server", "\u00a7e can not be", "\u00a76 null!" };
+					SignUtil.signLines(sign, error);
+					broken = true;
 				}
+
+				sign.update();
 			}
 		}
 	}
@@ -171,19 +172,12 @@ public class TeleportSign {
 		}
 	}
 
-	private void signError(Sign sign, String[] exception) {
-		if (sign != null) {
-			for (int i = 0; i < 4; i++) {
-				String line = SignUtil.editLine(exception[i], i);
-				sign.setLine(i, line);
-			}
-
-			sign.update(true);
-		}
-	}
-
 	private void chooseFromType() {
 		String type = plugin.getConfigData().getBackgroundType();
+		if (type.equalsIgnoreCase("none")) {
+			return;
+		}
+
 		if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
 			if (server.isOnline()) {
 				if (server.getPlayerCount() == 0) {

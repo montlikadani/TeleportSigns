@@ -1,5 +1,8 @@
 package hu.montlikadani.TeleportSigns;
 
+import static hu.montlikadani.TeleportSigns.utils.Util.logConsole;
+import static hu.montlikadani.TeleportSigns.utils.Util.throwMsg;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,9 +18,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import static hu.montlikadani.TeleportSigns.Messager.logConsole;
-import static hu.montlikadani.TeleportSigns.Messager.throwMsg;
-
 public class ConfigData {
 
 	private TeleportSigns plugin;
@@ -28,11 +28,12 @@ public class ConfigData {
 	private List<ServerInfo> servers = new ArrayList<>();
 	private List<TeleportSign> signs = new ArrayList<>();
 	private List<Block> blocks = new ArrayList<>();
+
 	private Map<String, SignLayout> layouts = new HashMap<>();
 
 	private long cooldown, signUpdates;
 	private int pingTimeout, pingInterval;
-	private boolean externalServer, logConsole, ignorePlayerSneaking, background;
+	private boolean externalServer, logConsole, ignorePlayerSneaking;
 	private String bgType;
 
 	private int cver = 5;
@@ -102,7 +103,7 @@ public class ConfigData {
 			} else {
 				sign = createFile("signs.yml", sign_file, true);
 			}
-		} catch (Throwable e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			throwMsg();
 		}
@@ -119,13 +120,12 @@ public class ConfigData {
 				sign_file.createNewFile();
 			} catch (IOException e) {
 				e.printStackTrace();
-				throwMsg();
 			}
 		} else {
 			plugin.saveResource(name, false);
 		}
 
-		logConsole("The '" + name + "' file successfully created!");
+		logConsole("The '" + name + "' file successfully created!", false);
 		return YamlConfiguration.loadConfiguration(file);
 	}
 
@@ -134,6 +134,7 @@ public class ConfigData {
 		if (!dataFolder.exists()) {
 			dataFolder.mkdirs();
 		}
+
 		return dataFolder;
 	}
 
@@ -156,9 +157,7 @@ public class ConfigData {
 		this.pingInterval = this.config.getInt("options.ping-interval");
 		this.pingTimeout = this.config.getInt("options.ping-timeout");
 		this.ignorePlayerSneaking = this.config.getBoolean("options.ignore-player-sneaking");
-
-		this.background = this.config.getBoolean("options.background.enable");
-		this.bgType = this.config.getString("options.background.type");
+		this.bgType = this.config.getString("options.background-type");
 	}
 
 	private void loadServers() {
@@ -199,31 +198,32 @@ public class ConfigData {
 
 	private void loadSigns() {
 		List<String> list = this.sign.getStringList("signs");
-		if (list == null || list.isEmpty()) {
+		if (list == null) {
 			logConsole(Level.WARNING, "No saved sign was found.");
-		} else {
-			for (String sign : list) {
-				try {
-					Location location = LocationSerialiser.stringToLocationSign(sign);
-					ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
-					SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
+			return;
+		}
 
-					if (location == null) {
-						logConsole(Level.WARNING, "The location for the sign is null.");
-						logConsole("Probably world not exists or the sign was broken.");
-						return;
-					}
+		for (String sign : list) {
+			try {
+				Location location = LocationSerialiser.stringToLocationSign(sign);
+				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
+				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
-					Block b = location.getBlock();
-					if (b.getState() instanceof Sign) {
-						TeleportSign tsign = new TeleportSign(server, location, layout);
-						this.signs.add(tsign);
-						this.blocks.add(b);
-					}
-				} catch (Throwable e) {
-					e.printStackTrace();
-					throwMsg();
+				if (location == null) {
+					logConsole(Level.WARNING, "The location for the sign is null.");
+					logConsole("Probably world not exists or the sign was broken.");
+					continue;
 				}
+
+				Block b = location.getBlock();
+				if (b.getState() instanceof Sign) {
+					TeleportSign tsign = new TeleportSign(server, location, layout);
+					this.signs.add(tsign);
+					this.blocks.add(b);
+				}
+			} catch (Throwable e) {
+				e.printStackTrace();
+				throwMsg();
 			}
 		}
 	}
@@ -275,10 +275,6 @@ public class ConfigData {
 
 	public boolean isIgnoringSneak() {
 		return ignorePlayerSneaking;
-	}
-
-	public boolean isBackgroundEnabled() {
-		return background;
 	}
 
 	public String getBackgroundType() {
@@ -370,7 +366,6 @@ public class ConfigData {
 			sign.save(sign_file);
 		} catch (IOException e) {
 			e.printStackTrace();
-			throwMsg();
 		}
 
 		blocks.add(location.getBlock());
@@ -379,24 +374,22 @@ public class ConfigData {
 	}
 
 	public void removeSign(Location location) {
+		List<String> list = this.sign.getStringList("signs");
+
 		for (TeleportSign sign : signs) {
 			if (sign.getLocation().equals(location)) {
 				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(),
 						sign.getLayout().getName());
-				List<String> list = this.sign.getStringList("signs");
 
 				if (list != null && !list.isEmpty()) {
 					list.remove(index);
 					this.sign.set("signs", list);
-				} else {
-					this.sign.set("signs", null);
 				}
 
 				try {
 					this.sign.save(sign_file);
 				} catch (IOException e) {
 					e.printStackTrace();
-					throwMsg();
 				}
 
 				blocks.remove(location.getBlock());
