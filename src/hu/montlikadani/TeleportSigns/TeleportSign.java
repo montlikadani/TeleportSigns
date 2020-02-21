@@ -99,50 +99,49 @@ public class TeleportSign {
 	}
 
 	public void updateSign() {
-		if (isBroken()) {
+		if (broken) {
 			return;
 		}
 
 		Location location = getLocation();
-		synchronized (location) {
-			if (location.getWorld().getChunkAt(location).isLoaded()) {
-				Block b = location.getBlock();
-				if (!(b.getState() instanceof Sign)) {
+		if (!location.getWorld().getChunkAt(location).isLoaded()) {
+			return;
+		}
+
+		Block b = location.getBlock();
+		if (!SignUtil.isSign(b.getState())) {
+			return;
+		}
+
+		Sign sign = (Sign) b.getState();
+		if (server != null) {
+			if (layout != null) {
+				List<String> lines = layout.parseLayout(server);
+				if (lines.size() > 4 || lines.size() < 4) {
+					logConsole("In the configuration the signs lines is equal to 4.");
 					return;
 				}
 
-				Sign sign = (Sign) b.getState();
-				if (server != null) {
-					if (layout != null) {
-						List<String> lines = layout.parseLayout(server);
-						if (lines.size() > 4 || lines.size() < 4) {
-							logConsole("In the configuration the signs lines is equal to 4.");
-							return;
-						}
+				SignUtil.signLines(sign, lines);
 
-						SignUtil.signLines(sign, lines);
-
-						if (plugin.getMainConf().getBoolean("options.background.enable")
-								&& SignUtil.isWallSign(sign.getType())) {
-							chooseFromType();
-						}
-					} else {
-						logConsole(Level.WARNING, "The layout in the sign not found.");
-						String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a74with that name",
-								"\u00a76not found!" };
-						SignUtil.signLines(sign, error);
-						broken = true;
-					}
-				} else {
-					logConsole(Level.WARNING, "The server in the sign not found.");
-					String[] error = { "\u00a74ERROR:", "\u00a76The server", "\u00a7e can not be", "\u00a76 null!" };
-					SignUtil.signLines(sign, error);
-					broken = true;
+				if (!plugin.getConfigData().getBackgroundType().equalsIgnoreCase("none")
+						&& SignUtil.isWallSign(sign.getType())) {
+					chooseFromType();
 				}
-
-				sign.update();
+			} else {
+				logConsole(Level.WARNING, "The layout in the sign not found.");
+				String[] error = { "\u00a74ERROR:", "\u00a76Layout", "\u00a74with that name", "\u00a76not found!" };
+				SignUtil.signLines(sign, error);
+				broken = true;
 			}
+		} else {
+			logConsole(Level.WARNING, "The server in the sign not found.");
+			String[] error = { "\u00a74ERROR:", "\u00a76The server", "\u00a7e can not be", "\u00a76 null!" };
+			SignUtil.signLines(sign, error);
+			broken = true;
 		}
+
+		sign.update();
 	}
 
 	public void updateBackground(Material mat) {
@@ -185,8 +184,7 @@ public class TeleportSign {
 						updateBackground(Material.WHITE_WOOL);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.WHITE_STAINED_GLASS);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.WHITE_TERRACOTTA);
 					}
 				} else if (server.getPlayerCount() == server.getMaxPlayers()) {
@@ -194,8 +192,7 @@ public class TeleportSign {
 						updateBackground(Material.BLUE_WOOL);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.BLUE_STAINED_GLASS);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.BLUE_TERRACOTTA);
 					}
 				} else {
@@ -203,8 +200,7 @@ public class TeleportSign {
 						updateBackground(Material.LIME_WOOL);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.LIME_STAINED_GLASS);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.LIME_TERRACOTTA);
 					}
 				}
@@ -213,8 +209,7 @@ public class TeleportSign {
 					updateBackground(Material.RED_WOOL);
 				} else if (type.equals("glass")) {
 					updateBackground(Material.RED_STAINED_GLASS);
-				} else if (type.equals("clay")
-						|| type.equals("terracotta")) {
+				} else if (type.equals("clay") || type.equals("terracotta")) {
 					updateBackground(Material.RED_TERRACOTTA);
 				}
 			}
@@ -225,8 +220,7 @@ public class TeleportSign {
 						updateBackground(Material.getMaterial("WOOL"), 0);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.getMaterial("STAINED_GLASS"), 0);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.getMaterial("STAINED_CLAY"), 0);
 					}
 				} else if (server.getPlayerCount() == server.getMaxPlayers()) {
@@ -234,8 +228,7 @@ public class TeleportSign {
 						updateBackground(Material.getMaterial("WOOL"), 11);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.getMaterial("STAINED_GLASS"), 11);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.getMaterial("STAINED_CLAY"), 11);
 					}
 				} else {
@@ -243,8 +236,7 @@ public class TeleportSign {
 						updateBackground(Material.getMaterial("WOOL"), 5);
 					} else if (type.equals("glass")) {
 						updateBackground(Material.getMaterial("STAINED_GLASS"), 5);
-					} else if (type.equals("clay")
-							|| type.equals("terracotta")) {
+					} else if (type.equals("clay") || type.equals("terracotta")) {
 						updateBackground(Material.getMaterial("STAINED_CLAY"), 5);
 					}
 				}
@@ -253,8 +245,7 @@ public class TeleportSign {
 					updateBackground(Material.getMaterial("WOOL"), 14);
 				} else if (type.equals("glass")) {
 					updateBackground(Material.getMaterial("STAINED_GLASS"), 14);
-				} else if (type.equals("clay")
-						|| type.equals("terracotta")) {
+				} else if (type.equals("clay") || type.equals("terracotta")) {
 					updateBackground(Material.getMaterial("STAINED_CLAY"), 14);
 				}
 			}

@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,6 +26,7 @@ import hu.montlikadani.TeleportSigns.StatusResponse.StatusResponse_113;
 import hu.montlikadani.TeleportSigns.StatusResponse.StatusResponse_19;
 
 public class ServerPingInternal implements Server {
+
 	private boolean fetching;
 	private InetSocketAddress host;
 	private int timeout = 2000;
@@ -88,6 +88,7 @@ public class ServerPingInternal implements Server {
 		out.writeByte(paramInt);
 	}
 
+	@Override
 	@SuppressWarnings("resource")
 	public SResponse fetchData() throws IOException {
 		Socket socket = new Socket();
@@ -221,7 +222,7 @@ public class ServerPingInternal implements Server {
 			sr.favicon = stat.getFavicon();
 			sr.players = stat.getPlayers().getOnline();
 			sr.slots = stat.getPlayers().getMax();
-			//sr.time = stat.getTime();
+			// sr.time = stat.getTime();
 			sr.time = (int) (now - pingTime);
 			sr.protocol = stat.getVersion().getProtocol();
 			sr.version = stat.getVersion().getName();
@@ -234,91 +235,5 @@ public class ServerPingInternal implements Server {
 		socket.close();
 
 		return sr;
-	}
-
-	public class SResponse {
-		public String version;
-		public String protocol;
-		public String favicon;
-		public String description;
-		public int players;
-		public int slots;
-		public int time;
-	}
-
-	public class StatusResponse {
-		private String description;
-		private Players players;
-		private Version version;
-		private String favicon;
-		private int time;
-
-		public String getDescription() {
-			return description;
-		}
-
-		public Players getPlayers() {
-			return players;
-		}
-
-		public Version getVersion() {
-			return version;
-		}
-
-		public String getFavicon() {
-			return favicon;
-		}
-
-		public int getTime() {
-			return time;
-		}
-
-		public void setTime(int time) {
-			this.time = time;
-		}
-	}
-
-	public class Players {
-		private int max;
-		private int online;
-		private List<Player> sample;
-
-		public int getMax() {
-			return max;
-		}
-
-		public int getOnline() {
-			return online;
-		}
-
-		public List<Player> getSample() {
-			return sample;
-		}
-	}
-
-	public class Player {
-		private String name;
-		private String id;
-
-		public String getName() {
-			return name;
-		}
-
-		public String getId() {
-			return id;
-		}
-	}
-
-	public class Version {
-		private String name;
-		private String protocol;
-
-		public String getName() {
-			return name;
-		}
-
-		public String getProtocol() {
-			return protocol;
-		}
 	}
 }

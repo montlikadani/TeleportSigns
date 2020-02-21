@@ -18,10 +18,11 @@ public class SignLayout {
 	private String fullMessage;
 	private String cooldownMessage;
 	private String full;
+	private String cantTeleportMessage;
 
 	public SignLayout(String name, String online, String offline, List<String> lines, boolean teleport,
 			String offlineInt, String offlineMotd, String offlineMessage, String fullMessage, String cooldownMessage,
-			String full) {
+			String full, String cantTeleportMessage) {
 		this.name = name;
 		this.online = online;
 		this.offline = offline;
@@ -33,6 +34,7 @@ public class SignLayout {
 		this.fullMessage = fullMessage;
 		this.cooldownMessage = cooldownMessage;
 		this.full = full;
+		this.cantTeleportMessage = cantTeleportMessage;
 	}
 
 	public String getName() {
@@ -79,6 +81,10 @@ public class SignLayout {
 		return cooldownMessage;
 	}
 
+	public String getcantTeleportMessageMessage() {
+		return cantTeleportMessage;
+	}
+
 	public List<String> parseLayout(ServerInfo server) {
 		List<String> layout = new ArrayList<>();
 
@@ -95,11 +101,8 @@ public class SignLayout {
 				line = line.replace("%motd%", formatDescription(server.getMotd()));
 				line = line.replace("%version%", server.getVersion());
 
-				if (server.getPlayerCount() == server.getMaxPlayers()) {
-					line = line.replace("%isonline%", full);
-				} else {
-					line = line.replace("%isonline%", online);
-				}
+				line = line.replace("%isonline%", server.getPlayerCount() == server.getMaxPlayers() ? full
+							: online);
 			} else {
 				line = line.replace("%ping%", "0ms");
 				line = line.replace("%isonline%", offline);
@@ -155,6 +158,18 @@ public class SignLayout {
 
 		String line = cooldownMessage;
 		line = line.replace("%cooldown%", Integer.toString(seconds));
+		line = textValues(line);
+
+		return line;
+	}
+
+	public String parseCantTeleportMessage(ServerInfo server) {
+		if (cantTeleportMessage == null || cantTeleportMessage.isEmpty()) {
+			return "";
+		}
+
+		String line = cantTeleportMessage;
+		line = line.replace("%name%", server.getName());
 		line = textValues(line);
 
 		return line;

@@ -20,7 +20,7 @@ public class SignScheduler implements Runnable, Listener {
 	public void run() {
 		List<TeleportSign> signs = plugin.getConfigData().getSigns();
 		TeleportSignsUpdateEvent event = new TeleportSignsUpdateEvent(signs);
-		Bukkit.getPluginManager().callEvent(event);
+		plugin.callEvent(event);
 		Bukkit.getScheduler().runTaskLater(plugin, this, plugin.getConfigData().getUpdateInterval());
 	}
 

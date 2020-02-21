@@ -81,7 +81,7 @@ public class TeleportSigns extends JavaPlugin {
 				logConsole(checkVersion("console"));
 			}
 
-			Metrics metrics = new Metrics(this);
+			Metrics metrics = new Metrics(this, 1246);
 			if (metrics.isEnabled()) {
 				metrics.addCustomChart(new Metrics.SimplePie("background_type", data::getBackgroundType));
 				metrics.addCustomChart(new Metrics.SimplePie("using_background",
@@ -112,6 +112,7 @@ public class TeleportSigns extends JavaPlugin {
 			anim.stopAnimation();
 			anim = null;
 		}
+
 		HandlerList.unregisterAll(this);
 		getServer().getScheduler().cancelTasks(this);
 
@@ -190,9 +191,6 @@ public class TeleportSigns extends JavaPlugin {
 		getServer().getScheduler().cancelTasks(this);
 		HandlerList.unregisterAll(this);
 
-		ping = new PingScheduler(this);
-		sign = new SignScheduler(this);
-
 		Stream.of(sign, ping, new Listeners(this)).forEach(l -> getServer().getPluginManager().registerEvents(l, this));
 
 		anim.resetAnimation();
@@ -211,7 +209,7 @@ public class TeleportSigns extends JavaPlugin {
 
 		msg = colorMsg(getMessages().getString(key));
 
-		if (placeholders.length > 0) {
+		if (placeholders != null) {
 			for (int i = 0; i < placeholders.length; i++) {
 				if (placeholders.length >= i + 2) {
 					msg = msg.replace(String.valueOf(placeholders[i]), String.valueOf(placeholders[i + 1]));

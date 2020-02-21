@@ -5,7 +5,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 
 public class SignUtil {
 
@@ -24,6 +26,10 @@ public class SignUtil {
 
 	public static boolean isWallSign(Material mat) {
 		return WALL_SIGNS.contains(mat);
+	}
+
+	public static boolean isSign(BlockState state) {
+		return state instanceof Sign || state instanceof WallSign;
 	}
 
 	public static void signLines(Sign sign) {

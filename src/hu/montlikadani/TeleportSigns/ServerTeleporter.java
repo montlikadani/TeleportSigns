@@ -27,8 +27,10 @@ public class ServerTeleporter implements PluginMessageListener {
 			Bukkit.getMessenger().registerOutgoingPluginChannel(TeleportSigns.getInstance(), "BungeeCord");
 		}
 
+		// TODO: How to check from bungee when the player is already connected to the
+		// server?
 		if (server != null && server.equals(name)) {
-			Util.sendMsg(p, "You already in this server!");
+			Util.sendMsg(p, TeleportSigns.getInstance().getMsg("already-in-server"));
 			return false;
 		}
 

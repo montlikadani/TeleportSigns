@@ -23,52 +23,66 @@
 
 layouts:
   default:
+    # Teleport the player when clicked on sign?
     teleport: true
+
+    # The layouts what shows on sign lines.
     layout:
     - "%displayname%"
     - "---"
     - "&c%numpl%&7/&c%maxpl%"
     - "%isonline%"
+
     online: "&a\u00a4 Online \u00a4"
     offline: "&cOffline"
     offline-int: --
     offline-motd: "&cOffline"
     full: "&9Full"
+
     # Message when a player tries to connect to offline server.
     offline-message: "&cThe server is offline!"
+
     # Message when a player tries to connect to full server.
     full-message: "&cThe server is full!"
+
+    # Message when a player tries to double click on the sign.
     cooldown-message: "&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again."
+
+    # Message when the "teleport" option is false and player tried to connect to the server through sign.
+    cant-teleport: "&cYou can't teleport to the server!"
+
   info:
     teleport: false
+
     layout:
     - "%displayname%"
     - "&c%numpl%&a/&c%maxpl%"
     - "&6&fInfosign"
     - "%ping%ms"
+
     online: "Online"
     offline: "Offline"
     offline-int: "-"
     offline-motd: "&cOffline"
     full: "&9Full"
-    # Message when a player tries to connect to offline server.
     offline-message: "&cThe server is offline!"
     cooldown-message: "&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again."
+
   game:
     teleport: true
+
     layout:
     - "&n&fPvP-Match"
     - "%motd%"
     - "&1%numpl%&a/&1%maxpl%"
     - "%isonline%"
+
     online: "&a+++"
     offline: "&c---"
     offline-int: "-"
     offline-motd: "&cOffline"
     full: "&9Full"
-    # Message when a player tries to connect to offline server.
     offline-message: "&a[Games]&7 %name%&c is offline!"
-    # Message when a player tries to connect to full server.
     full-message: "&cThe server is full!"
     cooldown-message: "&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again."
 

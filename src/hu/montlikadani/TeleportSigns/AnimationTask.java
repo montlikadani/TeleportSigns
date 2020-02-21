@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -39,29 +40,32 @@ public class AnimationTask {
 				if (line >= 4) return;
 
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
-					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign) s.getLocation().getBlock().getState();
-						sign.setLine(line, lines[line]);
-						sign.update(true);
+					BlockState state = s.getLocation().getBlock().getState();
+					if (!SignUtil.isSign(state)) {
+						continue;
+					}
 
-						String type = plugin.getConfigData().getBackgroundType();
-						if (!type.equalsIgnoreCase("none") && SignUtil.isWallSign(sign.getType())) {
-							if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
-								if (type.equals("wool")) {
-									s.updateBackground(Material.LIGHT_BLUE_WOOL);
-								} else if (type.equals("glass")) {
-									s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
-								} else if (type.equals("clay") || type.equals("terracotta")) {
-									s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
-								}
-							} else {
-								if (type.equals("wool")) {
-									s.updateBackground(Material.getMaterial("WOOL"), 3);
-								} else if (type.equals("glass")) {
-									s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
-								} else if (type.equals("clay") || type.equals("terracotta")) {
-									s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
-								}
+					Sign sign = (Sign) state;
+					sign.setLine(line, lines[line]);
+					sign.update();
+
+					String type = plugin.getConfigData().getBackgroundType();
+					if (!type.equalsIgnoreCase("none") && SignUtil.isWallSign(sign.getType())) {
+						if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
+							if (type.equals("wool")) {
+								s.updateBackground(Material.LIGHT_BLUE_WOOL);
+							} else if (type.equals("glass")) {
+								s.updateBackground(Material.LIGHT_BLUE_STAINED_GLASS);
+							} else if (type.equals("clay") || type.equals("terracotta")) {
+								s.updateBackground(Material.LIGHT_BLUE_TERRACOTTA);
+							}
+						} else {
+							if (type.equals("wool")) {
+								s.updateBackground(Material.getMaterial("WOOL"), 3);
+							} else if (type.equals("glass")) {
+								s.updateBackground(Material.getMaterial("STAINED_GLASS"), 3);
+							} else if (type.equals("clay") || type.equals("terracotta")) {
+								s.updateBackground(Material.getMaterial("STAINED_CLAY"), 3);
 							}
 						}
 					}
@@ -71,19 +75,22 @@ public class AnimationTask {
 			}
 		}, 0L, 10L));
 
-		Bukkit.getScheduler().runTaskLater(plugin, this::runSecondAnimation, 5*20L);
+		Bukkit.getScheduler().runTaskLater(plugin, this::runSecondAnimation, 5 * 20L);
 	}
 
 	private void runSecondAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
-			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				sign.setLine(0, "---------------");
-				sign.setLine(1, "TeleportSigns");
-				sign.setLine(2, "\u00a7lVersion " + plugin.getDescription().getVersion());
-				sign.setLine(3, "---------------");
-				sign.update(true);
+			BlockState state = s.getLocation().getBlock().getState();
+			if (!SignUtil.isSign(state)) {
+				continue;
 			}
+
+			Sign sign = (Sign) state;
+			sign.setLine(0, "---------------");
+			sign.setLine(1, "TeleportSigns");
+			sign.setLine(2, "\u00a7lVersion " + plugin.getDescription().getVersion());
+			sign.setLine(3, "---------------");
+			sign.update();
 		}
 
 		Bukkit.getScheduler().runTaskLater(plugin, this::runThirdAnimation, 20L);
@@ -91,14 +98,17 @@ public class AnimationTask {
 
 	private void runThirdAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
-			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				sign.setLine(0, "---------------");
-				sign.setLine(1, "Loading");
-				sign.setLine(2, "Servers");
-				sign.setLine(3, "---------------");
-				sign.update(true);
+			BlockState state = s.getLocation().getBlock().getState();
+			if (!SignUtil.isSign(state)) {
+				continue;
 			}
+
+			Sign sign = (Sign) state;
+			sign.setLine(0, "---------------");
+			sign.setLine(1, "Loading");
+			sign.setLine(2, "Servers");
+			sign.setLine(3, "---------------");
+			sign.update();
 		}
 
 		stopAnimation();
@@ -111,11 +121,14 @@ public class AnimationTask {
 				if (pnt >= 3) return;
 
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
-					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign) s.getLocation().getBlock().getState();
-						sign.setLine(2, sign.getLine(2) + ".");
-						sign.update(true);
+					BlockState state = s.getLocation().getBlock().getState();
+					if (!SignUtil.isSign(state)) {
+						continue;
 					}
+
+					Sign sign = (Sign) state;
+					sign.setLine(2, sign.getLine(2) + ".");
+					sign.update();
 				}
 				pnt++;
 			}
@@ -126,14 +139,17 @@ public class AnimationTask {
 
 	private void runFourthAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
-			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				sign.setLine(0, "---------------");
-				sign.setLine(1, "Loading");
-				sign.setLine(2, "Layouts");
-				sign.setLine(3, "---------------");
-				sign.update(true);
+			BlockState state = s.getLocation().getBlock().getState();
+			if (!SignUtil.isSign(state)) {
+				continue;
 			}
+
+			Sign sign = (Sign) state;
+			sign.setLine(0, "---------------");
+			sign.setLine(1, "Loading");
+			sign.setLine(2, "Layouts");
+			sign.setLine(3, "---------------");
+			sign.update();
 		}
 
 		stopAnimation();
@@ -146,11 +162,14 @@ public class AnimationTask {
 				if (pnt >= 3) return;
 
 				for (TeleportSign s : plugin.getConfigData().getSigns()) {
-					if (s.getLocation().getBlock().getState() instanceof Sign) {
-						Sign sign = (Sign) s.getLocation().getBlock().getState();
-						sign.setLine(2, sign.getLine(2) + ".");
-						sign.update(true);
+					BlockState state = s.getLocation().getBlock().getState();
+					if (!SignUtil.isSign(state)) {
+						continue;
 					}
+
+					Sign sign = (Sign) state;
+					sign.setLine(2, sign.getLine(2) + ".");
+					sign.update();
 				}
 				pnt++;
 			}
@@ -161,14 +180,17 @@ public class AnimationTask {
 
 	private void runFifthAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
-			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				sign.setLine(0, "---------------");
-				sign.setLine(1, "Please wait");
-				sign.setLine(2, "Getting data");
-				sign.setLine(3, "---------------");
-				sign.update(true);
+			BlockState state = s.getLocation().getBlock().getState();
+			if (!SignUtil.isSign(state)) {
+				continue;
 			}
+
+			Sign sign = (Sign) state;
+			sign.setLine(0, "---------------");
+			sign.setLine(1, "Please wait");
+			sign.setLine(2, "Getting data");
+			sign.setLine(3, "---------------");
+			sign.update();
 		}
 
 		stopAnimation();
@@ -180,27 +202,33 @@ public class AnimationTask {
 			public void run() {
 				if (pnt >= 3) {
 					for (TeleportSign s : plugin.getConfigData().getSigns()) {
-						if (s.getLocation().getBlock().getState() instanceof Sign) {
-							Sign sign = (Sign) s.getLocation().getBlock().getState();
-							if (sign.getLine(2).contains("Getting data")) {
-								sign.setLine(2, "Getting data");
-								sign.update(true);
-							} else {
-								stopAnimation();
-							}
+						BlockState state = s.getLocation().getBlock().getState();
+						if (!SignUtil.isSign(state)) {
+							continue;
+						}
+
+						Sign sign = (Sign) state;
+						if (sign.getLine(2).contains("Getting data")) {
+							sign.setLine(2, "Getting data");
+							sign.update();
+						} else {
+							stopAnimation();
 						}
 					}
 					pnt = 0;
 				} else {
 					for (TeleportSign s : plugin.getConfigData().getSigns()) {
-						if (s.getLocation().getBlock().getState() instanceof Sign) {
-							Sign sign = (Sign) s.getLocation().getBlock().getState();
-							if (sign.getLine(2).contains("Getting data")) {
-								sign.setLine(2, sign.getLine(2) + ".");
-								sign.update(true);
-							} else {
-								stopAnimation();
-							}
+						BlockState state = s.getLocation().getBlock().getState();
+						if (!SignUtil.isSign(state)) {
+							continue;
+						}
+
+						Sign sign = (Sign) state;
+						if (sign.getLine(2).contains("Getting data")) {
+							sign.setLine(2, sign.getLine(2) + ".");
+							sign.update();
+						} else {
+							stopAnimation();
 						}
 					}
 					pnt++;
@@ -211,11 +239,14 @@ public class AnimationTask {
 
 	public void resetAnimation() {
 		for (TeleportSign s : plugin.getConfigData().getSigns()) {
-			if (s.getLocation().getBlock().getState() instanceof Sign) {
-				Sign sign = (Sign) s.getLocation().getBlock().getState();
-				SignUtil.signLines(sign);
-				sign.update(true);
+			BlockState state = s.getLocation().getBlock().getState();
+			if (!SignUtil.isSign(state)) {
+				continue;
 			}
+
+			Sign sign = (Sign) state;
+			SignUtil.signLines(sign);
+			sign.update();
 		}
 	}
 

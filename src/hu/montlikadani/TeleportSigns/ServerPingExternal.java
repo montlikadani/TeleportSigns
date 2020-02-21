@@ -5,14 +5,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
-import hu.montlikadani.TeleportSigns.ServerPingInternal.Player;
 
 public class ServerPingExternal implements Server {
 
@@ -51,7 +48,8 @@ public class ServerPingExternal implements Server {
 		this.fetching = fetching;
 	}
 
-	public SResponse fetchData() {
+	@Override
+	public SResponse fetchData() throws IOException {
 		String jsonString = null;
 
 		try {
@@ -101,72 +99,5 @@ public class ServerPingExternal implements Server {
 		ret.version = version.get("name").getAsString();
 		ret.protocol = version.get("protocol").getAsString();
 		return ret;
-	}
-
-	public class SResponse {
-		public String version;
-		public String protocol;
-		public String description;
-		public int players;
-		public int slots;
-		public int time;
-	}
-
-	public class StatusResponse {
-		private String description;
-		private Players players;
-		private Version version;
-		private int time;
-
-		public String getDescription() {
-			return description;
-		}
-
-		public Players getPlayers() {
-			return players;
-		}
-
-		public Version getVersion() {
-			return version;
-		}
-
-		public int getTime() {
-			return time;
-		}
-
-		public void setTime(int time) {
-			this.time = time;
-		}
-	}
-
-	public class Players {
-		private int max;
-		private int online;
-		private List<Player> sample;
-
-		public int getMax() {
-			return max;
-		}
-
-		public int getOnline() {
-			return online;
-		}
-
-		public List<Player> getSample() {
-			return sample;
-		}
-	}
-
-	public class Version {
-		private String name;
-		private String protocol;
-
-		public String getName() {
-			return name;
-		}
-
-		public String getProtocol() {
-			return protocol;
-		}
 	}
 }

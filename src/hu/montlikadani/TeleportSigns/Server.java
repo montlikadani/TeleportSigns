@@ -1,18 +1,98 @@
 package hu.montlikadani.TeleportSigns;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.List;
+
+import org.bukkit.entity.Player;
 
 public interface Server {
 
-	public void setAddress(InetSocketAddress host);
+	void setAddress(InetSocketAddress host);
 
-	public InetSocketAddress getAddress();
+	InetSocketAddress getAddress();
 
-	public void setTimeout(int timeout);
+	void setTimeout(int timeout);
 
-	public int getTimeout();
+	int getTimeout();
 
-	public boolean isFetching();
+	boolean isFetching();
 
-	public void setFetching(boolean fetching);
+	void setFetching(boolean fetching);
+
+	SResponse fetchData() throws IOException;
+
+	public class SResponse {
+		public String version;
+		public String protocol;
+		public String favicon;
+		public String description;
+		public int players;
+		public int slots;
+		public int time;
+	}
+
+	public class StatusResponse {
+		private String description;
+		private Players players;
+		private Version version;
+		private String favicon;
+		private int time;
+
+		public String getDescription() {
+			return description;
+		}
+
+		public Players getPlayers() {
+			return players;
+		}
+
+		public Version getVersion() {
+			return version;
+		}
+
+		public String getFavicon() {
+			return favicon;
+		}
+
+		public int getTime() {
+			return time;
+		}
+
+		public void setTime(int time) {
+			this.time = time;
+		}
+	}
+
+	public class Players {
+		private int max;
+		private int online;
+
+		private List<Player> sample;
+
+		public int getMax() {
+			return max;
+		}
+
+		public int getOnline() {
+			return online;
+		}
+
+		public List<Player> getSample() {
+			return sample;
+		}
+	}
+
+	public class Version {
+		private String name;
+		private String protocol;
+
+		public String getName() {
+			return name;
+		}
+
+		public String getProtocol() {
+			return protocol;
+		}
+	}
 }

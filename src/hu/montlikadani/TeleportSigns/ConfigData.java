@@ -13,10 +13,11 @@ import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class ConfigData {
 
@@ -150,18 +151,21 @@ public class ConfigData {
 	}
 
 	private void loadSettings() {
-		this.externalServer = this.config.getBoolean("options.external-server");
-		this.logConsole = this.config.getBoolean("options.logConsole");
-		this.cooldown = (this.config.getInt("options.use-cooldown") * 1000);
-		this.signUpdates = this.config.getInt("options.sign-updates");
-		this.pingInterval = this.config.getInt("options.ping-interval");
-		this.pingTimeout = this.config.getInt("options.ping-timeout");
-		this.ignorePlayerSneaking = this.config.getBoolean("options.ignore-player-sneaking");
-		this.bgType = this.config.getString("options.background-type");
+		this.externalServer = config.getBoolean("options.external-server");
+		this.logConsole = config.getBoolean("options.logConsole");
+		this.cooldown = (config.getInt("options.use-cooldown") * 1000);
+		this.signUpdates = config.getInt("options.sign-updates");
+		this.pingInterval = config.getInt("options.ping-interval");
+		this.pingTimeout = config.getInt("options.ping-timeout");
+		this.ignorePlayerSneaking = config.getBoolean("options.ignore-player-sneaking");
+		this.bgType = config.getString("options.background-type");
 	}
 
 	private void loadServers() {
-		ConfigurationSection srv = this.config.getConfigurationSection("servers");
+		ConfigurationSection srv = config.getConfigurationSection("servers");
+		if (srv == null) {
+			return;
+		}
 
 		for (String server : srv.getKeys(false)) {
 			ConfigurationSection cs = srv.getConfigurationSection(server);
@@ -170,53 +174,57 @@ public class ConfigData {
 			String ip = address[0];
 			String port = address[1];
 
-			ServerInfo serverping = new ServerInfo(server, displayname, ip, Integer.valueOf(port), this.pingTimeout);
-			this.servers.add(serverping);
+			ServerInfo serverping = new ServerInfo(server, displayname, ip, Integer.valueOf(port), pingTimeout);
+			servers.add(serverping);
 		}
 	}
 
 	private void loadLayouts() {
-		ConfigurationSection layouts = this.layout.getConfigurationSection("layouts");
+		ConfigurationSection layouts = layout.getConfigurationSection("layouts");
+		if (layouts == null) {
+			return;
+		}
 
 		for (String layout : layouts.getKeys(false)) {
 			ConfigurationSection cs = layouts.getConfigurationSection(layout);
-			String online = cs.getString("online");
-			String offline = cs.getString("offline");
+			String online = cs.getString("online", "Online");
+			String offline = cs.getString("offline", "Offline");
+			String full = cs.getString("full", "Full");
 			List<String> lines = cs.getStringList("layout");
-			boolean teleport = cs.getBoolean("teleport");
-			String offlineInt = cs.getString("offline-int");
-			String offlineMotd = cs.getString("offline-motd");
-			String offlineMessage = cs.getString("offline-message");
-			String fullMessage = cs.getString("full-message");
-			String cooldownMessage = cs.getString("cooldown-message");
-			String full = cs.getString("full");
+			boolean teleport = cs.getBoolean("teleport", true);
+			String offlineInt = cs.getString("offline-int", "--");
+			String offlineMotd = cs.getString("offline-motd", "&cOffline");
+			String offlineMessage = cs.getString("offline-message", "&cThe server is offline!");
+			String fullMessage = cs.getString("full-message", "&cThe server is full!");
+			String cooldownMessage = cs.getString("cooldown-message",
+					"&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.");
+			String cantTeleportMessage = cs.getString("cant-teleport", "&cYou can't teleport to the server!");
 			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt,
-					offlineMotd, offlineMessage, fullMessage, cooldownMessage, full);
+					offlineMotd, offlineMessage, fullMessage, cooldownMessage, full, cantTeleportMessage);
 			this.layouts.put(layout, signLayout);
 		}
 	}
 
 	private void loadSigns() {
-		List<String> list = this.sign.getStringList("signs");
+		List<String> list = sign.getStringList("signs");
 		if (list == null) {
-			logConsole(Level.WARNING, "No saved sign was found.");
 			return;
 		}
 
 		for (String sign : list) {
 			try {
 				Location location = LocationSerialiser.stringToLocationSign(sign);
-				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
-				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
-
 				if (location == null) {
 					logConsole(Level.WARNING, "The location for the sign is null.");
 					logConsole("Probably world not exists or the sign was broken.");
 					continue;
 				}
 
+				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
+				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
+
 				Block b = location.getBlock();
-				if (b.getState() instanceof Sign) {
+				if (SignUtil.isSign(b.getState())) {
 					TeleportSign tsign = new TeleportSign(server, location, layout);
 					this.signs.add(tsign);
 					this.blocks.add(b);

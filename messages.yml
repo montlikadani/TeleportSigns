@@ -19,6 +19,7 @@ server-group-not-found: "&cServer group&7 %server%&c does not exists."
 enter-message: "&6You entered the server&7 %server%&6!"
 sign-created: "&aThe sign successfully created!\n&aServer:&7 %server%\n&aLayout:&7 %layout%"
 unknown-layout: "&cLayout&7 '%layout%'&c not exist!"
+already-in-server: "&cYou are already in this server!"
 list-layouts:
   header: "&aLayouts:"
   list: "&7%layouts%"

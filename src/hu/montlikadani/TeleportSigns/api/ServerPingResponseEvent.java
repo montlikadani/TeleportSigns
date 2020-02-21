@@ -1,27 +1,18 @@
 package hu.montlikadani.TeleportSigns.api;
 
+import hu.montlikadani.TeleportSigns.Server;
+import hu.montlikadani.TeleportSigns.Server.SResponse;
 import hu.montlikadani.TeleportSigns.ServerInfo;
-import hu.montlikadani.TeleportSigns.ServerPingExternal;
-import hu.montlikadani.TeleportSigns.ServerPingInternal;
-import hu.montlikadani.TeleportSigns.ServerPingInternal.SResponse;
 
 public class ServerPingResponseEvent extends BaseEvent {
+
 	private ServerInfo server;
-	private ServerPingExternal externalPing;
-	private ServerPingInternal internalping;
-	private hu.montlikadani.TeleportSigns.ServerPingExternal.SResponse response2;
+	private Server ping;
 	private SResponse response;
 
-	public ServerPingResponseEvent(ServerInfo server, ServerPingExternal externalPing,
-			hu.montlikadani.TeleportSigns.ServerPingExternal.SResponse response2) {
+	public ServerPingResponseEvent(ServerInfo server, Server ping, SResponse response) {
 		this.server = server;
-		this.externalPing = externalPing;
-		this.response2 = response2;
-	}
-
-	public ServerPingResponseEvent(ServerInfo server, ServerPingInternal internalping, SResponse response) {
-		this.server = server;
-		this.internalping = internalping;
+		this.ping = ping;
 		this.response = response;
 	}
 
@@ -29,28 +20,11 @@ public class ServerPingResponseEvent extends BaseEvent {
 		return server;
 	}
 
-	public ServerPingExternal getExternalPing() {
-		return externalPing;
-	}
-
-	public ServerPingInternal getInternalPing() {
-		return internalping;
-	}
-
-	/**
-	 * @deprecated Use {@link #getInternalPing()}
-	 * @return internal ping
-	 */
-	@Deprecated
-	public ServerPingInternal getPing() {
-		return internalping;
+	public Server getPing() {
+		return ping;
 	}
 
 	public SResponse getResponse() {
 		return response;
-	}
-
-	public hu.montlikadani.TeleportSigns.ServerPingExternal.SResponse getExternalResponse() {
-		return response2;
 	}
 }

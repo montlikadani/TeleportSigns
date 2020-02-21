@@ -28,7 +28,7 @@ public class Listeners implements Listener {
 		this.plugin = plugin;
 	}
 
-	private HashMap<Player, Long> cooldown = new HashMap<>();
+	private final HashMap<Player, Long> cooldown = new HashMap<>();
 
 	@EventHandler(ignoreCancelled = true)
 	public void onCreateTeleportSign(SignChangeEvent event) {
@@ -68,12 +68,7 @@ public class Listeners implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onBreakTeleportSign(BlockBreakEvent event) {
-		Player p = event.getPlayer();
 		Block b = event.getBlock();
-		if (b == null) {
-			return;
-		}
-
 		if (!(b.getState() instanceof Sign)) {
 			return;
 		}
@@ -81,6 +76,8 @@ public class Listeners implements Listener {
 		if (!plugin.getConfigData().containsSign(b)) {
 			return;
 		}
+
+		Player p = event.getPlayer();
 
 		if (!p.hasPermission(Perm.DESTROY.getPerm())) {
 			sendMsg(p, plugin.getMsg("no-sign-destroy", "%perm%", Perm.DESTROY.getPerm()));
@@ -101,7 +98,6 @@ public class Listeners implements Listener {
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		Player p = event.getPlayer();
 		Block b = event.getClickedBlock();
 		if (b == null) {
 			return;
@@ -118,6 +114,8 @@ public class Listeners implements Listener {
 		if (!plugin.getConfigData().getBlocks().contains(b)) {
 			return;
 		}
+
+		Player p = event.getPlayer();
 
 		if (!p.hasPermission(Perm.USE.getPerm())) {
 			sendMsg(p, plugin.getMsg("no-permission", "%perm%", Perm.USE.getPerm()));
@@ -150,8 +148,8 @@ public class Listeners implements Listener {
 		Player p = event.getPlayer();
 		ServerInfo server = event.getServer();
 		SignLayout layout = event.getSign().getLayout();
-
 		if (!layout.isTeleport()) {
+			sendMsg(p, layout.parseCantTeleportMessage(server));
 			return;
 		}
 
@@ -185,15 +183,8 @@ public class Listeners implements Listener {
 	}
 
 	private boolean hasCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() < 0) {
-			return false;
-		}
-
-		if (player.hasPermission(Perm.NOCOOLDOWN.getPerm())) {
-			return false;
-		}
-
-		if (!cooldown.containsKey(player)) {
+		if (plugin.getConfigData().getCooldown() < 0 || player.hasPermission(Perm.NOCOOLDOWN.getPerm())
+				|| !cooldown.containsKey(player)) {
 			return false;
 		}
 
@@ -217,15 +208,8 @@ public class Listeners implements Listener {
 	}
 
 	private int getCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() < 0) {
-			return 0;
-		}
-
-		if (player.hasPermission(Perm.NOCOOLDOWN.getPerm())) {
-			return 0;
-		}
-
-		if (!cooldown.containsKey(player)) {
+		if (plugin.getConfigData().getCooldown() < 0 || player.hasPermission(Perm.NOCOOLDOWN.getPerm())
+				|| !cooldown.containsKey(player)) {
 			return 0;
 		}
 
