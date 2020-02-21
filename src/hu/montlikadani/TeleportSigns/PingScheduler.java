@@ -71,6 +71,7 @@ public class PingScheduler implements Runnable, Listener {
 
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			long pingStartTime = System.currentTimeMillis();
+
 			ping.setAddress(server.getAddress());
 			ping.setTimeout(server.getTimeout());
 			ping.setFetching(true);
@@ -78,6 +79,7 @@ public class PingScheduler implements Runnable, Listener {
 			try {
 				String status = server.getMotd();
 				SResponse response = ping.fetchData();
+
 				if (!plugin.getConfigData().isExternal()) {
 					server.setVersion(formatVersion(response.version));
 					server.setProtocol(response.protocol);
@@ -97,6 +99,7 @@ public class PingScheduler implements Runnable, Listener {
 				}
 			} catch (Throwable e) {
 				server.setOnline(false);
+
 				if (!(e instanceof ConnectException)) {
 					logConsole(java.util.logging.Level.WARNING,
 							"Error fetching data from server '" + server.getAddress().getAddress().getHostAddress()

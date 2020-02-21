@@ -61,14 +61,7 @@ public class TeleportSigns extends JavaPlugin {
 			anim.resetAnimation();
 			anim.startAnimation();
 
-			long time = (long) (10.3 * 20L);
-			getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-				@Override
-				public void run() {
-					Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
-					Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
-				}
-			}, time);
+			delayPinging();
 
 			Stream.of(sign, ping, new Listeners(this))
 					.forEach(l -> getServer().getPluginManager().registerEvents(l, this));
@@ -197,8 +190,18 @@ public class TeleportSigns extends JavaPlugin {
 		anim.stopAnimation();
 		anim.startAnimation();
 
-		getServer().getScheduler().runTaskLater(this, sign, 40L);
-		getServer().getScheduler().runTaskLaterAsynchronously(this, ping, 5L);
+		delayPinging();
+	}
+
+	protected void delayPinging() {
+		long time = (long) (10.3 * 20L);
+		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+			@Override
+			public void run() {
+				Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
+				Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
+			}
+		}, time);
 	}
 
 	String getMsg(String key, Object... placeholders) {
