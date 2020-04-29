@@ -3,8 +3,8 @@ package hu.montlikadani.TeleportSigns.api;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-import hu.montlikadani.TeleportSigns.ServerInfo;
-import hu.montlikadani.TeleportSigns.TeleportSign;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
 
 public class TeleportSignsInteractEvent extends BaseEvent implements Cancellable {
 	private Player player;

@@ -5,10 +5,11 @@ import static hu.montlikadani.TeleportSigns.utils.Util.throwMsg;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
@@ -17,6 +18,10 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.sign.SignLayout;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
+import hu.montlikadani.TeleportSigns.utils.LocationSerialiser;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class ConfigData {
@@ -26,9 +31,9 @@ public class ConfigData {
 	private File config_file, messages_file, layout_file, sign_file;
 	private FileConfiguration config, messages, layout, sign;
 
-	private List<ServerInfo> servers = new ArrayList<>();
-	private List<TeleportSign> signs = new ArrayList<>();
-	private List<Block> blocks = new ArrayList<>();
+	private Set<ServerInfo> servers = new HashSet<>();
+	private Set<TeleportSign> signs = new HashSet<>();
+	private Set<Block> blocks = new HashSet<>();
 
 	private Map<String, SignLayout> layouts = new HashMap<>();
 
@@ -38,14 +43,10 @@ public class ConfigData {
 	private String bgType;
 
 	private int cver = 5;
-	private int msver = 5;
 	private int lyver = 2;
 
 	public enum ConfigType {
-		CONFIG,
-		MESSAGES,
-		LAYOUTS,
-		SIGNS;
+		CONFIG, MESSAGES, LAYOUTS, SIGNS;
 	}
 
 	public ConfigData(TeleportSigns plugin) {
@@ -76,11 +77,7 @@ public class ConfigData {
 			if (messages_file.exists()) {
 				messages = YamlConfiguration.loadConfiguration(messages_file);
 				messages.load(messages_file);
-
-				if (!messages.isSet("config-version") || !messages.get("config-version").equals(msver)) {
-					logConsole(Level.WARNING, "Found outdated configuration (messages.yml)! (Your version: " +
-							messages.getInt("config-version") + " | Newest version: " + msver + ")");
-				}
+				messages.save(messages_file);
 			} else {
 				messages = createFile("messages.yml", messages_file, false);
 			}
@@ -151,24 +148,25 @@ public class ConfigData {
 	}
 
 	private void loadSettings() {
-		this.externalServer = config.getBoolean("options.external-server");
-		this.logConsole = config.getBoolean("options.logConsole");
-		this.cooldown = (config.getInt("options.use-cooldown") * 1000);
-		this.signUpdates = config.getInt("options.sign-updates");
-		this.pingInterval = config.getInt("options.ping-interval");
-		this.pingTimeout = config.getInt("options.ping-timeout");
-		this.ignorePlayerSneaking = config.getBoolean("options.ignore-player-sneaking");
-		this.bgType = config.getString("options.background-type");
+		this.externalServer = config.getBoolean("options.external-server", true);
+		this.logConsole = config.getBoolean("options.logConsole", true);
+		this.cooldown = (config.getInt("options.use-cooldown", 3) * 1000);
+		this.signUpdates = config.getInt("options.sign-updates", 200);
+		this.pingInterval = config.getInt("options.ping-interval", 30);
+		this.pingTimeout = config.getInt("options.ping-timeout", 29);
+		this.ignorePlayerSneaking = config.getBoolean("options.ignore-player-sneaking", true);
+		this.bgType = config.getString("options.background-type", "none");
 	}
 
 	private void loadServers() {
-		ConfigurationSection srv = config.getConfigurationSection("servers");
-		if (srv == null) {
+		if (!config.contains("servers")) {
 			return;
 		}
 
+		ConfigurationSection srv = config.getConfigurationSection("servers");
 		for (String server : srv.getKeys(false)) {
 			ConfigurationSection cs = srv.getConfigurationSection(server);
+
 			String displayname = cs.getString("displayname");
 			String[] address = cs.getString("address").split(":");
 			String ip = address[0];
@@ -180,13 +178,14 @@ public class ConfigData {
 	}
 
 	private void loadLayouts() {
-		ConfigurationSection layouts = layout.getConfigurationSection("layouts");
-		if (layouts == null) {
+		if (!layout.contains("layouts")) {
 			return;
 		}
 
+		ConfigurationSection layouts = layout.getConfigurationSection("layouts");
 		for (String layout : layouts.getKeys(false)) {
 			ConfigurationSection cs = layouts.getConfigurationSection(layout);
+
 			String online = cs.getString("online", "Online");
 			String offline = cs.getString("offline", "Offline");
 			String full = cs.getString("full", "Full");
@@ -199,39 +198,30 @@ public class ConfigData {
 			String cooldownMessage = cs.getString("cooldown-message",
 					"&cYou have to wait&7 %cooldown%&c seconds before you can use this sign again.");
 			String cantTeleportMessage = cs.getString("cant-teleport", "&cYou can't teleport to the server!");
-			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt,
-					offlineMotd, offlineMessage, fullMessage, cooldownMessage, full, cantTeleportMessage);
+			SignLayout signLayout = new SignLayout(layout, online, offline, lines, teleport, offlineInt, offlineMotd,
+					offlineMessage, fullMessage, cooldownMessage, full, cantTeleportMessage);
 			this.layouts.put(layout, signLayout);
 		}
 	}
 
 	private void loadSigns() {
 		List<String> list = sign.getStringList("signs");
-		if (list == null) {
-			return;
-		}
-
 		for (String sign : list) {
-			try {
-				Location location = LocationSerialiser.stringToLocationSign(sign);
-				if (location == null) {
-					logConsole(Level.WARNING, "The location for the sign is null.");
-					logConsole("Probably world not exists or the sign was broken.");
-					continue;
-				}
+			Location location = LocationSerialiser.stringToLocationSign(sign);
+			if (location == null) {
+				logConsole(Level.WARNING, "The location for the sign is null.");
+				logConsole("Probably world not exists or the sign was broken.");
+				continue;
+			}
 
-				ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
-				SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
+			ServerInfo server = getServer(LocationSerialiser.getServerFromSign(sign));
+			SignLayout layout = getLayout(LocationSerialiser.getLayoutFromSign(sign));
 
-				Block b = location.getBlock();
-				if (SignUtil.isSign(b.getState())) {
-					TeleportSign tsign = new TeleportSign(server, location, layout);
-					this.signs.add(tsign);
-					this.blocks.add(b);
-				}
-			} catch (Throwable e) {
-				e.printStackTrace();
-				throwMsg();
+			Block b = location.getBlock();
+			if (SignUtil.isSign(b.getState())) {
+				TeleportSign tsign = new TeleportSign(server, location, layout);
+				this.signs.add(tsign);
+				this.blocks.add(b);
 			}
 		}
 	}
@@ -289,19 +279,19 @@ public class ConfigData {
 		return bgType;
 	}
 
-	public List<ServerInfo> getServers() {
+	public Set<ServerInfo> getServers() {
 		return servers;
 	}
 
-	public void setServers(List<ServerInfo> servers) {
+	public void setServers(Set<ServerInfo> servers) {
 		this.servers = servers;
 	}
 
-	public List<TeleportSign> getSigns() {
+	public Set<TeleportSign> getSigns() {
 		return signs;
 	}
 
-	public void setSigns(List<TeleportSign> signs) {
+	public void setSigns(Set<TeleportSign> signs) {
 		this.signs = signs;
 	}
 
@@ -313,11 +303,11 @@ public class ConfigData {
 		this.layouts = layouts;
 	}
 
-	public List<Block> getBlocks() {
+	public Set<Block> getBlocks() {
 		return blocks;
 	}
 
-	public void setBlocks(List<Block> blocks) {
+	public void setBlocks(Set<Block> blocks) {
 		this.blocks = blocks;
 	}
 
@@ -389,7 +379,7 @@ public class ConfigData {
 				String index = LocationSerialiser.locationSignToString(location, sign.getServer().getName(),
 						sign.getLayout().getName());
 
-				if (list != null && !list.isEmpty()) {
+				if (!list.isEmpty()) {
 					list.remove(index);
 					this.sign.set("signs", list);
 				}

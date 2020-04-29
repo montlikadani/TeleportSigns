@@ -1,4 +1,4 @@
-package hu.montlikadani.TeleportSigns;
+package hu.montlikadani.TeleportSigns.server;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

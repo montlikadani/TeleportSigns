@@ -1,20 +1,21 @@
 package hu.montlikadani.TeleportSigns.api;
 
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.event.Cancellable;
 
-import hu.montlikadani.TeleportSigns.ServerInfo;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
 
 public class TeleportSignsPingEvent extends BaseEvent implements Cancellable {
-	private List<ServerInfo> servers;
+
+	private Set<ServerInfo> servers;
 	private boolean cancelled = false;
 
-	public TeleportSignsPingEvent(List<ServerInfo> servers) {
+	public TeleportSignsPingEvent(Set<ServerInfo> servers) {
 		this.servers = servers;
 	}
 
-	public List<ServerInfo> getServers() {
+	public Set<ServerInfo> getServers() {
 		return servers;
 	}
 

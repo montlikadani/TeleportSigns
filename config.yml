@@ -53,10 +53,5 @@ check-update: true
 # Logging to file plugin messages.
 log-to-file: true
 
-# Plugin enable/disable messages in console.
-# Use %newline% placeholder.
-plugin-enable: '&6[&2Teleport&eSigns&6]&7 >&a The plugin successfully enabled&6 v${version}&a!'
-plugin-disable: '&6[&2Teleport&eSigns&6]&7 >&c The plugin successfully disabled!'
-
 # DO NOT CHANGE THIS!
 config-version: 5

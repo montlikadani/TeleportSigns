@@ -3,6 +3,9 @@ package hu.montlikadani.TeleportSigns;
 import static hu.montlikadani.TeleportSigns.utils.Util.sendMsg;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
@@ -15,20 +18,27 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import hu.montlikadani.TeleportSigns.Perm;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsBreakEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsInteractEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsPlaceEvent;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.sign.SignCooldown;
+import hu.montlikadani.TeleportSigns.sign.SignLayout;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
 
 public class Listeners implements Listener {
 
 	private TeleportSigns plugin;
 
+	private final Map<Player, SignCooldown> cooldowns = new HashMap<>();
+
 	Listeners(TeleportSigns plugin) {
 		this.plugin = plugin;
 	}
 
-	private final HashMap<Player, Long> cooldown = new HashMap<>();
+	public Map<Player, SignCooldown> getCooldowns() {
+		return cooldowns;
+	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void onCreateTeleportSign(SignChangeEvent event) {
@@ -92,6 +102,12 @@ public class Listeners implements Listener {
 			return;
 		}
 
+		for (Iterator<Entry<Player, SignCooldown>> it = cooldowns.entrySet().iterator(); it.hasNext();) {
+			if (it.next().getValue().getSign().getLocation().equals(b.getLocation())) {
+				it.remove();
+			}
+		}
+
 		plugin.getConfigData().removeSign(b.getLocation());
 		sendMsg(p, plugin.getMsg("sign-destroyed"));
 	}
@@ -111,7 +127,7 @@ public class Listeners implements Listener {
 			return;
 		}
 
-		if (!plugin.getConfigData().getBlocks().contains(b)) {
+		if (!plugin.getConfigData().containsSign(b)) {
 			return;
 		}
 
@@ -158,12 +174,13 @@ public class Listeners implements Listener {
 			return;
 		}
 
-		if (hasCooldown(p)) {
-			sendMsg(p, layout.parseCooldownMessage(getCooldown(p)));
+		if (cooldowns.containsKey(p) && cooldowns.get(p).hasCooldown()) {
+			sendMsg(p, layout.parseCooldownMessage(cooldowns.get(p).getCooldown()));
 			return;
 		}
 
-		addCooldown(p);
+		cooldowns.remove(p);
+		cooldowns.put(p, new SignCooldown(p, plugin.getConfigData().getCooldown(), event.getSign()));
 
 		if (server.getPlayerCount() == server.getMaxPlayers()) {
 			sendMsg(p, layout.parseFullMessage(server));
@@ -180,45 +197,5 @@ public class Listeners implements Listener {
 		if (plugin.getMainConf().getBoolean("check-update") && p.isOp()) {
 			p.sendMessage(plugin.checkVersion("player"));
 		}
-	}
-
-	private boolean hasCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() < 0 || player.hasPermission(Perm.NOCOOLDOWN.getPerm())
-				|| !cooldown.containsKey(player)) {
-			return false;
-		}
-
-		long time = System.currentTimeMillis();
-		long cooldown = this.cooldown.get(player);
-		long result = (time - cooldown);
-
-		if (result >= plugin.getConfigData().getCooldown()) {
-			this.cooldown.remove(player);
-			return false;
-		}
-
-		return true;
-	}
-
-	private void addCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() > 0 && !player.hasPermission(Perm.NOCOOLDOWN.getPerm())
-				&& !cooldown.containsKey(player)) {
-			cooldown.put(player, System.currentTimeMillis());
-		}
-	}
-
-	private int getCooldown(Player player) {
-		if (plugin.getConfigData().getCooldown() < 0 || player.hasPermission(Perm.NOCOOLDOWN.getPerm())
-				|| !cooldown.containsKey(player)) {
-			return 0;
-		}
-
-		long time = System.currentTimeMillis();
-		long cooldown = this.cooldown.get(player);
-		long result = (cooldown - time);
-		int wait = (int) (result / 1000);
-		int towait = (int) ((plugin.getConfigData().getCooldown() / 1000) + wait);
-
-		return towait;
 	}
 }

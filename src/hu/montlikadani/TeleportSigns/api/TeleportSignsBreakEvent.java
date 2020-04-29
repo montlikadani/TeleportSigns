@@ -4,7 +4,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
-import hu.montlikadani.TeleportSigns.TeleportSign;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
 
 public class TeleportSignsBreakEvent extends BaseEvent implements Cancellable {
 

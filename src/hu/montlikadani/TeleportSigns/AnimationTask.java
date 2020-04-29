@@ -9,14 +9,15 @@ import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.scheduler.BukkitTask;
 
-import hu.montlikadani.TeleportSigns.ServerVersion.Version;
+import hu.montlikadani.TeleportSigns.server.ServerVersion.Version;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
 import hu.montlikadani.TeleportSigns.utils.SignUtil;
 
 public class AnimationTask {
 
 	private final TeleportSigns plugin;
 
-	private Map<TeleportSigns, BukkitTask> task = new HashMap<>();
+	private final Map<TeleportSigns, BukkitTask> task = new HashMap<>();
 
 	public AnimationTask(TeleportSigns plugin) {
 		this.plugin = plugin;
@@ -49,8 +50,8 @@ public class AnimationTask {
 					sign.setLine(line, lines[line]);
 					sign.update();
 
-					String type = plugin.getConfigData().getBackgroundType();
-					if (!type.equalsIgnoreCase("none") && SignUtil.isWallSign(sign.getType())) {
+					String type = plugin.getConfigData().getBackgroundType().toLowerCase();
+					if (!type.equals("none") && SignUtil.isWallSign(sign.getType())) {
 						if (Version.isCurrentEqualOrHigher(Version.v1_13_R1)) {
 							if (type.equals("wool")) {
 								s.updateBackground(Material.LIGHT_BLUE_WOOL);

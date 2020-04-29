@@ -16,10 +16,11 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.google.common.base.StandardSystemProperty;
-
 import hu.montlikadani.TeleportSigns.ConfigData.ConfigType;
-import hu.montlikadani.TeleportSigns.ServerVersion.Version;
+import hu.montlikadani.TeleportSigns.commands.Commands;
+import hu.montlikadani.TeleportSigns.server.ServerVersion;
+import hu.montlikadani.TeleportSigns.server.ServerVersion.Version;
+import hu.montlikadani.TeleportSigns.sign.SignScheduler;
 
 public class TeleportSigns extends JavaPlugin {
 
@@ -33,14 +34,11 @@ public class TeleportSigns extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
+		long load = System.currentTimeMillis();
+
 		instance = this;
 
 		try {
-			if (!checkJavaVersion()) {
-				getServer().getPluginManager().disablePlugin(this);
-				return;
-			}
-
 			serverVersion = new ServerVersion();
 
 			if (Version.isCurrentLower(Version.v1_8_R1)) {
@@ -84,8 +82,10 @@ public class TeleportSigns extends JavaPlugin {
 				logConsole("Metrics enabled.");
 			}
 
-			if (!getMainConf().getString("plugin-enable", "").isEmpty()) {
-				sendMsg(getServer().getConsoleSender(), colorMsg(getMainConf().getString("plugin-enable")));
+			if (data.isLogConsole()) {
+				String msg = "&6[&2Teleport&eSigns&6]&7 >&a The plugin successfully enabled&6 v"
+						+ getDescription().getVersion() + "&a! (" + (System.currentTimeMillis() - load) + "ms)";
+				sendMsg(getServer().getConsoleSender(), colorMsg(msg));
 			}
 		} catch (Throwable e) {
 			e.printStackTrace();
@@ -107,13 +107,16 @@ public class TeleportSigns extends JavaPlugin {
 		}
 
 		HandlerList.unregisterAll(this);
+
 		getServer().getScheduler().cancelTasks(this);
 
-		if (!getMainConf().getString("plugin-disable", "").isEmpty()) {
-			sendMsg(getServer().getConsoleSender(), colorMsg(getMainConf().getString("plugin-disable")));
+		if (data.isLogConsole()) {
+			String msg = "&6[&2Teleport&eSigns&6]&7 >&c The plugin successfully disabled!";
+			sendMsg(getServer().getConsoleSender(), colorMsg(msg));
 		}
 
 		data.unloadConfig();
+
 		instance = null;
 	}
 
@@ -142,17 +145,17 @@ public class TeleportSigns extends JavaPlugin {
 			double currentVersionNumber = Double.parseDouble(cVersion[0] + "." + cVersion[1]);
 
 			if (newestVersionNumber > currentVersionNumber) {
-				if (sender.equals("console")) {
+				if ("console".equals(sender)) {
 					msg = "New version (" + versionString
 							+ ") is available at https://www.spigotmc.org/resources/37446/";
-				} else if (sender.equals("player")) {
+				} else if ("player".equals(sender)) {
 					msg = colorMsg("&8&m&l--------------------------------------------------\n"
 							+ "&aA new update is available!&4 Version:&7 " + versionString
 							+ "\n&6Download:&c &nhttps://www.spigotmc.org/resources/37446/"
 							+ "\n&8&m&l--------------------------------------------------");
 				}
 			} else {
-				if (sender.equals("console")) {
+				if ("console".equals(sender)) {
 					msg = "You're running the latest version.";
 				}
 			}
@@ -195,16 +198,14 @@ public class TeleportSigns extends JavaPlugin {
 
 	protected void delayPinging() {
 		long time = (long) (10.3 * 20L);
-		getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-			@Override
-			public void run() {
-				Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
-				Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
-			}
+
+		getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
+			Bukkit.getScheduler().runTaskLater(instance, sign, 40L);
+			Bukkit.getScheduler().runTaskLaterAsynchronously(instance, ping, 5L);
 		}, time);
 	}
 
-	String getMsg(String key, Object... placeholders) {
+	public String getMsg(String key, Object... placeholders) {
 		String msg = "";
 
 		if (getMessages().getString(key, "").isEmpty())
@@ -251,20 +252,5 @@ public class TeleportSigns extends JavaPlugin {
 
 	public FileConfiguration getMessages() {
 		return data.getConfig(ConfigType.MESSAGES);
-	}
-
-	private boolean checkJavaVersion() {
-		try {
-			if (Float.parseFloat(StandardSystemProperty.JAVA_CLASS_VERSION.value()) < 52.0) {
-				logConsole(Level.WARNING,
-						"You are using an older Java that is not supported. Please use 1.8 or higher versions!", false);
-				return false;
-			}
-		} catch (NumberFormatException e) {
-			logConsole(Level.WARNING, "Failed to detect Java version.", false);
-			return false;
-		}
-
-		return true;
 	}
 }

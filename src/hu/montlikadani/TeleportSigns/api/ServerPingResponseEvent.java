@@ -1,8 +1,8 @@
 package hu.montlikadani.TeleportSigns.api;
 
-import hu.montlikadani.TeleportSigns.Server;
-import hu.montlikadani.TeleportSigns.Server.SResponse;
-import hu.montlikadani.TeleportSigns.ServerInfo;
+import hu.montlikadani.TeleportSigns.server.Server;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.server.Server.SResponse;
 
 public class ServerPingResponseEvent extends BaseEvent {
 

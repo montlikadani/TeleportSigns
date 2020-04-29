@@ -1,4 +1,4 @@
-package hu.montlikadani.TeleportSigns;
+package hu.montlikadani.TeleportSigns.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import hu.montlikadani.TeleportSigns.TeleportSigns;
 import hu.montlikadani.TeleportSigns.utils.Util;
 
 public class ServerTeleporter implements PluginMessageListener {
@@ -29,7 +30,7 @@ public class ServerTeleporter implements PluginMessageListener {
 
 		// TODO: How to check from bungee when the player is already connected to the
 		// server?
-		if (server != null && server.equals(name)) {
+		if (name.equals(server)) {
 			Util.sendMsg(p, TeleportSigns.getInstance().getMsg("already-in-server"));
 			return false;
 		}

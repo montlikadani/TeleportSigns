@@ -42,8 +42,5 @@ chat-messages:
 - "&8/&a%command% listlayouts&5 -&6 Listing available layouts that are on the layout file."
 - "&8/&a%command% listservers&5 -&6 Listing available servers that are on the config."
 - "&8/&a%command% editsign&c <servername> <layout>&5 -&6 Edit sign at the look."
-- "&8/&a%command% reload&3 (or rl)&5 -&6 Reload the plugin."
+- "&8/&a%command% reload&5 -&6 Reload the plugin."
 - "&c&m----------------------------------------"
-
-# DO NOT CHANGE THIS!
-config-version: 5

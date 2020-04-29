@@ -3,16 +3,18 @@ package hu.montlikadani.TeleportSigns;
 import static hu.montlikadani.TeleportSigns.utils.Util.logConsole;
 
 import java.net.ConnectException;
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import hu.montlikadani.TeleportSigns.Server.SResponse;
 import hu.montlikadani.TeleportSigns.api.ServerChangeStatusEvent;
 import hu.montlikadani.TeleportSigns.api.ServerPingResponseEvent;
 import hu.montlikadani.TeleportSigns.api.TeleportSignsPingEvent;
+import hu.montlikadani.TeleportSigns.server.Server;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.server.Server.SResponse;
 
 public class PingScheduler implements Runnable, Listener {
 
@@ -24,7 +26,7 @@ public class PingScheduler implements Runnable, Listener {
 
 	@Override
 	public void run() {
-		List<ServerInfo> servers = plugin.getConfigData().getServers();
+		Set<ServerInfo> servers = plugin.getConfigData().getServers();
 		TeleportSignsPingEvent event = new TeleportSignsPingEvent(servers);
 		plugin.callEvent(event);
 		Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, this, plugin.getConfigData().getPingInterval() * 20);
@@ -64,7 +66,7 @@ public class PingScheduler implements Runnable, Listener {
 	}
 
 	private void pingAsync(final ServerInfo server) {
-		final Server ping = plugin.getConfigData().isExternal() ? server.getExternalPing() : server.getInternalPing();
+		final Server ping = server.getServerPing();
 		if (ping.isFetching()) {
 			return;
 		}

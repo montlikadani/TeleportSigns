@@ -1,20 +1,21 @@
 package hu.montlikadani.TeleportSigns.api;
 
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.event.Cancellable;
 
-import hu.montlikadani.TeleportSigns.TeleportSign;
+import hu.montlikadani.TeleportSigns.sign.TeleportSign;
 
 public class TeleportSignsUpdateEvent extends BaseEvent implements Cancellable {
-	private List<TeleportSign> signs;
+
+	private Set<TeleportSign> signs;
 	private boolean cancelled = false;
 
-	public TeleportSignsUpdateEvent(List<TeleportSign> signs) {
+	public TeleportSignsUpdateEvent(Set<TeleportSign> signs) {
 		this.signs = signs;
 	}
 
-	public List<TeleportSign> getSigns() {
+	public Set<TeleportSign> getSigns() {
 		return signs;
 	}
 

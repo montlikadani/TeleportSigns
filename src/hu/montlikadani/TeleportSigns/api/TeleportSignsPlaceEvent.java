@@ -3,8 +3,8 @@ package hu.montlikadani.TeleportSigns.api;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
-import hu.montlikadani.TeleportSigns.ServerInfo;
-import hu.montlikadani.TeleportSigns.SignLayout;
+import hu.montlikadani.TeleportSigns.server.ServerInfo;
+import hu.montlikadani.TeleportSigns.sign.SignLayout;
 
 public class TeleportSignsPlaceEvent extends BaseEvent {
 

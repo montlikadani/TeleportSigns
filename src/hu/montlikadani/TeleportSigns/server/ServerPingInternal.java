@@ -1,4 +1,4 @@
-package hu.montlikadani.TeleportSigns;
+package hu.montlikadani.TeleportSigns.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -29,7 +29,7 @@ public class ServerPingInternal implements Server {
 
 	private boolean fetching;
 	private InetSocketAddress host;
-	private int timeout = 2000;
+	private int timeout = 1000;
 	private Gson gson = new Gson();
 
 	@Override
@@ -104,7 +104,7 @@ public class ServerPingInternal implements Server {
 		dataOutputStream = new DataOutputStream(outputStream);
 
 		inputStream = socket.getInputStream();
-		inputStreamReader = new InputStreamReader(inputStream);
+		inputStreamReader = new InputStreamReader(inputStream, java.nio.charset.StandardCharsets.UTF_16BE);
 
 		ByteArrayOutputStream b = new ByteArrayOutputStream();
 		DataOutputStream handshake = new DataOutputStream(b);
